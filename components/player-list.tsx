@@ -1,28 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { UsersIcon, ShieldIcon } from "@/components/icons"
-import type { Player } from "@/lib/storage"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { UsersIcon, ShieldIcon, SwordIcon } from "@/components/icons";
+import type { Player } from "@/lib/storage";
+import { CrossIcon, ForkKnifeIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface PlayerListProps {
-  players: Player[]
-  onSelectPlayer: (player: Player) => void
-  onDeletePlayer: (id: string) => void
+  players: Player[];
+  onSelectPlayerAction: (player: Player) => void;
+  onDeletePlayerAction: (id: string) => void;
+  onSaveAction: (player: Player) => void;
 }
 
-export function PlayerList({ players, onSelectPlayer, onDeletePlayer }: PlayerListProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+export function PlayerList({
+  players,
+  onSelectPlayerAction,
+  onDeletePlayerAction,
+  onSaveAction,
+}: PlayerListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredPlayers = players.filter((player) => {
     return (
       player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       player.class.toLowerCase().includes(searchTerm.toLowerCase()) ||
       player.race.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })
+    );
+  });
 
   return (
     <div className="space-y-4">
@@ -46,18 +60,30 @@ export function PlayerList({ players, onSelectPlayer, onDeletePlayer }: PlayerLi
           filteredPlayers.map((player) => (
             <Card
               key={player.id}
-              className="parchment-texture metal-border hover:glow-gold transition-all cursor-pointer"
-              onClick={() => onSelectPlayer(player)}
+              className="parchment-texture metal-border hover:glow-gold transition-all "
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="font-sans text-lg text-balance">{player.name}</CardTitle>
+                    <CardTitle
+                      className="font-sans text-lg text-balance cursor-pointer"
+                      onClick={() => onSelectPlayerAction(player)}
+                    >
+                      {player.name}
+                    </CardTitle>
                     <CardDescription className="font-serif mt-1">
                       {player.race} {player.class}
                     </CardDescription>
                   </div>
-                  <ShieldIcon className="w-6 h-6 text-primary" />
+                  <div className="flex gap-4">
+                    <Button variant="ghost" onClick={() => {}}>
+                      <SwordIcon className="w-6 h-6 text-primary" />
+                    </Button>
+
+                    <Button variant="ghost">
+                      <CrossIcon className="w-6 h-6 text-primary" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -68,12 +94,16 @@ export function PlayerList({ players, onSelectPlayer, onDeletePlayer }: PlayerLi
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">PV:</span>
-                    <span className="font-bold text-destructive">{player.hp}</span>
+                    <span className="font-bold text-destructive">
+                      {player.hp}
+                    </span>
                   </div>
                   {player.inventory.length > 0 && (
                     <div className="pt-2">
                       <span className="text-xs text-muted-foreground">
-                        {player.inventory.length} {player.inventory.length === 1 ? "item" : "itens"} no inventário
+                        {player.inventory.length}{" "}
+                        {player.inventory.length === 1 ? "item" : "itens"} no
+                        inventário
                       </span>
                     </div>
                   )}
@@ -84,5 +114,5 @@ export function PlayerList({ players, onSelectPlayer, onDeletePlayer }: PlayerLi
         )}
       </div>
     </div>
-  )
+  );
 }

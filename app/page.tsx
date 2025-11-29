@@ -29,10 +29,13 @@ import { NPCGenerator } from "@/components/npc-generator";
 import { NPCList } from "@/components/npc-list";
 import { NPCSheet } from "@/components/npc-sheet";
 import type { MonsterFormData, NPCFormData } from "@/lib/schemas";
+import { useDisclosure } from "@/lib/use-disclosure";
+import { Dialog } from "@/components/ui/dialog";
 
 type ViewMode = "list" | "form" | "sheet";
 
 export default function MasterShieldApp() {
+  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
   const [gameData, setGameData] = useState<GameData>({
     monsters: [],
     players: [],
@@ -257,7 +260,7 @@ export default function MasterShieldApp() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="font-sans text-2xl flex items-center gap-2">
-                      <DragonIcon className="w-6 h-6" />
+                      <DragonIcon className="w-4 h-4 mr-2" />
                       Bestiário
                     </CardTitle>
                     <CardDescription className="font-serif">
@@ -332,19 +335,21 @@ export default function MasterShieldApp() {
               <CardContent>
                 {playerView === "list" && (
                   <PlayerList
+                    onSaveAction={handleSavePlayer}
                     players={gameData.players}
-                    onSelectPlayer={(p) => {
+                    onSelectPlayerAction={(p) => {
                       setSelectedPlayer(p);
                       setPlayerView("sheet");
+                      onOpen();
                     }}
-                    onDeletePlayer={handleDeletePlayer}
+                    onDeletePlayerAction={handleDeletePlayer}
                   />
                 )}
                 {playerView === "form" && (
                   <PlayerForm
                     player={selectedPlayer}
-                    onSave={handleSavePlayer}
-                    onCancel={() => {
+                    onSaveAction={handleSavePlayer}
+                    onCancelAction={() => {
                       setPlayerView("list");
                       setSelectedPlayer(undefined);
                     }}
@@ -434,15 +439,33 @@ export default function MasterShieldApp() {
       )}
 
       {playerView === "sheet" && selectedPlayer && (
-        <PlayerSheet
-          player={selectedPlayer}
-          onEdit={() => setPlayerView("form")}
-          onDelete={() => handleDeletePlayer(selectedPlayer.id)}
-          onClose={() => {
+        <Dialog
+          open={isOpen}
+          onOpenChange={() => {
             setPlayerView("list");
             setSelectedPlayer(undefined);
+            onToggle();
           }}
-        />
+        >
+          {selectedPlayer && (
+            <PlayerSheet
+              player={selectedPlayer}
+              onEdit={() => {
+                setPlayerView("form");
+                onClose();
+              }}
+              onDelete={() => {
+                handleDeletePlayer(selectedPlayer.id);
+                onClose();
+              }}
+              onClose={() => {
+                setPlayerView("list");
+                setSelectedPlayer(undefined);
+                onClose();
+              }}
+            />
+          )}
+        </Dialog>
       )}
 
       {npcView === "sheet" && selectedNPC && (

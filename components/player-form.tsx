@@ -1,222 +1,298 @@
-"use client"
+"use client";
 
-import type React from "react"
+import { useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import type { Player } from "@/lib/storage";
+import { generateId } from "@/lib/storage";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import type { Player } from "@/lib/storage"
-import { generateId } from "@/lib/storage"
+import { useForm, useFieldArray } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { generateAttributes } from "@/lib/dice";
+import { Attributes, attributeKeys } from "@/lib/interfaces/attributes";
+
+const playerSchema = z.object({
+  name: z.string().min(1, "Nome obrigatório"),
+  race: z.string().min(1, "Raça obrigatória"),
+  class: z.string().min(1, "Classe obrigatória"),
+  level: z.coerce.number().min(1, "Nível deve ser pelo menos 1"),
+  hp: z.coerce.number().min(1, "HP deve ser pelo menos 1"),
+  attributes: z.object({
+    for: z.coerce.number().min(1).max(30),
+    des: z.coerce.number().min(1).max(30),
+    con: z.coerce.number().min(1).max(30),
+    int: z.coerce.number().min(1).max(30),
+    sab: z.coerce.number().min(1).max(30),
+    car: z.coerce.number().min(1).max(30),
+  }),
+  inventory: z.array(z.object({ value: z.string().min(1) })).default([]),
+  notes: z.string().default(""),
+});
+
+type PlayerFormData = z.infer<typeof playerSchema>;
 
 interface PlayerFormProps {
-  player?: Player
-  onSave: (player: Player) => void
-  onCancel: () => void
+  player?: Player;
+  onSaveAction: (player: Player) => void;
+  onCancelAction: () => void;
 }
 
-export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
-  const [formData, setFormData] = useState<Omit<Player, "id">>({
-    name: player?.name || "",
-    race: player?.race || "",
-    class: player?.class || "",
-    level: player?.level || 1,
-    hp: player?.hp || 10,
-    attributes: player?.attributes || { for: 10, des: 10, con: 10, int: 10, sab: 10, car: 10 },
-    inventory: player?.inventory || [],
-    notes: player?.notes || "",
-  })
+export function PlayerForm({
+  player,
+  onSaveAction,
+  onCancelAction,
+}: PlayerFormProps) {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<PlayerFormData>({
+    resolver: zodResolver(playerSchema),
+    defaultValues: player
+      ? {
+          ...player,
+          inventory: player.inventory.map((item) => ({ value: item })),
+        }
+      : {
+          name: "",
+          race: "",
+          class: "",
+          level: 1,
+          hp: 10,
+          attributes: {
+            for: 10,
+            des: 10,
+            con: 10,
+            int: 10,
+            sab: 10,
+            car: 10,
+          },
+          inventory: [],
+          notes: "",
+        },
+  });
 
-  const [currentItem, setCurrentItem] = useState("")
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "inventory",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave({
-      id: player?.id || generateId(),
-      ...formData,
-    })
-  }
-
-  const addItem = () => {
-    if (currentItem.trim()) {
-      setFormData((prev) => ({
-        ...prev,
-        inventory: [...prev.inventory, currentItem.trim()],
-      }))
-      setCurrentItem("")
+  useEffect(() => {
+    if (player) {
+      reset({
+        ...player,
+        inventory: player.inventory.map((item) => ({ value: item })),
+      });
     }
-  }
+  }, [player, reset]);
 
-  const removeItem = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      inventory: prev.inventory.filter((_, i) => i !== index),
-    }))
-  }
+  const onSubmit = (data: PlayerFormData) => {
+    onSaveAction({
+      id: player?.id || generateId(),
+      ...data,
+      inventory: data.inventory.map((item) => item.value),
+      notes: data.notes || "",
+    });
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card className="parchment-texture metal-border">
         <CardHeader>
-          <CardTitle className="font-sans text-2xl">{player ? "Editar Jogador" : "Novo Jogador"}</CardTitle>
-          <CardDescription className="font-serif">Preencha a ficha do personagem</CardDescription>
+          <CardTitle className="font-sans text-2xl">
+            {player ? "Editar Jogador" : "Novo Jogador"}
+          </CardTitle>
+          <CardDescription className="font-serif">
+            Preencha a ficha do personagem
+          </CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-6">
+          {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="font-sans">
-                Nome
-              </Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                required
-                className="bg-card"
-              />
+            <div>
+              <Label htmlFor="name">Nome</Label>
+              <Input id="name" className="bg-card" {...register("name")} />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="race" className="font-sans">
-                Raça
-              </Label>
+            <div>
+              <Label htmlFor="race">Raça</Label>
               <Input
                 id="race"
-                value={formData.race}
-                onChange={(e) => setFormData((prev) => ({ ...prev, race: e.target.value }))}
                 placeholder="Ex: Humano, Elfo, Anão"
-                required
                 className="bg-card"
+                {...register("race")}
               />
+              {errors.race && (
+                <p className="text-red-500 text-sm">{errors.race.message}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="class" className="font-sans">
-                Classe
-              </Label>
+            <div>
+              <Label htmlFor="class">Classe</Label>
               <Input
                 id="class"
-                value={formData.class}
-                onChange={(e) => setFormData((prev) => ({ ...prev, class: e.target.value }))}
                 placeholder="Ex: Guerreiro, Mago, Ladino"
-                required
                 className="bg-card"
+                {...register("class")}
               />
+              {errors.class && (
+                <p className="text-red-500 text-sm">{errors.class.message}</p>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="level" className="font-sans">
-                Nível
-              </Label>
+            <div>
+              <Label htmlFor="level">Nível</Label>
               <Input
                 id="level"
                 type="number"
                 min="1"
-                value={formData.level}
-                onChange={(e) => setFormData((prev) => ({ ...prev, level: Number.parseInt(e.target.value) }))}
-                required
                 className="bg-card"
+                {...register("level")}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="hp" className="font-sans">
-                Pontos de Vida
-              </Label>
+            <div>
+              <Label htmlFor="hp">Pontos de Vida</Label>
               <Input
                 id="hp"
                 type="number"
                 min="1"
-                value={formData.hp}
-                onChange={(e) => setFormData((prev) => ({ ...prev, hp: Number.parseInt(e.target.value) }))}
-                required
                 className="bg-card"
+                {...register("hp")}
               />
             </div>
           </div>
 
+          {/* Attributes */}
           <div>
-            <Label className="font-sans mb-3 block">Atributos</Label>
+            <div className="flex justify-between">
+              <Label className="font-sans mb-3 block">Atributos</Label>
+              <Button
+                type="button"
+                onClick={() => {
+                  const genAtt = generateAttributes();
+                  console.log(attributeKeys);
+
+                  const attributes = attributeKeys.reduce((acc, key, index) => {
+                    acc[key] = genAtt[index]?.result ?? 0;
+                    return acc;
+                  }, {} as Attributes);
+
+                  setValue("attributes", attributes);
+                }}
+              >
+                Rolar atributos
+              </Button>
+            </div>
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-              {Object.entries(formData.attributes).map(([key, value]) => (
-                <div key={key} className="space-y-1">
-                  <Label htmlFor={key} className="text-xs uppercase font-sans">
-                    {key.toUpperCase()}
-                  </Label>
-                  <Input
-                    id={key}
-                    type="number"
-                    min="1"
-                    max="30"
-                    value={value}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        attributes: {
-                          ...prev.attributes,
-                          [key]: Number.parseInt(e.target.value),
-                        },
-                      }))
-                    }
-                    className="bg-card text-center"
-                  />
-                </div>
-              ))}
+              {(["for", "des", "con", "int", "sab", "car"] as const).map(
+                (key) => (
+                  <div key={key}>
+                    <Label className="text-xs uppercase">{key}</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="30"
+                      className="text-center bg-card"
+                      {...register(`attributes.${key}`, {
+                        valueAsNumber: true,
+                      })}
+                    />
+                    {errors.attributes?.[key] && (
+                      <p className="text-red-500 text-xs">
+                        {errors.attributes[key]?.message}
+                      </p>
+                    )}
+                  </div>
+                ),
+              )}
             </div>
           </div>
 
+          {/* Inventory */}
           <div className="space-y-2">
             <Label className="font-sans">Inventário</Label>
             <div className="flex gap-2">
               <Input
-                value={currentItem}
-                onChange={(e) => setCurrentItem(e.target.value)}
                 placeholder="Digite um item"
+                id="newItem"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    e.preventDefault()
-                    addItem()
+                    e.preventDefault();
+                    const input = e.currentTarget as HTMLInputElement;
+                    const value = input.value.trim();
+                    if (value) {
+                      append({ value });
+                      input.value = "";
+                    }
                   }
                 }}
                 className="bg-card"
               />
-              <Button type="button" onClick={addItem} variant="secondary">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  const input = document.getElementById(
+                    "newItem",
+                  ) as HTMLInputElement;
+                  if (input?.value.trim()) {
+                    append({ value: input.value.trim() });
+                    input.value = "";
+                  }
+                }}
+              >
                 Adicionar
               </Button>
             </div>
+
             <div className="flex flex-wrap gap-2 mt-2">
-              {formData.inventory.map((item, index) => (
+              {fields.map((field, index) => (
                 <Badge
-                  key={index}
+                  key={field.id}
                   variant="secondary"
                   className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                  onClick={() => removeItem(index)}
+                  onClick={() => remove(index)}
                 >
-                  {item} ×
+                  {field.value} ×
                 </Badge>
               ))}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="font-sans">
-              Anotações
-            </Label>
+          {/* Notes */}
+          <div>
+            <Label htmlFor="notes">Anotações</Label>
             <Textarea
               id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
-              placeholder="Histórico, objetivos, notas importantes..."
               rows={4}
-              className="bg-card font-serif"
+              className="bg-card"
+              {...register("notes")}
             />
           </div>
 
-          <div className="flex gap-3 justify-end">
-            <Button type="button" variant="outline" onClick={onCancel}>
+          {/* Actions */}
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" onClick={onCancelAction}>
               Cancelar
             </Button>
             <Button type="submit" className="glow-silver">
@@ -226,5 +302,5 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
         </CardContent>
       </Card>
     </form>
-  )
+  );
 }
