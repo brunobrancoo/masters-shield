@@ -63,6 +63,21 @@ export default function MasterShieldApp() {
     const data = loadGameData();
     setGameData(data);
   }, []);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        setActiveTab((current) => {
+          if (current === "monsters") return "players";
+          if (current === "players") return "npcs";
+          return "monsters";
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Save data whenever it changes
   useEffect(() => {

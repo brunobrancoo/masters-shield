@@ -1,7 +1,9 @@
-function rollDice(times: number): number | number[] {
+import { DiceRoll } from "./interfaces/dice-roll";
+
+function rollDice({ dice, times }: DiceRoll): number | number[] {
   const rolls: number[] = [];
   for (let i = 0; i < times; i++) {
-    rolls.push(Math.floor(Math.random() * 6) + 1);
+    rolls.push(Math.floor(Math.random() * dice) + 1);
   }
   if (rolls.length === 1) return rolls[0];
   return rolls;
@@ -16,7 +18,8 @@ export function generateAttributes(): AttributeRoll[] {
   const attributes: AttributeRoll[] = [];
 
   for (let i = 0; i <= 6; i++) {
-    const rollResult = rollDice(4) as number[];
+    const diceRoll: DiceRoll = { dice: 6, times: 4 };
+    const rollResult = rollDice(diceRoll) as number[];
     const row = [...rollResult];
     row.sort().reverse();
     row.pop(); // Remove o menor
