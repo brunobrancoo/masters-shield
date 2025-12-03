@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { DialogContent } from "@/components/ui/dialog";
 import { ShieldIcon, SwordIcon, ScrollIcon } from "@/components/icons";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";

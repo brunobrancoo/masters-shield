@@ -39,9 +39,6 @@ export function calculateHPModifier(constitution: number): number {
   return Math.floor((constitution - 10) / 2);
 }
 
-// export function rollDices(dices: number[], times: number[]) {
-//   let rolls : number | number[] = []
-//   for (let i = 0; i < dices.length; i++) {
-//     rolls.push(rollDice({ dice: dices[i], times: times[i] }))
-//   }
+// export function rollDices(rolls: DiceRoll[]) {
+//   const results = []
 // }
