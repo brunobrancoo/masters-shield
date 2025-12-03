@@ -15,7 +15,7 @@ import {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 type ViewMode = "list" | "form" | "sheet";
 
-// KEEP FROM HERE: AI comment spoting redundancies
+// CONTINUE FROM HERE: AI comment spoting redundancies
 // Analysing potential redundancies:
 // - handleUpdateMonster: This method updates an existing monster based on MonsterFormData and relies on `selectedMonster`.
 //   The handleSaveMonster method already handles both creation and updating of a monster by ID, taking a full Monster object.
