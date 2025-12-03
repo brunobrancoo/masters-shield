@@ -15,6 +15,16 @@ import {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 type ViewMode = "list" | "form" | "sheet";
 
+// KEEP FROM HERE: AI comment spoting redundancies
+// Analysing potential redundancies:
+// - handleUpdateMonster: This method updates an existing monster based on MonsterFormData and relies on `selectedMonster`.
+//   The handleSaveMonster method already handles both creation and updating of a monster by ID, taking a full Monster object.
+//   If handleSaveMonster were adapted to accept MonsterFormData and merge with the selectedMonster, or if the UI always
+//   provided a full Monster object for updates, handleUpdateMonster could be considered redundant.
+// - handleUpdateNPC: Similar to handleUpdateMonster, this method updates a selected NPC with NPCFormData.
+//   If handleGenerateNPC were generalized to a handleSaveNPC method that handles both creation and updates (like handleSaveMonster),
+//   and was flexible enough to work with NPCFormData and selectedNPC, then handleUpdateNPC could be redundant.
+// The current design implies a distinction between saving/creating a full object and updating a selected object with form data.
 interface GameContextType {
   gameData: GameData;
   setGameData: Dispatch<SetStateAction<GameData>>;
