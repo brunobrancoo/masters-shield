@@ -13,14 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import type { Player } from "@/lib/storage";
 import { generateId } from "@/lib/storage";
 
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateAttributes } from "@/lib/dice";
-import { Attributes, attributeKeys } from "@/lib/interfaces/interfaces";
+import { Attributes, Player, attributeKeys } from "@/lib/interfaces/interfaces";
 
 const playerSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
@@ -106,6 +105,7 @@ export function PlayerForm({
       ...data,
       inventory: data.inventory.map((item) => item.value),
       notes: data.notes || "",
+      items: [],
     });
   };
 

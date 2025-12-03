@@ -1,27 +1,33 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { SparklesIcon } from "@/components/icons"
-import type { NPC } from "@/lib/storage"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { SparklesIcon } from "@/components/icons";
+import { NPC } from "@/lib/interfaces/interfaces";
 
 interface NPCListProps {
-  npcs: NPC[]
-  onSelectNPC: (npc: NPC) => void
+  npcs: NPC[];
+  onSelectNPC: (npc: NPC) => void;
 }
 
 export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredNPCs = npcs.filter((npc) => {
     return (
       npc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       npc.class.toLowerCase().includes(searchTerm.toLowerCase()) ||
       npc.race.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })
+    );
+  });
 
   return (
     <div className="space-y-4">
@@ -51,7 +57,9 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="font-sans text-lg text-balance">{npc.name}</CardTitle>
+                    <CardTitle className="font-sans text-lg text-balance">
+                      {npc.name}
+                    </CardTitle>
                     <CardDescription className="font-serif mt-1">
                       {npc.race} {npc.class}
                     </CardDescription>
@@ -70,7 +78,9 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
                     <span className="font-bold text-destructive">{npc.hp}</span>
                   </div>
                   <div className="pt-2">
-                    <p className="text-xs text-muted-foreground italic truncate">{npc.personality}</p>
+                    <p className="text-xs text-muted-foreground italic truncate">
+                      {npc.personality}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -79,5 +89,5 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

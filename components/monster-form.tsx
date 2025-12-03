@@ -1,21 +1,27 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import type { Monster } from "@/lib/storage"
-import { generateId } from "@/lib/storage"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { generateId } from "@/lib/storage";
+import { Monster } from "@/lib/interfaces/interfaces";
 
 interface MonsterFormProps {
-  monster?: Monster
-  onSave: (monster: Monster) => void
-  onCancel: () => void
+  monster?: Monster;
+  onSave: (monster: Monster) => void;
+  onCancel: () => void;
 }
 
 export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
@@ -24,44 +30,56 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
     type: monster?.type || "",
     level: monster?.level || 1,
     hp: monster?.hp || 10,
-    attributes: monster?.attributes || { for: 10, des: 10, con: 10, int: 10, sab: 10, car: 10 },
+    attributes: monster?.attributes || {
+      for: 10,
+      des: 10,
+      con: 10,
+      int: 10,
+      sab: 10,
+      car: 10,
+    },
     skills: monster?.skills || [],
     notes: monster?.notes || "",
-  })
+    items: [],
+  });
 
-  const [currentSkill, setCurrentSkill] = useState("")
+  const [currentSkill, setCurrentSkill] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     onSave({
       id: monster?.id || generateId(),
       ...formData,
-    })
-  }
+    });
+  };
 
   const addSkill = () => {
     if (currentSkill.trim()) {
       setFormData((prev) => ({
         ...prev,
         skills: [...prev.skills, currentSkill.trim()],
-      }))
-      setCurrentSkill("")
+      }));
+      setCurrentSkill("");
     }
-  }
+  };
 
   const removeSkill = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       skills: prev.skills.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <Card className="parchment-texture metal-border">
         <CardHeader>
-          <CardTitle className="font-sans text-2xl">{monster ? "Editar Monstro" : "Novo Monstro"}</CardTitle>
-          <CardDescription className="font-serif">Preencha as informações da criatura</CardDescription>
+          <CardTitle className="font-sans text-2xl">
+            {monster ? "Editar Monstro" : "Novo Monstro"}
+          </CardTitle>
+          <CardDescription className="font-serif">
+            Preencha as informações da criatura
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -72,7 +90,9 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
                 className="bg-card"
               />
@@ -85,7 +105,9 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
               <Input
                 id="type"
                 value={formData.type}
-                onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, type: e.target.value }))
+                }
                 placeholder="Ex: Humanoide, Morto-vivo, Dragão"
                 required
                 className="bg-card"
@@ -101,7 +123,12 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                 type="number"
                 min="1"
                 value={formData.level}
-                onChange={(e) => setFormData((prev) => ({ ...prev, level: Number.parseInt(e.target.value) }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    level: Number.parseInt(e.target.value),
+                  }))
+                }
                 required
                 className="bg-card"
               />
@@ -116,7 +143,12 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                 type="number"
                 min="1"
                 value={formData.hp}
-                onChange={(e) => setFormData((prev) => ({ ...prev, hp: Number.parseInt(e.target.value) }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    hp: Number.parseInt(e.target.value),
+                  }))
+                }
                 required
                 className="bg-card"
               />
@@ -162,8 +194,8 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                 placeholder="Digite uma habilidade"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    e.preventDefault()
-                    addSkill()
+                    e.preventDefault();
+                    addSkill();
                   }
                 }}
                 className="bg-card"
@@ -193,7 +225,9 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
             <Textarea
               id="notes"
               value={formData.notes}
-              onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, notes: e.target.value }))
+              }
               placeholder="Informações adicionais sobre o monstro..."
               rows={4}
               className="bg-card font-serif"
@@ -211,5 +245,5 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
         </CardContent>
       </Card>
     </form>
-  )
+  );
 }

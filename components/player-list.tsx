@@ -11,9 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { UsersIcon, ShieldIcon, SwordIcon } from "@/components/icons";
-import type { Player } from "@/lib/storage";
 import { CrossIcon, ForkKnifeIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import { Player } from "@/lib/interfaces/interfaces";
 
 interface PlayerListProps {
   players: Player[];

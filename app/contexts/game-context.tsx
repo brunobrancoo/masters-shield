@@ -42,7 +42,7 @@ interface GameContextType {
   setSelectedPlayer: Dispatch<SetStateAction<Player | undefined>>;
 }
 
-export const GameProvider = ({ children }: { children: ReactNode }) => {
+export function GameProvider({ children }: { children: ReactNode }) {
   const [gameData, setGameData] = useState<GameData>({
     monsters: [],
     players: [],
@@ -250,7 +250,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
-};
+}
 
 export const useGame = () => {
   const context = useContext(GameContext);

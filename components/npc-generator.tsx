@@ -18,8 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SparklesIcon, DiceIcon } from "@/components/icons";
-import type { NPC } from "@/lib/storage";
 import { generateNPC } from "@/lib/npc-generator";
+import { NPC } from "@/lib/interfaces/interfaces";
 
 const RACES = [
   "Humano",

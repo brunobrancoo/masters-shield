@@ -1,32 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { DragonIcon, SwordIcon } from "@/components/icons"
-import type { Monster } from "@/lib/storage"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { DragonIcon, SwordIcon } from "@/components/icons";
+import { Monster } from "@/lib/interfaces/interfaces";
 
 interface MonsterListProps {
-  monsters: Monster[]
-  onSelectMonster: (monster: Monster) => void
-  onDeleteMonster: (id: string) => void
+  monsters: Monster[];
+  onSelectMonster: (monster: Monster) => void;
+  onDeleteMonster: (id: string) => void;
 }
 
-export function MonsterList({ monsters, onSelectMonster, onDeleteMonster }: MonsterListProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterType, setFilterType] = useState<string>("all")
+export function MonsterList({
+  monsters,
+  onSelectMonster,
+  onDeleteMonster,
+}: MonsterListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
 
   const filteredMonsters = monsters.filter((monster) => {
     const matchesSearch =
       monster.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      monster.type.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType = filterType === "all" || monster.type === filterType
-    return matchesSearch && matchesType
-  })
+      monster.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "all" || monster.type === filterType;
+    return matchesSearch && matchesType;
+  });
 
-  const monsterTypes = Array.from(new Set(monsters.map((m) => m.type)))
+  const monsterTypes = Array.from(new Set(monsters.map((m) => m.type)));
 
   return (
     <div className="space-y-4">
@@ -79,7 +89,9 @@ export function MonsterList({ monsters, onSelectMonster, onDeleteMonster }: Mons
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="font-sans text-lg text-balance">{monster.name}</CardTitle>
+                    <CardTitle className="font-sans text-lg text-balance">
+                      {monster.name}
+                    </CardTitle>
                     <CardDescription className="font-serif">
                       <Badge variant="secondary" className="mt-1">
                         {monster.type}
@@ -93,11 +105,15 @@ export function MonsterList({ monsters, onSelectMonster, onDeleteMonster }: Mons
                 <div className="space-y-2 text-sm font-serif">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Nível:</span>
-                    <span className="font-bold text-primary">{monster.level}</span>
+                    <span className="font-bold text-primary">
+                      {monster.level}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">PV:</span>
-                    <span className="font-bold text-destructive">{monster.hp}</span>
+                    <span className="font-bold text-destructive">
+                      {monster.hp}
+                    </span>
                   </div>
                   {monster.skills.length > 0 && (
                     <div className="pt-2">
@@ -107,7 +123,11 @@ export function MonsterList({ monsters, onSelectMonster, onDeleteMonster }: Mons
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {monster.skills.slice(0, 2).map((skill, idx) => (
-                          <Badge key={idx} variant="outline" className="text-xs">
+                          <Badge
+                            key={idx}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {skill}
                           </Badge>
                         ))}
@@ -126,5 +146,5 @@ export function MonsterList({ monsters, onSelectMonster, onDeleteMonster }: Mons
         )}
       </div>
     </div>
-  )
+  );
 }
