@@ -17,7 +17,12 @@ import {
   SparklesIcon,
   ScrollIcon,
 } from "@/components/icons";
-import type { Monster, Player, NPC, GameData } from "@/lib/storage";
+import type {
+  Monster,
+  Player,
+  NPC,
+  GameData,
+} from "@/lib/interfaces/interfaces";
 import { loadGameData, saveGameData } from "@/lib/storage";
 import { MonsterList } from "@/components/monster-list";
 import { MonsterForm } from "@/components/monster-form";
@@ -31,221 +36,39 @@ import { NPCSheet } from "@/components/npc-sheet";
 import type { MonsterFormData, NPCFormData } from "@/lib/schemas";
 import { useDisclosure } from "@/lib/use-disclosure";
 import { Dialog } from "@/components/ui/dialog";
-
-type ViewMode = "list" | "form" | "sheet";
+import { useGame } from "./contexts/game-context";
 
 export default function MasterShieldApp() {
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
-  const [gameData, setGameData] = useState<GameData>({
-    monsters: [],
-    players: [],
-    npcs: [],
-  });
-
-  const [activeTab, setActiveTab] = useState("monsters");
-
-  // Monster state
-  const [monsterView, setMonsterView] = useState<ViewMode>("list");
-  const [selectedMonster, setSelectedMonster] = useState<Monster | undefined>();
-
-  // Player state
-  const [playerView, setPlayerView] = useState<ViewMode>("list");
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | undefined>();
-
-  // NPC state
-  const [npcView, setNPCView] = useState<"generator" | "list" | "sheet">(
-    "generator",
-  );
-  const [selectedNPC, setSelectedNPC] = useState<NPC | undefined>();
-
-  // Load data on mount
-  useEffect(() => {
-    const data = loadGameData();
-    setGameData(data);
-  }, []);
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") {
-        e.preventDefault();
-        setActiveTab((current) => {
-          if (current === "monsters") return "players";
-          if (current === "players") return "npcs";
-          return "monsters";
-        });
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // Save data whenever it changes
-  useEffect(() => {
-    saveGameData(gameData);
-  }, [gameData]);
-
-  // Monster handlers
-  const handleSaveMonster = (monster: Monster) => {
-    setGameData((prev) => {
-      const exists = prev.monsters.find((m) => m.id === monster.id);
-      if (exists) {
-        return {
-          ...prev,
-          monsters: prev.monsters.map((m) =>
-            m.id === monster.id ? monster : m,
-          ),
-        };
-      }
-      return {
-        ...prev,
-        monsters: [...prev.monsters, monster],
-      };
-    });
-    setMonsterView("list");
-    setSelectedMonster(undefined);
-  };
-
-  const handleUpdateMonster = (data: MonsterFormData) => {
-    if (!selectedMonster) return;
-
-    const updatedMonster: Monster = {
-      ...selectedMonster,
-      ...data,
-    };
-
-    setGameData((prev) => ({
-      ...prev,
-      monsters: prev.monsters.map((m) =>
-        m.id === selectedMonster.id ? updatedMonster : m,
-      ),
-    }));
-
-    setSelectedMonster(updatedMonster);
-  };
-
-  const handleDeleteMonster = (id: string) => {
-    setGameData((prev) => ({
-      ...prev,
-      monsters: prev.monsters.filter((m) => m.id !== id),
-    }));
-    setMonsterView("list");
-    setSelectedMonster(undefined);
-  };
-
-  // Player handlers
-  const handleSavePlayer = (player: Player) => {
-    setGameData((prev) => {
-      const exists = prev.players.find((p) => p.id === player.id);
-      if (exists) {
-        return {
-          ...prev,
-          players: prev.players.map((p) => (p.id === player.id ? player : p)),
-        };
-      }
-      return {
-        ...prev,
-        players: [...prev.players, player],
-      };
-    });
-    setPlayerView("list");
-    setSelectedPlayer(undefined);
-  };
-
-  const handleDeletePlayer = (id: string) => {
-    setGameData((prev) => ({
-      ...prev,
-      players: prev.players.filter((p) => p.id !== id),
-    }));
-    setPlayerView("list");
-    setSelectedPlayer(undefined);
-  };
-
-  // NPC handlers
-  const handleGenerateNPC = (npc: NPC) => {
-    setGameData((prev) => ({
-      ...prev,
-      npcs: [...prev.npcs, npc],
-    }));
-    setNPCView("list");
-  };
-
-  const handleUpdateNPC = (data: NPCFormData) => {
-    if (!selectedNPC) return;
-
-    const updatedNPC: NPC = {
-      ...selectedNPC,
-      ...data,
-    };
-
-    setGameData((prev) => ({
-      ...prev,
-      npcs: prev.npcs.map((n) => (n.id === selectedNPC.id ? updatedNPC : n)),
-    }));
-
-    setSelectedNPC(updatedNPC);
-  };
-
-  const handleDeleteNPC = (id: string) => {
-    setGameData((prev) => ({
-      ...prev,
-      npcs: prev.npcs.filter((n) => n.id !== id),
-    }));
-    setNPCView("list");
-    setSelectedNPC(undefined);
-  };
+  const {
+    setNPCView,
+    setPlayerView,
+    setMonsterView,
+    setActiveTab,
+    selectedNPC,
+    playerView,
+    npcView,
+    monsterView,
+    gameData,
+    activeTab,
+    setSelectedNPC,
+    setSelectedMonster,
+    selectedMonster,
+    handleUpdateNPC,
+    handleUpdateMonster,
+    handleSavePlayer,
+    handleSaveMonster,
+    handleGenerateNPC,
+    handleDeleteNPC,
+    handleDeleteMonster,
+    setGameData,
+    selectedPlayer,
+    handleDeletePlayer,
+    setSelectedPlayer,
+  } = useGame();
 
   return (
     <div className="min-h-screen bg-background parchment-texture">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <ShieldIcon className="w-10 h-10 text-primary glow-silver" />
-              <div>
-                <h1 className="text-3xl font-sans font-bold text-balance">
-                  Escudo do Mestre Digital
-                </h1>
-                <p className="text-sm font-serif text-muted-foreground">
-                  Gerencie suas campanhas de RPG com praticidade
-                </p>
-              </div>
-            </div>
-
-            <Card className="hidden md:block bg-primary/10 border-primary/30">
-              <CardContent className="p-4">
-                <div className="flex gap-6 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-primary">
-                      {gameData.monsters.length}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-sans">
-                      Monstros
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-primary">
-                      {gameData.players.length}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-sans">
-                      Jogadores
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-primary">
-                      {gameData.npcs.length}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-sans">
-                      NPCs
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs

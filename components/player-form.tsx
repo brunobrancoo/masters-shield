@@ -20,7 +20,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateAttributes } from "@/lib/dice";
-import { Attributes, attributeKeys } from "@/lib/interfaces/attributes";
+import { Attributes, attributeKeys } from "@/lib/interfaces/interfaces";
 
 const playerSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
