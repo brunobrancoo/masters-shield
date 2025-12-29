@@ -30,6 +30,7 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
     type: monster?.type || "",
     level: monster?.level || 1,
     hp: monster?.hp || 10,
+    maxHp: monster?.hp || 10,
     attributes: monster?.attributes || {
       for: 10,
       des: 10,
@@ -146,7 +147,8 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    hp: Number.parseInt(e.target.value),
+                    hp: +e.target.value,
+                    maxHp: +e.target.value,
                   }))
                 }
                 required

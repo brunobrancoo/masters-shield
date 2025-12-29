@@ -112,7 +112,7 @@ export function MonsterList({
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">PV:</span>
                     <span className="font-bold text-destructive">
-                      {monster.hp}
+                      {monster.hp}/{monster.maxHp}
                     </span>
                   </div>
                   {monster.skills.length > 0 && (

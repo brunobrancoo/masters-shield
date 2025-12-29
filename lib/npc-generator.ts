@@ -167,6 +167,7 @@ export function generateNPC(
 
   // Calcula HP baseado na classe e constituição
   const hp = calculateHP(level, attributes.con, selectedClass);
+  const maxHp = hp;
 
   // Obtém habilidades baseadas na classe
   const skills = getClassSkills(selectedClass, level);
@@ -178,6 +179,7 @@ export function generateNPC(
     class: selectedClass,
     level,
     hp,
+    maxHp,
     attributes,
     skills,
     personality,

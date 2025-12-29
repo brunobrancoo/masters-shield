@@ -95,7 +95,7 @@ export function PlayerList({
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">PV:</span>
                     <span className="font-bold text-destructive">
-                      {player.hp}
+                      {player.hp}/{player.maxHp}
                     </span>
                   </div>
                   {player.inventory.length > 0 && (

@@ -75,7 +75,9 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">PV:</span>
-                    <span className="font-bold text-destructive">{npc.hp}</span>
+                    <span className="font-bold text-destructive">
+                      {npc.hp}/{npc.maxHp}
+                    </span>
                   </div>
                   <div className="pt-2">
                     <p className="text-xs text-muted-foreground italic truncate">

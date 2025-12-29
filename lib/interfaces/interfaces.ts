@@ -22,6 +22,7 @@ export interface Monster {
   type: string;
   level: number;
   hp: number;
+  maxHp: number;
   attributes: Attributes;
   skills: string[];
   notes: string;
@@ -35,6 +36,7 @@ export interface Player {
   class: string;
   level: number;
   hp: number;
+  maxHp: number;
   attributes: Attributes;
   inventory: string[];
   notes: string;
@@ -48,6 +50,7 @@ export interface NPC {
   class: string;
   level: number;
   hp: number;
+  maxHp: number;
   attributes: Attributes;
   skills: string[];
   personality: string;
@@ -75,4 +78,15 @@ export interface Item {
   attackbonus: number;
   defensebonus: number;
   notes: string;
+  equipped: boolean;
+}
+
+export interface InitiativeEntry {
+  id: string;
+  name: string;
+  initiative: number;
+  hp: number;
+  maxHp: number;
+  type: "monster" | "player" | "npc" | "custom";
+  sourceId?: string;
 }

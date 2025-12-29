@@ -4,6 +4,9 @@ import { Cinzel_Decorative, Merriweather, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { GameProvider } from "./contexts/game-context";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { CombatProvider } from "./contexts/combat-context";
 
 const cinzelDecorative = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -53,14 +56,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <GameProvider>
-        <body
-          className={`${cinzelDecorative.variable} ${merriweather.variable} ${geistMono.variable} font-serif antialiased`}
-        >
-          <Header />
-          {children}
-        </body>
-      </GameProvider>
+      <body
+        className={`${cinzelDecorative.variable} ${merriweather.variable} ${geistMono.variable} font-serif antialiased`}
+      >
+        <GameProvider>
+          <CombatProvider>
+            <SidebarProvider>
+              {/* Shell: on lg+ it becomes a two-column flex (sidebar + main) */}
+              <div className="min-h-screen lg:flex lg:items-stretch lg:flex-row-reverse">
+                <AppSidebar />
+
+                <main className="flex-1 min-h-screen min-w-0">
+                  <Header />
+                  <div className="p-4 lg:p-6">{children}</div>
+                </main>
+              </div>
+            </SidebarProvider>
+          </CombatProvider>
+        </GameProvider>
+      </body>
     </html>
   );
 }

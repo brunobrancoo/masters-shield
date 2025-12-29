@@ -107,7 +107,7 @@ export function NPCSheet({ npc, onSave, onDelete, onClose }: NPCSheetProps) {
                     Pontos de Vida
                   </p>
                   <p className="text-4xl font-bold text-destructive">
-                    {npc.hp}
+                    {npc.maxHp}
                   </p>
                 </div>
               </CardContent>
@@ -272,11 +272,11 @@ export function NPCSheet({ npc, onSave, onDelete, onClose }: NPCSheetProps) {
                   id="hp"
                   type="number"
                   min="1"
-                  value={formData.hp}
+                  value={formData.maxHp}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      hp: Number.parseInt(e.target.value) || 1,
+                      maxHp: Number.parseInt(e.target.value) || 1,
                     })
                   }
                   required

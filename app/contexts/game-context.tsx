@@ -45,7 +45,7 @@ interface GameContextType {
   handleDeleteMonster: (id: string) => void;
   handleSavePlayer: (player: Player) => void;
   handleGenerateNPC: (npc: NPC) => void;
-  handleUpdateNPC: (data: NPCFormData) => void;
+  handleUpdateNPC: (data: NPC) => void;
   handleDeleteNPC: (id: string) => void;
   selectedPlayer: Player | undefined;
   handleDeletePlayer: (id: string) => void;
@@ -207,20 +207,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setNPCView("list");
   };
 
-  const handleUpdateNPC = (data: NPCFormData) => {
-    if (!selectedNPC) return;
+  const handleUpdateNPC = (npc: NPC) => {
+    setGameData((prev) => {
+      const exists = prev.npcs.find((p) => p.id === npc.id);
+      if (exists) {
+        return {
+          ...prev,
+          npcs: prev.npcs.map((p) => (p.id === npc.id ? npc : p)),
+        };
+      }
+      return {
+        ...prev,
+        npcs: [...prev.npcs, npc],
+      };
+    });
 
-    const updatedNPC: NPC = {
-      ...selectedNPC,
-      ...data,
-    };
-
-    setGameData((prev) => ({
-      ...prev,
-      npcs: prev.npcs.map((n) => (n.id === selectedNPC.id ? updatedNPC : n)),
-    }));
-
-    setSelectedNPC(updatedNPC);
+    setNPCView("list");
+    setSelectedNPC(undefined);
   };
 
   const handleDeleteNPC = (id: string) => {

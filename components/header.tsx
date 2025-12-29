@@ -2,9 +2,9 @@
 import { ShieldIcon } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { useGame } from "@/app/contexts/game-context";
-import { DiceIcon } from "./icons";
 import { useDisclosure } from "@/lib/use-disclosure";
 import DiceRollModal from "./dice-roll";
+import { SidebarTrigger } from "./ui/sidebar";
 
 export default function Header() {
   const { gameData } = useGame();
@@ -12,6 +12,7 @@ export default function Header() {
   return (
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
       <div className="container mx-auto px-4 py-6">
+        <SidebarTrigger />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <ShieldIcon className="w-10 h-10 text-primary glow-silver" />

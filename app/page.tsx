@@ -37,6 +37,8 @@ import type { MonsterFormData, NPCFormData } from "@/lib/schemas";
 import { useDisclosure } from "@/lib/use-disclosure";
 import { Dialog } from "@/components/ui/dialog";
 import { useGame } from "./contexts/game-context";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export default function MasterShieldApp() {
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
@@ -66,6 +68,7 @@ export default function MasterShieldApp() {
     handleDeletePlayer,
     setSelectedPlayer,
   } = useGame();
+  const { open: sidebarOpen } = useSidebar();
 
   return (
     <div className="min-h-screen bg-background parchment-texture">
@@ -202,7 +205,7 @@ export default function MasterShieldApp() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
               {/* Sidebar with quick actions */}
               <div className="lg:col-span-1 space-y-4">
-                <Card className="metal-border bg-card/50">
+                <Card className="metal-border bg-card/50 min-w-40">
                   <CardHeader>
                     <CardTitle className="font-sans text-lg">
                       <ScrollIcon className="w-5 h-5 inline mr-2" />
@@ -212,10 +215,14 @@ export default function MasterShieldApp() {
                   <CardContent className="space-y-2">
                     <Button
                       variant={npcView === "generator" ? "default" : "outline"}
-                      className="w-full justify-start"
+                      className={cn("w-full justify-start")}
                       onClick={() => setNPCView("generator")}
                     >
-                      <SparklesIcon className="w-4 h-4 mr-2" />
+                      {sidebarOpen ? (
+                        ""
+                      ) : (
+                        <SparklesIcon className="w-4 h-4 mr-2" />
+                      )}
                       Gerar NPC
                     </Button>
                     <Button
@@ -223,7 +230,11 @@ export default function MasterShieldApp() {
                       className="w-full justify-start"
                       onClick={() => setNPCView("list")}
                     >
-                      <UsersIcon className="w-4 h-4 mr-2" />
+                      {sidebarOpen ? (
+                        ""
+                      ) : (
+                        <UsersIcon className="w-4 h-4 mr-2" />
+                      )}
                       Ver Lista ({gameData.npcs.length})
                     </Button>
                   </CardContent>

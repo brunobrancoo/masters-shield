@@ -106,6 +106,7 @@ export function PlayerForm({
       inventory: data.inventory.map((item) => item.value),
       notes: data.notes || "",
       items: [],
+      maxHp: data.hp,
     });
   };
 
