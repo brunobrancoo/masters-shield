@@ -85,6 +85,7 @@ export interface InitiativeEntry {
   id: string;
   name: string;
   initiative: number;
+  dexMod: number;
   hp: number;
   maxHp: number;
   type: "monster" | "player" | "npc" | "custom";

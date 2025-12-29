@@ -35,6 +35,7 @@ import {
 import { useGame } from "@/app/contexts/game-context";
 import { ScrollArea } from "./ui/scroll-area";
 import { useCombat } from "@/app/contexts/combat-context";
+import { getAttMod } from "@/lib/utils";
 
 export function AppSidebar() {
   const {
@@ -66,6 +67,10 @@ export function AppSidebar() {
     getSourceList,
     sourceType,
     setSourceType,
+    addAllPlayers,
+    rollInitiatives,
+    initiativeRolls,
+    clearAll,
   } = useCombat();
 
   // Add entry form
@@ -107,15 +112,10 @@ export function AppSidebar() {
     setRound(1);
   };
 
-  const clearAll = () => {
-    setInitiativeEntries([]);
-    setOnCombat(false);
-    setCurrentTurn(0);
-    setRound(1);
-  };
+  console.log(initiativeRolls);
 
   return (
-    <Sidebar side="right">
+    <Sidebar side="right" className="z-50">
       <SidebarHeader className="px-6 py-4 border-b border-border bg-primary/5">
         <h2 className="font-sans text-2xl flex items-center gap-3 text-balance">
           <Swords className="w-6 h-6 text-primary" />
@@ -136,14 +136,26 @@ export function AppSidebar() {
                 {initiativeEntries.length > 0 && (
                   <div className="flex gap-2">
                     {!onCombat ? (
-                      <Button
-                        onClick={startCombat}
-                        className="flex-1 glow-gold"
-                        size="lg"
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Iniciar Combate
-                      </Button>
+                      <>
+                        <Button
+                          onClick={startCombat}
+                          className="flex-1 glow-gold"
+                          size="lg"
+                        >
+                          <Play className="w-4 h-4 mr-2" />
+                          Iniciar Combate
+                        </Button>
+                        <Button
+                          onClick={rollInitiatives}
+                          disabled={initiativeRolls.length > 0}
+                          className="flex-1 glow-gold"
+                          size="lg"
+                          variant={"outline"}
+                        >
+                          <Play className="w-4 h-4 mr-2" />
+                          Rolar todas as iniciativas
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
@@ -181,6 +193,7 @@ export function AppSidebar() {
                     </Card>
                   ) : (
                     sortedEntries.map((entry, index) => {
+                      console.log("entry id: ", entry.id);
                       const isCurrentTurn = onCombat && index === currentTurn;
                       const hpPercent = (entry.hp / entry.maxHp) * 100;
 
@@ -206,7 +219,22 @@ export function AppSidebar() {
                                 disabled={onCombat}
                               />
                               <span className="text-xs text-muted-foreground font-sans">
-                                Iniciativa
+                                Iniciativa (
+                                {
+                                  initiativeRolls.find(
+                                    (roll) => roll.id === entry.id,
+                                  )?.roll
+                                }{" "}
+                                {initiativeRolls.some(
+                                  (roll) => roll.id === entry.id,
+                                ) && "+ "}
+                                dex mod{" "}
+                                {getAttMod(
+                                  gameData!.players!.find(
+                                    (player) => player.id === entry.id,
+                                  )!.attributes.des,
+                                )}
+                                )
                               </span>
                             </div>
 
@@ -298,15 +326,27 @@ export function AppSidebar() {
 
                 {/* Add Entry Form */}
                 {!showAddForm ? (
-                  <Button
-                    onClick={() => setShowAddForm(true)}
-                    variant="outline"
-                    className="w-full"
-                    size="lg"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Adicionar Participante
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => setShowAddForm(true)}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar Participante
+                    </Button>
+
+                    <Button
+                      onClick={() => addAllPlayers()}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar Todos os Jogadores
+                    </Button>
+                  </>
                 ) : (
                   <Card className="p-4 metal-border-subtle bg-background/50 space-y-3">
                     <div className="flex items-center justify-between">
@@ -364,11 +404,19 @@ export function AppSidebar() {
                             <SelectValue placeholder="Selecione..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {getSourceList().map((item) => (
-                              <SelectItem key={item.id} value={item.id}>
-                                {item.name}
-                              </SelectItem>
-                            ))}
+                            {getSourceList().map((item) => {
+                              if (
+                                initiativeEntries.some(
+                                  (entry) => entry.id === item.id,
+                                )
+                              )
+                                return;
+                              return (
+                                <SelectItem key={item.id} value={item.id}>
+                                  {item.name}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
 

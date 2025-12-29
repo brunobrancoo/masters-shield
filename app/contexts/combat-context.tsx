@@ -7,9 +7,18 @@ import {
   NPC,
   Player,
 } from "@/lib/interfaces/interfaces";
+import { DiceRoller } from "@/lib/classes/dices";
+import { getAttMod } from "@/lib/utils";
+
+type InitiativeRoll = {
+  id: string;
+  roll: number;
+  dex: number;
+};
 
 export interface CombatContextType {
   round: number;
+  rollInitiatives: () => void;
   onCombat: boolean;
   setOnCombat: (value: SetStateAction<boolean>) => void;
   initiativeEntries: InitiativeEntry[];
@@ -31,12 +40,15 @@ export interface CombatContextType {
   resetAddForm: () => void;
   addCustomEntry: () => void;
   currentTurn: number;
-  setCurrentTurn: (valur: SetStateAction<number>) => void;
+  setCurrentTurn: (value: SetStateAction<number>) => void;
+  clearAll: () => void;
   updateHp: (id: string, delta: number) => void;
   addExistingEntry: () => void;
   getSourceList: () => Monster[] | Player[] | NPC[];
   sourceType: "monster" | "player" | "npc";
   setSourceType: (value: SetStateAction<"monster" | "player" | "npc">) => void;
+  addAllPlayers: () => void;
+  initiativeRolls: InitiativeRoll[];
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
@@ -57,6 +69,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
   const [sourceType, setSourceType] = useState<"monster" | "player" | "npc">(
     "monster",
   );
+  const [initiativeRolls, setInitiativeRolls] = useState<InitiativeRoll[]>([]);
 
   const { handleSavePlayer, handleSaveMonster, handleUpdateNPC, gameData } =
     useGame();
@@ -96,6 +109,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
         newEntry = {
           id: monster.id,
           name: monster.name,
+          dexMod: getAttMod(monster.attributes.des),
           initiative: 0,
           hp: monster.hp,
           maxHp: monster.maxHp,
@@ -108,6 +122,8 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
       if (player) {
         newEntry = {
           id: player.id,
+          dexMod: getAttMod(player.attributes.des),
+
           name: player.name,
           initiative: 0,
           hp: player.hp,
@@ -121,6 +137,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
       if (npc) {
         newEntry = {
           id: npc.id,
+          dexMod: getAttMod(npc.attributes.des),
           name: npc.name,
           initiative: 0,
           hp: npc.hp,
@@ -143,6 +160,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
       id: `custom-${Date.now()}`,
       name: customName,
       initiative: customInitiative,
+      dexMod: 0,
       hp: customHp || 0,
       maxHp: customMaxHp || 0,
       type: "custom",
@@ -190,10 +208,80 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  function addAllPlayers() {}
+  const clearAll = () => {
+    setInitiativeEntries([]);
+    setInitiativeRolls([]);
+    setOnCombat(false);
+    setCurrentTurn(0);
+    setRound(1);
+  };
+
+  function rollInitiatives() {
+    // build all new rolls first
+    const newRolls: InitiativeRoll[] = initiativeEntries
+      .filter((entry) => entry.initiative != null)
+      .map((entry) => {
+        const roll = new DiceRoller(20).roll(1).total;
+        const dexMod = entry.dexMod;
+        return { id: entry.id, roll, dex: dexMod };
+      });
+
+    // update initiativeEntries (as you already do)
+    setInitiativeEntries((prev) =>
+      prev.map((entry) =>
+        entry.initiative == null
+          ? entry
+          : {
+              ...entry,
+              initiative:
+                entry.initiative +
+                (newRolls.find((r) => r.id === entry.id)?.roll ?? 0),
+            },
+      ),
+    );
+
+    // merge into initiativeRolls: overwrite roll, sum dex if id exists
+    setInitiativeRolls((prev) => {
+      const map = new Map<string, InitiativeRoll>();
+      // seed with previous values
+      for (const r of prev) map.set(r.id, { ...r });
+
+      // merge/overwrite
+      for (const nr of newRolls) {
+        const existing = map.get(nr.id);
+        if (existing) {
+          map.set(nr.id, {
+            id: nr.id,
+            roll: nr.roll, // overwrite roll
+            dex: existing.dex, // sum dex
+          });
+        } else {
+          map.set(nr.id, nr);
+        }
+      }
+
+      return Array.from(map.values());
+    });
+  }
+
+  function addAllPlayers() {
+    const entries: InitiativeEntry[] = gameData.players.map((player) => {
+      return {
+        id: player.id,
+        dexMod: getAttMod(player.attributes.des),
+        name: player.name,
+        initiative: Math.floor((player.attributes.des - 10) / 2),
+        hp: player.hp || 0,
+        maxHp: player.maxHp || 0,
+        type: "player",
+      };
+    });
+    setInitiativeEntries((prev) => [...prev, ...entries]);
+  }
 
   const value: CombatContextType = {
     addExistingEntry,
+    rollInitiatives,
     getSourceList,
     sourceType,
     setSourceType,
@@ -204,6 +292,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
     setCustomHp,
     setCustomInitiative,
     setCustomMaxHp,
+    clearAll,
     setCustomName,
     setRound,
     round,
@@ -221,6 +310,8 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
     currentTurn,
     setCurrentTurn,
     updateHp,
+    addAllPlayers,
+    initiativeRolls,
   };
 
   return (
