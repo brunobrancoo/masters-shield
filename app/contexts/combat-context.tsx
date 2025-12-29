@@ -48,6 +48,8 @@ export interface CombatContextType {
   sourceType: "monster" | "player" | "npc";
   setSourceType: (value: SetStateAction<"monster" | "player" | "npc">) => void;
   addAllPlayers: () => void;
+  addAllNPCs: () => void;
+  addAllMonsters: () => void;
   initiativeRolls: InitiativeRoll[];
 }
 
@@ -110,7 +112,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           id: monster.id,
           name: monster.name,
           dexMod: getAttMod(monster.attributes.des),
-          initiative: 0,
+          initiative: getAttMod(monster.attributes.des),
           hp: monster.hp,
           maxHp: monster.maxHp,
           type: "monster",
@@ -123,9 +125,8 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
         newEntry = {
           id: player.id,
           dexMod: getAttMod(player.attributes.des),
-
           name: player.name,
-          initiative: 0,
+          initiative: getAttMod(player.attributes.des),
           hp: player.hp,
           maxHp: player.maxHp,
           type: "player",
@@ -139,7 +140,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           id: npc.id,
           dexMod: getAttMod(npc.attributes.des),
           name: npc.name,
-          initiative: 0,
+          initiative: getAttMod(npc.attributes.des),
           hp: npc.hp,
           maxHp: npc.maxHp,
           type: "npc",
@@ -278,6 +279,35 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
     });
     setInitiativeEntries((prev) => [...prev, ...entries]);
   }
+  function addAllNPCs() {
+    const entries: InitiativeEntry[] = gameData.npcs.map((npc) => {
+      return {
+        id: npc.id,
+        dexMod: getAttMod(npc.attributes.des),
+        name: npc.name,
+        initiative: Math.floor((npc.attributes.des - 10) / 2),
+        hp: npc.hp || 0,
+        maxHp: npc.maxHp || 0,
+        type: "npc",
+      };
+    });
+    setInitiativeEntries((prev) => [...prev, ...entries]);
+  }
+
+  function addAllMonsters() {
+    const entries: InitiativeEntry[] = gameData.monsters.map((monster) => {
+      return {
+        id: monster.id,
+        dexMod: getAttMod(monster.attributes.des),
+        name: monster.name,
+        initiative: Math.floor((monster.attributes.des - 10) / 2),
+        hp: monster.hp || 0,
+        maxHp: monster.maxHp || 0,
+        type: "monster",
+      };
+    });
+    setInitiativeEntries((prev) => [...prev, ...entries]);
+  }
 
   const value: CombatContextType = {
     addExistingEntry,
@@ -311,6 +341,8 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
     setCurrentTurn,
     updateHp,
     addAllPlayers,
+    addAllNPCs,
+    addAllMonsters,
     initiativeRolls,
   };
 

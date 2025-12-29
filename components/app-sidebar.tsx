@@ -71,6 +71,8 @@ export function AppSidebar() {
     rollInitiatives,
     initiativeRolls,
     clearAll,
+    addAllMonsters,
+    addAllNPCs,
   } = useCombat();
 
   // Add entry form
@@ -112,7 +114,8 @@ export function AppSidebar() {
     setRound(1);
   };
 
-  console.log(initiativeRolls);
+  console.log("rolls: ", initiativeRolls);
+  console.log("initiatives: ", initiativeEntries);
 
   return (
     <Sidebar side="right" className="z-50">
@@ -193,7 +196,6 @@ export function AppSidebar() {
                     </Card>
                   ) : (
                     sortedEntries.map((entry, index) => {
-                      console.log("entry id: ", entry.id);
                       const isCurrentTurn = onCombat && index === currentTurn;
                       const hpPercent = (entry.hp / entry.maxHp) * 100;
 
@@ -340,6 +342,24 @@ export function AppSidebar() {
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Adicionar Todos os Jogadores
+                    </Button>
+                    <Button
+                      onClick={() => addAllNPCs()}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar Todos os NPCs
+                    </Button>
+                    <Button
+                      onClick={() => addAllMonsters()}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar Todos os Monstros
                     </Button>
                   </>
                 ) : (
