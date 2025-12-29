@@ -221,6 +221,7 @@ export function AppSidebar() {
                               <span className="text-xs text-muted-foreground font-sans">
                                 Iniciativa (
                                 {
+                                  //QUEBROU! TEM QUE TER PRA MONSTER E NPC TAMBÉM
                                   initiativeRolls.find(
                                     (roll) => roll.id === entry.id,
                                   )?.roll
@@ -228,13 +229,7 @@ export function AppSidebar() {
                                 {initiativeRolls.some(
                                   (roll) => roll.id === entry.id,
                                 ) && "+ "}
-                                dex mod{" "}
-                                {getAttMod(
-                                  gameData!.players!.find(
-                                    (player) => player.id === entry.id,
-                                  )!.attributes.des,
-                                )}
-                                )
+                                dex mod {entry.dexMod})
                               </span>
                             </div>
 
