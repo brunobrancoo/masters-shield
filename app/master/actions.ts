@@ -1,3 +1,5 @@
+import { getCampaignMasterId } from "@/lib/firebase-storage";
+
 export async function fetchCampaignMasterId(campaignId: string) {
-  const snapshot = await fires;
+  return await getCampaignMasterId(campaignId);
 }
