@@ -29,6 +29,35 @@ export interface Monster {
   items: Item[];
 }
 
+export interface Spell {
+  index: string;
+  name: string;
+  level: number;
+  school: string;
+  castingTime: string;
+  duration: string;
+  range: string;
+  components: string;
+  description: string[];
+  damage?: {
+    damageType?: string;
+    damageAtSlotLevel?: string[];
+  };
+  dc?: {
+    dcType?: string;
+    dcSuccess?: string;
+  };
+  areaOfEffect?: {
+    size?: number;
+    type?: string;
+  };
+  concentration: boolean;
+  ritual: boolean;
+  higherLevel?: string[];
+  attackType?: string;
+  material?: string;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -38,9 +67,63 @@ export interface Player {
   hp: number;
   maxHp: number;
   attributes: Attributes;
-  inventory: string[];
   notes: string;
-  items: Item[];
+  inventory: Item[];
+  ac: number;
+  speed: number;
+  initiativeBonus: number;
+  passivePerception: number;
+  proficiencyBonus: number;
+  spellSlots: SpellSlots;
+  maxSpellSlots: SpellSlots;
+  sorceryPoints: number;
+  maxSorceryPoints: number;
+  skills: Skill[];
+  features: Feature[];
+  buffs: Buff[];
+  debuffs: Buff[];
+  spellCD: number;
+  spellAttack: number;
+  attackBaseBonus: number;
+  spells: Spell[];
+}
+
+export interface SpellSlots {
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+  6: number;
+  7: number;
+  8: number;
+  9: number;
+}
+
+export interface Skill {
+  name: string;
+  description: string;
+  savingThrowAttribute: keyof Attributes;
+}
+
+export interface Feature {
+  name: string;
+  description: string;
+  uses?: number;
+  source: string;
+}
+
+export interface Buff {
+  name: string;
+  duration?: string;
+  description: string;
+  source: string;
+  affects: BuffEffect;
+}
+
+export interface BuffEffect {
+  effect: string;
+  amount: number;
 }
 
 export interface NPC {
@@ -67,8 +150,8 @@ export interface GameData {
 export interface Item {
   name: string;
   price: number;
-  type: "weapon" | "shield" | "armor";
-  distance: number | "melee";
+  type: string;
+  distance: "melee" | "ranged" | string;
   damage: {
     dice: number;
     number: number;

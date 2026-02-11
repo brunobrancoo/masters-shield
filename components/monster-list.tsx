@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DragonIcon, SwordIcon } from "@/components/icons";
 import { Monster } from "@/lib/interfaces/interfaces";
+import { MonsterApiImportDialog } from "./monster-api-import";
 
 interface MonsterListProps {
   monsters: Monster[];
@@ -27,6 +28,7 @@ export function MonsterList({
 }: MonsterListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const filteredMonsters = monsters.filter((monster) => {
     const matchesSearch =
@@ -51,6 +53,14 @@ export function MonsterList({
           />
         </div>
         <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setImportDialogOpen(true)}
+            className="glow-silver"
+          >
+            Importar da API
+          </Button>
           <Button
             variant={filterType === "all" ? "default" : "outline"}
             size="sm"
@@ -145,6 +155,12 @@ export function MonsterList({
           ))
         )}
       </div>
+
+      <MonsterApiImportDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        onImport={onSelectMonster}
+      />
     </div>
   );
 }

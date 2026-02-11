@@ -18,6 +18,8 @@ import {
   SkipForward,
   RotateCcw,
   Trash2,
+  LogOut,
+  Swords as SwitchCampaign,
 } from "lucide-react";
 import {
   Select,
@@ -32,12 +34,18 @@ import {
   NPC,
   Player,
 } from "@/lib/interfaces/interfaces";
-import { useGame } from "@/app/contexts/game-context";
+import { useGame } from "@/app/_contexts/game-context";
 import { ScrollArea } from "./ui/scroll-area";
-import { useCombat } from "@/app/contexts/combat-context";
+import { useCombat } from "@/app/_contexts/combat-context";
 import { getAttMod } from "@/lib/utils";
+import { getHPColor, getHPClass } from "@/lib/theme";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar() {
+  const router = useRouter();
+  const { signOut } = useAuth();
+
   const {
     addExistingEntry,
     initiativeEntries,
@@ -114,17 +122,14 @@ export function AppSidebar() {
     setRound(1);
   };
 
-  console.log("rolls: ", initiativeRolls);
-  console.log("initiatives: ", initiativeEntries);
-
   return (
     <Sidebar side="right" className="z-50">
-      <SidebarHeader className="px-6 py-4 border-b border-border bg-primary/5">
-        <h2 className="font-sans text-2xl flex items-center gap-3 text-balance">
-          <Swords className="w-6 h-6 text-primary" />
+      <SidebarHeader className="px-6 py-4 border-b border-border-default bg-bg-surface/50">
+        <h2 className="font-heading text-2xl flex items-center gap-3 text-balance text-text-primary">
+          <Swords className="w-6 h-6 text-class-accent" />
           Tracker de Iniciativa
         </h2>
-        <p className="font-serif text-sm text-muted-foreground">
+        <p className="font-body text-sm text-text-secondary">
           {onCombat
             ? `Rodada ${round} - Turno de ${activeEntry?.name || "..."}`
             : "Gerencie a ordem de combate"}
@@ -142,8 +147,9 @@ export function AppSidebar() {
                       <>
                         <Button
                           onClick={startCombat}
-                          className="flex-1 glow-gold"
+                          className="flex-1"
                           size="lg"
+                          variant="divine"
                         >
                           <Play className="w-4 h-4 mr-2" />
                           Iniciar Combate
@@ -151,9 +157,9 @@ export function AppSidebar() {
                         <Button
                           onClick={rollInitiatives}
                           disabled={initiativeRolls.length > 0}
-                          className="flex-1 glow-gold"
+                          className="flex-1"
                           size="lg"
-                          variant={"outline"}
+                          variant="outline"
                         >
                           <Play className="w-4 h-4 mr-2" />
                           Rolar todas as iniciativas
@@ -163,8 +169,9 @@ export function AppSidebar() {
                       <>
                         <Button
                           onClick={nextTurn}
-                          className="flex-1 glow-gold"
+                          className="flex-1"
                           size="lg"
+                          variant="martial"
                         >
                           <SkipForward className="w-4 h-4 mr-2" />
                           Próximo Turno
@@ -185,12 +192,12 @@ export function AppSidebar() {
                 {/* Initiative List */}
                 <div className="space-y-2">
                   {sortedEntries.length === 0 ? (
-                    <Card className="p-8 text-center metal-border-subtle bg-background/50">
-                      <Swords className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-30" />
-                      <p className="text-muted-foreground font-serif">
+                    <Card className="p-8 text-center card-inset">
+                      <Swords className="w-12 h-12 mx-auto mb-3 text-text-secondary opacity-30" />
+                      <p className="text-text-secondary font-body">
                         Nenhum participante no combate
                       </p>
-                      <p className="text-sm text-muted-foreground font-serif mt-1">
+                      <p className="text-sm text-text-secondary font-body mt-1">
                         Adicione participantes para começar
                       </p>
                     </Card>
@@ -198,14 +205,16 @@ export function AppSidebar() {
                     sortedEntries.map((entry, index) => {
                       const isCurrentTurn = onCombat && index === currentTurn;
                       const hpPercent = (entry.hp / entry.maxHp) * 100;
+                      const hpColor = getHPColor(hpPercent);
+                      const hpClass = getHPClass(hpPercent);
 
                       return (
                         <Card
                           key={entry.id}
-                          className={`p-4 metal-border-subtle transition-all ${
+                          className={`p-4 card-inset transition-all ${
                             isCurrentTurn
-                              ? "ring-2 ring-primary glow-gold bg-primary/10 scale-[1.02]"
-                              : "bg-background/50"
+                              ? "ring-2 ring-class-accent glow-class bg-class-surface/30 scale-[1.02]"
+                              : "bg-bg-surface/50"
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -217,10 +226,10 @@ export function AppSidebar() {
                                 onChange={(e) =>
                                   updateInitiative(entry.id, e.target.value)
                                 }
-                                className="h-12 text-center text-xl font-bold"
+                                className="h-12 text-center text-xl font-bold font-body"
                                 disabled={onCombat}
                               />
-                              <span className="text-xs text-muted-foreground font-sans">
+                              <span className="text-xs text-text-secondary font-body">
                                 Iniciativa (
                                 {
                                   //QUEBROU! TEM QUE TER PRA MONSTER E NPC TAMBÉM
@@ -239,10 +248,10 @@ export function AppSidebar() {
                             <div className="flex-1 space-y-2">
                               <div className="flex items-start justify-between">
                                 <div>
-                                  <h4 className="font-sans font-bold text-lg leading-tight">
+                                  <h4 className="font-heading font-bold text-lg leading-tight text-text-primary">
                                     {entry.name}
                                   </h4>
-                                  <p className="text-xs text-muted-foreground capitalize">
+                                  <p className="text-xs text-text-secondary capitalize">
                                     {entry.type}
                                   </p>
                                 </div>
@@ -250,7 +259,7 @@ export function AppSidebar() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => removeEntry(entry.id)}
-                                  className="h-8 w-8 p-0 hover:bg-destructive/20 hover:text-destructive"
+                                  className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
                                 >
                                   <X className="w-4 h-4" />
                                 </Button>
@@ -259,23 +268,20 @@ export function AppSidebar() {
                               {/* HP Bar */}
                               <div className="space-y-1">
                                 <div className="flex items-center justify-between text-sm">
-                                  <span className="font-sans text-muted-foreground">
+                                  <span className="font-body text-text-secondary">
                                     HP
                                   </span>
-                                  <span className="font-bold">
+                                  <span className="font-bold font-body text-text-primary">
                                     {entry.hp}/{entry.maxHp}
                                   </span>
                                 </div>
-                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                <div className="h-2 bg-bg-inset rounded-full overflow-hidden">
                                   <div
-                                    className={`h-full transition-all ${
-                                      hpPercent > 50
-                                        ? "bg-green-500"
-                                        : hpPercent > 25
-                                          ? "bg-yellow-500"
-                                          : "bg-red-500"
-                                    }`}
-                                    style={{ width: `${hpPercent}%` }}
+                                    className={`h-full transition-all ${hpClass}`}
+                                    style={{ 
+                                      width: `${hpPercent}%`,
+                                      backgroundColor: hpColor,
+                                    }}
                                   />
                                 </div>
                                 <div className="flex gap-1 justify-end">
@@ -283,7 +289,7 @@ export function AppSidebar() {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => updateHp(entry.id, -5)}
-                                    className="h-7 px-2 hover:bg-destructive/20 hover:text-destructive"
+                                    className="h-7 px-2 hover:bg-damage/20 hover:text-damage"
                                   >
                                     -5
                                   </Button>
@@ -291,7 +297,7 @@ export function AppSidebar() {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => updateHp(entry.id, -1)}
-                                    className="h-7 px-2 hover:bg-destructive/20 hover:text-destructive"
+                                    className="h-7 px-2 hover:bg-damage/20 hover:text-damage"
                                   >
                                     -1
                                   </Button>
@@ -299,7 +305,7 @@ export function AppSidebar() {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => updateHp(entry.id, 1)}
-                                    className="h-7 px-2 hover:bg-green-500/20 hover:text-green-600"
+                                    className="h-7 px-2 hover:bg-healing/20 hover:text-healing"
                                   >
                                     +1
                                   </Button>
@@ -307,7 +313,7 @@ export function AppSidebar() {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => updateHp(entry.id, 5)}
-                                    className="h-7 px-2 hover:bg-green-500/20 hover:text-green-600"
+                                    className="h-7 px-2 hover:bg-healing/20 hover:text-healing"
                                   >
                                     +5
                                   </Button>
@@ -363,9 +369,9 @@ export function AppSidebar() {
                     </Button>
                   </>
                 ) : (
-                  <Card className="p-4 metal-border-subtle bg-background/50 space-y-3">
+                  <Card className="p-4 card-inset bg-bg-surface/50 space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-sans font-bold">Novo Participante</h4>
+                      <h4 className="font-heading font-bold text-text-primary">Novo Participante</h4>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -501,8 +507,29 @@ export function AppSidebar() {
           </div>
         </ScrollArea>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter className="border-t border-border bg-bg-surface/50">
+        <div className="px-6 py-4 space-y-2">
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+            onClick={() => router.push("/campaign/select")}
+          >
+            <SwitchCampaign className="w-4 h-4 mr-2" />
+            Trocar Campanha
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full justify-start text-destructive hover:text-destructive"
+            onClick={async () => {
+              await signOut();
+              router.push("/login");
+            }}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
-

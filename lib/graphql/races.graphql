@@ -1,0 +1,21 @@
+query GetRaces {
+  races {
+    index
+    name
+    speed
+  }
+}
+
+query GetRace($index: String!) {
+  race(index: $index) {
+    index
+    name
+    speed
+    ability_bonuses {
+      ability_score {
+        name
+      }
+      bonus
+    }
+  }
+}

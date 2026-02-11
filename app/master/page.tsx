@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -11,19 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ShieldIcon,
   DragonIcon,
   UsersIcon,
   SparklesIcon,
   ScrollIcon,
 } from "@/components/icons";
-import type {
-  Monster,
-  Player,
-  NPC,
-  GameData,
-} from "@/lib/interfaces/interfaces";
-import { loadGameData, saveGameData } from "@/lib/storage";
 import { MonsterList } from "@/components/monster-list";
 import { MonsterForm } from "@/components/monster-form";
 import { MonsterSheet } from "@/components/monster-sheet";
@@ -33,21 +24,26 @@ import { PlayerSheet } from "@/components/player-sheet";
 import { NPCGenerator } from "@/components/npc-generator";
 import { NPCList } from "@/components/npc-list";
 import { NPCSheet } from "@/components/npc-sheet";
-import type { MonsterFormData, NPCFormData } from "@/lib/schemas";
 import { useDisclosure } from "@/lib/use-disclosure";
 import { Dialog } from "@/components/ui/dialog";
-import { useGame } from "./contexts/game-context";
+import { useGame } from "../_contexts/game-context";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export default function MasterShieldApp() {
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+  const playerDisclosure = useDisclosure();
+  const monsterDisclosure = useDisclosure();
+  const npcDisclosure = useDisclosure();
+  const { open: sidebarOpen } = useSidebar();
+
   const {
-    setNPCView,
-    setPlayerView,
-    setMonsterView,
+    setNPCViewState,
+    setPlayerViewState,
+    setMonsterViewState,
     setActiveTab,
     selectedNPC,
+    selectedMonster,
+    selectedPlayer,
     playerView,
     npcView,
     monsterView,
@@ -55,20 +51,35 @@ export default function MasterShieldApp() {
     activeTab,
     setSelectedNPC,
     setSelectedMonster,
-    selectedMonster,
-    handleUpdateNPC,
-    handleUpdateMonster,
-    handleSavePlayer,
-    handleSaveMonster,
-    handleGenerateNPC,
-    handleDeleteNPC,
-    handleDeleteMonster,
-    setGameData,
-    selectedPlayer,
-    handleDeletePlayer,
     setSelectedPlayer,
+    handleSaveMonster,
+    handleUpdateMonster,
+    handleDeleteMonster,
+    handleSavePlayer,
+    handleDeletePlayer,
+    handleGenerateNPC,
+    handleUpdateNPC,
+    handleDeleteNPC,
   } = useGame();
-  const { open: sidebarOpen } = useSidebar();
+
+  const {
+    isOpen: playerIsOpen,
+    onOpen: onPlayerOpen,
+    onClose: onPlayerClose,
+    onToggle: onPlayerToggle,
+  } = playerDisclosure;
+  const {
+    isOpen: monsterIsOpen,
+    onOpen: onMonsterOpen,
+    onClose: onMonsterClose,
+    onToggle: onMonsterToggle,
+  } = monsterDisclosure;
+  const {
+    isOpen: npcIsOpen,
+    onOpen: onNPCOpen,
+    onClose: onNPCClose,
+    onToggle: onNPCToggle,
+  } = npcDisclosure;
 
   return (
     <div className="min-h-screen bg-background parchment-texture">
@@ -112,7 +123,7 @@ export default function MasterShieldApp() {
                     <Button
                       onClick={() => {
                         setSelectedMonster(undefined);
-                        setMonsterView("form");
+                        setMonsterViewState("form");
                       }}
                       className="glow-silver"
                     >
@@ -127,9 +138,9 @@ export default function MasterShieldApp() {
                     monsters={gameData.monsters}
                     onSelectMonster={(m) => {
                       setSelectedMonster(m);
-                      setMonsterView("sheet");
+                      setMonsterViewState("sheet");
                     }}
-                    onDeleteMonster={handleDeleteMonster}
+                    onDeleteMonster={(id) => {}}
                   />
                 )}
                 {monsterView === "form" && (
@@ -137,7 +148,7 @@ export default function MasterShieldApp() {
                     monster={selectedMonster}
                     onSave={handleSaveMonster}
                     onCancel={() => {
-                      setMonsterView("list");
+                      setMonsterViewState("list");
                       setSelectedMonster(undefined);
                     }}
                   />
@@ -164,7 +175,7 @@ export default function MasterShieldApp() {
                     <Button
                       onClick={() => {
                         setSelectedPlayer(undefined);
-                        setPlayerView("form");
+                        setPlayerViewState("form");
                       }}
                       className="glow-silver"
                     >
@@ -176,14 +187,14 @@ export default function MasterShieldApp() {
               <CardContent>
                 {playerView === "list" && (
                   <PlayerList
-                    onSaveAction={handleSavePlayer}
                     players={gameData.players}
                     onSelectPlayerAction={(p) => {
                       setSelectedPlayer(p);
-                      setPlayerView("sheet");
-                      onOpen();
+                      setPlayerViewState("sheet");
+                      onPlayerOpen();
                     }}
-                    onDeletePlayerAction={handleDeletePlayer}
+                    onDeletePlayerAction={(id) => {}}
+                    onSaveAction={handleSavePlayer}
                   />
                 )}
                 {playerView === "form" && (
@@ -191,7 +202,7 @@ export default function MasterShieldApp() {
                     player={selectedPlayer}
                     onSaveAction={handleSavePlayer}
                     onCancelAction={() => {
-                      setPlayerView("list");
+                      setPlayerViewState("list");
                       setSelectedPlayer(undefined);
                     }}
                   />
@@ -216,7 +227,7 @@ export default function MasterShieldApp() {
                     <Button
                       variant={npcView === "generator" ? "default" : "outline"}
                       className={cn("w-full justify-start")}
-                      onClick={() => setNPCView("generator")}
+                      onClick={() => setNPCViewState("generator")}
                     >
                       {sidebarOpen ? (
                         ""
@@ -228,7 +239,7 @@ export default function MasterShieldApp() {
                     <Button
                       variant={npcView === "list" ? "default" : "outline"}
                       className="w-full justify-start"
-                      onClick={() => setNPCView("list")}
+                      onClick={() => setNPCViewState("list")}
                     >
                       {sidebarOpen ? (
                         ""
@@ -262,7 +273,7 @@ export default function MasterShieldApp() {
                         npcs={gameData.npcs}
                         onSelectNPC={(n) => {
                           setSelectedNPC(n);
-                          setNPCView("sheet");
+                          setNPCViewState("sheet");
                         }}
                       />
                     </CardContent>
@@ -281,36 +292,45 @@ export default function MasterShieldApp() {
           onSave={handleUpdateMonster}
           onDelete={() => handleDeleteMonster(selectedMonster.id)}
           onClose={() => {
-            setMonsterView("list");
+            setMonsterViewState("list");
             setSelectedMonster(undefined);
           }}
+          monsterIsOpen={monsterIsOpen}
+          onMonsterOpen={onMonsterOpen}
+          onMonsterClose={onMonsterClose}
+          onMonsterToggle={onMonsterToggle}
         />
       )}
 
       {playerView === "sheet" && selectedPlayer && (
         <Dialog
-          open={isOpen}
-          onOpenChange={() => {
-            setPlayerView("list");
+          open={playerIsOpen}
+          onOpenChange={(isOpen) => {
+            setPlayerViewState("list");
             setSelectedPlayer(undefined);
-            onToggle();
+            onPlayerOpen();
           }}
         >
           {selectedPlayer && (
             <PlayerSheet
               player={selectedPlayer}
               onEdit={() => {
-                setPlayerView("form");
-                onClose();
+                setPlayerViewState("form");
               }}
               onDelete={() => {
                 handleDeletePlayer(selectedPlayer.id);
-                onClose();
+                setPlayerViewState("list");
+                setSelectedPlayer(undefined);
+              }}
+              playerIsOpen={playerIsOpen}
+              onPlayerOpen={onPlayerOpen}
+              onPlayerClose={onPlayerClose}
+              onPlayerToggle={() => {
+                setPlayerViewState("sheet");
               }}
               onClose={() => {
-                setPlayerView("list");
+                setPlayerViewState("list");
                 setSelectedPlayer(undefined);
-                onClose();
               }}
             />
           )}
@@ -323,9 +343,13 @@ export default function MasterShieldApp() {
           onSave={handleUpdateNPC}
           onDelete={() => handleDeleteNPC(selectedNPC.id)}
           onClose={() => {
-            setNPCView("list");
+            setNPCViewState("list");
             setSelectedNPC(undefined);
           }}
+          npcIsOpen={npcIsOpen}
+          onNPCOpen={onNPCOpen}
+          onNPCClose={onNPCClose}
+          onNPCToggle={onNPCToggle}
         />
       )}
 

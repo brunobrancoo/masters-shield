@@ -1,0 +1,21 @@
+query GetClasses {
+  classes {
+    index
+    name
+    hit_die
+  }
+}
+
+query GetClass($index: String!) {
+  class(index: $index) {
+    index
+    name
+    hit_die
+    proficiencies {
+      name
+    }
+    saving_throws {
+      name
+    }
+  }
+}

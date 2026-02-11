@@ -1,0 +1,74 @@
+query GetEquipment($name: String) {
+  equipments(name: $name) {
+    ... on Weapon {
+      index
+      name
+      equipment_category {
+        index
+        name
+      }
+      cost {
+        quantity
+        unit
+      }
+      weight
+      weapon_category
+      weapon_range
+      category_range
+      damage {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      two_handed_damage {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      range {
+        normal
+        long
+      }
+      properties {
+        name
+      }
+    }
+    ... on Armor {
+      index
+      name
+      equipment_category {
+        index
+        name
+      }
+      cost {
+        quantity
+        unit
+      }
+      weight
+      armor_category
+      armor_class {
+        base
+        dex_bonus
+        max_bonus
+      }
+      str_minimum
+      stealth_disadvantage
+    }
+    ... on Gear {
+      index
+      name
+      equipment_category {
+        index
+        name
+      }
+      cost {
+        quantity
+        unit
+      }
+      weight
+      desc
+    }
+  }
+}

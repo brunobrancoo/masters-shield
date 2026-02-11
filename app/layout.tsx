@@ -1,28 +1,30 @@
-import type React from "react";
 import type { Metadata } from "next";
-import { Cinzel_Decorative, Merriweather, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
-import { GameProvider } from "./contexts/game-context";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { CombatProvider } from "./contexts/combat-context";
+import { AuthProvider } from "@/lib/auth-context";
+import { Cinzel, Inter, JetBrains_Mono, Caveat } from "next/font/google";
 
-const cinzelDecorative = Cinzel_Decorative({
-  weight: ["400", "700", "900"],
+const cinzel = Cinzel({
+  weight: ["400", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-heading",
 });
 
-const merriweather = Merriweather({
-  weight: ["300", "400", "700"],
+const inter = Inter({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-body",
 });
 
-const geistMono = Geist_Mono({
+const jetbrainsMono = JetBrains_Mono({
+  weight: ["400", "500"],
   subsets: ["latin"],
   variable: "--font-mono",
+});
+
+const caveat = Caveat({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-handwritten",
 });
 
 export const metadata: Metadata = {
@@ -55,25 +57,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="dark">
       <body
-        className={`${cinzelDecorative.variable} ${merriweather.variable} ${geistMono.variable} font-serif antialiased`}
+        className={`${cinzel.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable} font-body antialiased`}
       >
-        <GameProvider>
-          <CombatProvider>
-            <SidebarProvider>
-              {/* Shell: on lg+ it becomes a two-column flex (sidebar + main) */}
-              <div className="min-h-screen lg:flex lg:items-stretch lg:flex-row-reverse">
-                <AppSidebar />
-
-                <main className="flex-1 min-h-screen min-w-0">
-                  <Header />
-                  <div className="p-4 lg:p-6">{children}</div>
-                </main>
-              </div>
-            </SidebarProvider>
-          </CombatProvider>
-        </GameProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

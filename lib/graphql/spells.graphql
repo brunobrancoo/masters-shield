@@ -1,0 +1,33 @@
+query GetSpells($name: String, $level: [Int!]) {
+  spells(name: $name, level: $level) {
+    index
+    name
+    level
+    school {
+      name
+    }
+  }
+}
+
+query GetSpell($index: String!) {
+  spell(index: $index) {
+    index
+    name
+    desc
+    higher_level
+    range
+    components
+    material
+    ritual
+    duration
+    concentration
+    casting_time
+    level
+    school {
+      name
+    }
+    classes {
+      name
+    }
+  }
+}
