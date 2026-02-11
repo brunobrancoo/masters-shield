@@ -36,7 +36,7 @@ function MasterProvidersInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <GameProvider campaignId={campaignId} isMaster={isMaster}>
+    <GameProvider campaignId={campaignId}>
       <CombatProvider campaignId={campaignId}>{children}</CombatProvider>
     </GameProvider>
   );
