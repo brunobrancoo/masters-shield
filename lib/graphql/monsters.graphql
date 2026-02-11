@@ -1,0 +1,112 @@
+query GetMonsters($name: String) {
+  monsters(name: $name) {
+    index
+    name
+    type
+    challenge_rating
+    hit_points
+    armor_class {
+      ... on ArmorClassArmor {
+        value
+        type
+      }
+      ... on ArmorClassCondition {
+        value
+        type
+      }
+      ... on ArmorClassDex {
+        value
+        type
+      }
+      ... on ArmorClassNatural {
+        value
+        type
+      }
+      ... on ArmorClassSpell {
+        value
+        type
+      }
+    }
+  }
+}
+
+query GetMonster($index: String!) {
+  monster(index: $index) {
+    index
+    name
+    size
+    type
+    alignment
+    armor_class {
+      ... on ArmorClassArmor {
+        value
+        type
+      }
+      ... on ArmorClassCondition {
+        value
+        type
+      }
+      ... on ArmorClassDex {
+        value
+        type
+      }
+      ... on ArmorClassNatural {
+        value
+        type
+      }
+      ... on ArmorClassSpell {
+        value
+        type
+      }
+    }
+    hit_points
+    hit_dice
+    speed {
+      walk
+      fly
+      swim
+    }
+    strength
+    dexterity
+    constitution
+    intelligence
+    wisdom
+    charisma
+    proficiencies {
+      value
+      proficiency {
+        name
+      }
+    }
+    damage_vulnerabilities
+    damage_resistances
+    damage_immunities
+    condition_immunities {
+      name
+    }
+    senses {
+      passive_perception
+      darkvision
+    }
+    languages
+    challenge_rating
+    xp
+    special_abilities {
+      name
+      desc
+    }
+    actions {
+      name
+      desc
+      attack_bonus
+      damage {
+        ... on Damage {
+          damage_type {
+            name
+          }
+          damage_dice
+        }
+      }
+    }
+  }
+}

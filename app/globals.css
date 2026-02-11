@@ -3,254 +3,610 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* <CHANGE> Paleta de cores medieval/RPG com tons de marrom, amarelo pergaminho e metálico */
 :root {
-  /* Cores de pergaminho e madeira */
-  --background: oklch(0.95 0.02 70); /* #F5DE8D - luz de vela suave */
-  --foreground: oklch(0.25 0.03 40); /* #4B2E05 - marrom escuro */
+  /* ========== BASE PALETTE ========== */
+  --bg-primary: 30 15% 10%;
+  --bg-secondary: 30 12% 14%;
+  --bg-surface: 30 10% 18%;
+  --bg-elevated: 30 8% 22%;
+  --bg-inset: 30 15% 8%;
 
-  /* Cards e popover com textura de pergaminho */
-  --card: oklch(0.97 0.015 75); /* Pergaminho claro */
-  --card-foreground: oklch(0.28 0.03 45);
-  --popover: oklch(0.96 0.02 70);
-  --popover-foreground: oklch(0.25 0.03 40);
+  --text-primary: 40 30% 88%;
+  --text-secondary: 35 15% 60%;
+  --text-tertiary: 30 10% 42%;
 
-  /* Primary: marrom médio para elementos principais */
-  --primary: oklch(0.45 0.06 50); /* #7A4E1C */
-  --primary-foreground: oklch(0.95 0.02 70);
+  --border-default: 30 12% 25%;
+  --border-strong: 35 15% 35%;
+  --border-subtle: 30 10% 18%;
 
-  /* Secondary: tons mais claros de pergaminho */
-  --secondary: oklch(0.85 0.04 65); /* #E6C36A */
-  --secondary-foreground: oklch(0.3 0.03 45);
+  /* ========== ARCHETYPE PALETTES ========== */
 
-  /* Muted: cinzas metálicos suaves */
-  --muted: oklch(0.88 0.01 70);
-  --muted-foreground: oklch(0.5 0.02 50);
+  /* Arcane / Magic — purples and blues */
+  --arcane-50: 270 60% 95%;
+  --arcane-100: 270 55% 85%;
+  --arcane-200: 270 50% 72%;
+  --arcane-300: 270 55% 60%;
+  --arcane-400: 270 60% 50%;
+  --arcane-500: 270 65% 42%;
+  --arcane-600: 270 65% 32%;
+  --arcane-700: 270 55% 22%;
+  --arcane-glow: 270 80% 65%;
 
-  /* Accent: prateado com brilho */
-  --accent: oklch(0.75 0.005 0); /* #B0B0B0 */
-  --accent-foreground: oklch(0.25 0.03 40);
+  /* Divine / Healing — golds and warm whites */
+  --divine-50: 45 80% 95%;
+  --divine-100: 45 75% 85%;
+  --divine-200: 45 70% 72%;
+  --divine-300: 45 70% 60%;
+  --divine-400: 45 75% 50%;
+  --divine-500: 45 80% 42%;
+  --divine-600: 45 70% 32%;
+  --divine-700: 45 60% 22%;
+  --divine-glow: 45 90% 60%;
 
-  /* Destructive mantido */
-  --destructive: oklch(0.5 0.2 25);
-  --destructive-foreground: oklch(0.95 0.015 75);
+  /* Martial / Fighter — steel, iron, blood reds */
+  --martial-50: 0 20% 95%;
+  --martial-100: 0 25% 82%;
+  --martial-200: 0 35% 65%;
+  --martial-300: 0 45% 52%;
+  --martial-400: 0 55% 45%;
+  --martial-500: 0 60% 38%;
+  --martial-600: 0 50% 28%;
+  --martial-700: 0 40% 18%;
+  --martial-steel: 220 8% 55%;
+  --martial-iron: 220 5% 40%;
+  --martial-glow: 0 70% 55%;
 
-  /* Bordas metálicas */
-  --border: oklch(0.65 0.01 50); /* Marrom-cinza metálico */
-  --input: oklch(0.92 0.02 70);
-  --ring: oklch(0.75 0.005 0); /* Anel prateado */
+  /* Dexterity / Rogue — teals, dark greens, shadow */
+  --dex-50: 170 40% 92%;
+  --dex-100: 170 35% 78%;
+  --dex-200: 170 40% 60%;
+  --dex-300: 170 50% 45%;
+  --dex-400: 170 55% 35%;
+  --dex-500: 170 50% 28%;
+  --dex-600: 170 40% 20%;
+  --dex-700: 170 35% 14%;
+  --dex-shadow: 200 20% 12%;
+  --dex-glow: 170 70% 50%;
 
-  /* Gráficos com tons medievais */
-  --chart-1: oklch(0.45 0.08 45); /* Marrom médio */
-  --chart-2: oklch(0.7 0.06 60); /* Dourado */
-  --chart-3: oklch(0.5 0.04 50); /* Terra */
-  --chart-4: oklch(0.6 0.02 40); /* Bronze */
-  --chart-5: oklch(0.75 0.01 0); /* Prata */
+  /* Nature / Druid — earthy greens, bark browns */
+  --nature-50: 100 35% 92%;
+  --nature-100: 100 35% 78%;
+  --nature-200: 105 40% 60%;
+  --nature-300: 110 45% 45%;
+  --nature-400: 115 50% 35%;
+  --nature-500: 120 40% 28%;
+  --nature-600: 120 35% 20%;
+  --nature-700: 120 30% 14%;
+  --nature-bark: 30 40% 25%;
+  --nature-moss: 90 30% 30%;
+  --nature-glow: 100 60% 50%;
 
-  --radius: 0.5rem;
+  /* Monster / Enemy — sickly greens, dark reds, charcoal */
+  --monster-50: 0 30% 90%;
+  --monster-100: 355 40% 70%;
+  --monster-200: 350 50% 55%;
+  --monster-300: 345 55% 42%;
+  --monster-400: 340 50% 32%;
+  --monster-500: 0 60% 25%;
+  --monster-accent: 80 50% 45%;
+  --monster-glow: 0 80% 45%;
 
-  /* Glow effect para elementos mágicos */
-  --glow-silver: 0 0 8px rgba(192, 192, 192, 0.4);
-  --glow-gold: 0 0 10px rgba(230, 195, 106, 0.3);
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  /* ========== SEMANTIC / GAME MECHANIC COLORS ========== */
 
-  /* Sidebar colors */
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Buff — warm gold-green, empowering */
+  --buff: 85 55% 55%;
+  --buff-subtle: 85 30% 20%;
+  --buff-text: 85 60% 75%;
+
+  /* Debuff — sickly purple-red, oppressive */
+  --debuff: 310 45% 45%;
+  --debuff-subtle: 310 25% 18%;
+  --debuff-text: 310 50% 70%;
+
+  /* Healing */
+  --healing: 140 50% 50%;
+  --healing-subtle: 140 30% 18%;
+  --healing-text: 140 55% 72%;
+
+  /* Damage — bright red-orange */
+  --damage: 10 80% 55%;
+  --damage-subtle: 10 40% 18%;
+  --damage-text: 10 80% 72%;
+
+  /* Temporary / Shield — cool blue */
+  --temp: 210 60% 55%;
+  --temp-subtle: 210 30% 18%;
+  --temp-text: 210 55% 72%;
+
+  /* ========== DAMAGE TYPE COLORS ========== */
+  --dmg-fire: 15 85% 50%;
+  --dmg-cold: 200 70% 60%;
+  --dmg-lightning: 55 90% 55%;
+  --dmg-thunder: 250 40% 55%;
+  --dmg-acid: 80 70% 45%;
+  --dmg-poison: 100 50% 35%;
+  --dmg-necrotic: 280 40% 30%;
+  --dmg-radiant: 45 90% 65%;
+  --dmg-psychic: 290 60% 60%;
+  --dmg-force: 220 60% 55%;
+  --dmg-bludgeoning: 30 10% 50%;
+  --dmg-piercing: 220 8% 60%;
+  --dmg-slashing: 0 15% 55%;
+
+  /* ========== RARITY COLORS ========== */
+  --rarity-common: 30 10% 60%;
+  --rarity-uncommon: 120 45% 45%;
+  --rarity-rare: 220 65% 55%;
+  --rarity-very-rare: 270 60% 55%;
+  --rarity-legendary: 40 85% 55%;
+  --rarity-artifact: 350 70% 50%;
+
+  /* ========== CONDITION COLORS ========== */
+  --condition-blinded: 30 5% 35%;
+  --condition-charmed: 330 60% 55%;
+  --condition-frightened: 45 70% 45%;
+  --condition-paralyzed: 55 60% 45%;
+  --condition-poisoned: 100 50% 35%;
+  --condition-stunned: 55 70% 55%;
+  --condition-unconscious: 0 0% 25%;
+  --condition-restrained: 25 50% 35%;
+  --condition-invisible: 200 30% 65%;
+  --condition-exhaustion: 20 40% 30%;
+
+  /* ========== SPACING / SIZING ========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-card: 6px;
+
+  /* ========== TRANSITIONS ========== */
+  --transition-fast: 100ms;
+  --transition-base: 150ms;
+  --transition-slow: 300ms;
 }
 
-.dark {
-  /* <CHANGE> Modo escuro: taverna à noite, madeira escura */
-  --background: oklch(0.22 0.025 45); /* Madeira escura */
-  --foreground: oklch(0.92 0.015 70); /* Pergaminho claro */
-
-  --card: oklch(0.25 0.025 45);
-  --card-foreground: oklch(0.92 0.015 70);
-  --popover: oklch(0.24 0.025 45);
-  --popover-foreground: oklch(0.92 0.015 70);
-
-  --primary: oklch(0.65 0.06 60); /* Dourado */
-  --primary-foreground: oklch(0.22 0.025 45);
-
-  --secondary: oklch(0.35 0.03 45);
-  --secondary-foreground: oklch(0.92 0.015 70);
-
-  --muted: oklch(0.32 0.02 45);
-  --muted-foreground: oklch(0.65 0.015 50);
-
-  --accent: oklch(0.4 0.03 50);
-  --accent-foreground: oklch(0.92 0.015 70);
-
-  --destructive: oklch(0.45 0.18 25);
-  --destructive-foreground: oklch(0.92 0.015 70);
-
-  --border: oklch(0.38 0.02 45);
-  --input: oklch(0.32 0.025 45);
-  --ring: oklch(0.7 0.005 0);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-
-  /*Sidebar Dark colors */
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.439 0 0);
+/* ========== ARCHETYPE OVERRIDES ========== */
+[data-archetype="arcane"] {
+  --class-accent: hsl(var(--arcane-400));
+  --class-glow: hsl(var(--arcane-glow));
+  --class-surface: hsl(var(--arcane-700));
 }
 
+[data-archetype="divine"] {
+  --class-accent: hsl(var(--divine-400));
+  --class-glow: hsl(var(--divine-glow));
+  --class-surface: hsl(var(--divine-700));
+}
+
+[data-archetype="martial"] {
+  --class-accent: hsl(var(--martial-400));
+  --class-glow: hsl(var(--martial-glow));
+  --class-surface: hsl(var(--martial-700));
+}
+
+[data-archetype="dex"] {
+  --class-accent: hsl(var(--dex-400));
+  --class-glow: hsl(var(--dex-glow));
+  --class-surface: hsl(var(--dex-700));
+}
+
+[data-archetype="nature"] {
+  --class-accent: hsl(var(--nature-400));
+  --class-glow: hsl(var(--nature-glow));
+  --class-surface: hsl(var(--nature-700));
+}
+
+[data-archetype="bard"] {
+  --class-accent: hsl(var(--arcane-300));
+  --class-glow: hsl(var(--arcane-glow));
+  --class-surface: hsl(var(--divine-700));
+}
+
+/* ========== TEXTURES ========== */
+.texture-parchment {
+  background-color: hsl(var(--bg-surface));
+  position: relative;
+}
+
+.texture-parchment::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.texture-leather {
+  background-color: hsl(var(--bg-primary));
+  background-image:
+    radial-gradient(
+      ellipse at 20% 50%,
+      hsl(30 15% 13%) 0%,
+      transparent 70%
+    );
+}
+
+.texture-leather::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  background-size: 150px 150px;
+}
+
+.texture-stone {
+  background-color: hsl(220 5% 18%);
+  position: relative;
+}
+
+.texture-stone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  background-size: 250px 250px;
+}
+
+/* ========== GLOW EFFECTS ========== */
+.glow-arcane {
+  box-shadow:
+    0 0 8px hsl(var(--arcane-glow) / 0.3),
+    0 0 20px hsl(var(--arcane-glow) / 0.1);
+}
+
+.glow-divine {
+  box-shadow:
+    0 0 8px hsl(var(--divine-glow) / 0.3),
+    0 0 20px hsl(var(--divine-glow) / 0.1);
+}
+
+.glow-nature {
+  box-shadow:
+    0 0 12px hsl(var(--nature-glow) / 0.25),
+    0 0 24px hsl(var(--nature-glow) / 0.08);
+}
+
+.glow-danger {
+  box-shadow:
+    0 0 8px hsl(var(--monster-glow) / 0.4),
+    0 0 20px hsl(var(--monster-glow) / 0.15);
+}
+
+.glow-class {
+  box-shadow:
+    0 0 8px hsl(var(--class-accent) / 0.3),
+    0 0 20px hsl(var(--class-accent) / 0.1);
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes pulse-danger {
+  0%, 100% { box-shadow: 0 0 4px hsl(var(--damage) / 0.3); }
+  50% { box-shadow: 0 0 16px hsl(var(--damage) / 0.6); }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes roll-in {
+  0% { transform: scale(0.5) rotate(-180deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes crit-glow {
+  0% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); }
+  50% { box-shadow: 0 0 40px hsl(var(--divine-glow) / 0.6); }
+  100% { box-shadow: 0 0 8px hsl(var(--divine-glow) / 0.2); }
+}
+
+@keyframes damage-flash {
+  0% { background-color: hsl(var(--damage) / 0.3); }
+  100% { background-color: transparent; }
+}
+
+@keyframes heal-flash {
+  0% { background-color: hsl(var(--healing) / 0.3); }
+  100% { background-color: transparent; }
+}
+
+@keyframes level-up {
+  0% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); transform: scale(1); }
+  30% { box-shadow: 0 0 30px hsl(var(--divine-glow) / 0.5); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); transform: scale(1); }
+}
+
+.pulse-danger {
+  animation: pulse-danger 2s ease-in-out infinite;
+}
+
+.pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+.animate-roll-in { animation: roll-in 0.5s ease-out; }
+.animate-crit { animation: crit-glow 0.8s ease-out; }
+.animate-damage { animation: damage-flash 0.4s ease-out; }
+.animate-heal { animation: heal-flash 0.4s ease-out; }
+.animate-level-up { animation: level-up 1.2s ease-out; }
+
+/* ========== HP BAR STYLES ========== */
+.hp-bar-segment-temp {
+  background: repeating-linear-gradient(
+    135deg,
+    hsl(var(--temp)) 0px,
+    hsl(var(--temp)) 4px,
+    hsl(var(--temp) / 0.6) 4px,
+    hsl(var(--temp) / 0.6) 8px
+  );
+}
+
+/* ========== CHECKBOX CIRCLES ========== */
+.checkbox-circle {
+  @apply w-4 h-4 rounded-full border-2 cursor-pointer transition-all duration-150;
+  border-color: hsl(var(--border-strong));
+  background: transparent;
+}
+
+.checkbox-circle[data-state="checked"] {
+  background: hsl(var(--class-accent, var(--text-primary)));
+  border-color: hsl(var(--class-accent, var(--text-primary)));
+}
+
+.checkbox-circle.save-success[data-state="checked"] {
+  background: hsl(var(--healing));
+  border-color: hsl(var(--healing));
+}
+
+.checkbox-circle.save-failure[data-state="checked"] {
+  background: hsl(var(--damage));
+  border-color: hsl(var(--damage));
+}
+
+.checkbox-circle.spell-slot[data-state="checked"] {
+  background: hsl(var(--arcane-400));
+  border-color: hsl(var(--arcane-400));
+  box-shadow: 0 0 6px hsl(var(--arcane-glow) / 0.3);
+}
+
+/* ========== BADGES ========== */
+.badge-base {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px]
+         font-semibold uppercase tracking-wider border;
+}
+
+.badge-rarity-common { color: hsl(var(--rarity-common)); border-color: hsl(var(--rarity-common) / 0.3); background: hsl(var(--rarity-common) / 0.1); }
+.badge-rarity-uncommon { color: hsl(var(--rarity-uncommon)); border-color: hsl(var(--rarity-uncommon) / 0.3); background: hsl(var(--rarity-uncommon) / 0.1); }
+.badge-rarity-rare { color: hsl(var(--rarity-rare)); border-color: hsl(var(--rarity-rare) / 0.3); background: hsl(var(--rarity-rare) / 0.1); }
+.badge-rarity-very-rare { color: hsl(var(--rarity-very-rare)); border-color: hsl(var(--rarity-very-rare) / 0.3); background: hsl(var(--rarity-very-rare) / 0.1); }
+.badge-rarity-legendary { color: hsl(var(--rarity-legendary)); border-color: hsl(var(--rarity-legendary) / 0.3); background: hsl(var(--rarity-legendary) / 0.1); }
+.badge-rarity-artifact { color: hsl(var(--rarity-artifact)); border-color: hsl(var(--rarity-artifact) / 0.3); background: hsl(var(--rarity-artifact) / 0.1); }
+
+/* ========== COMPONENT CLASSES ========== */
+.card-primary {
+  @apply relative rounded-[var(--radius-card)] border overflow-hidden;
+  background: hsl(var(--bg-surface));
+  border-color: hsl(var(--border-default));
+}
+
+.card-inset {
+  @apply rounded-[var(--radius-sm)] border;
+  background: hsl(var(--bg-inset));
+  border-color: hsl(var(--border-subtle));
+}
+
+.card-elevated {
+  @apply rounded-[var(--radius-lg)] border shadow-xl;
+  background: hsl(var(--bg-elevated));
+  border-color: hsl(var(--border-strong));
+  box-shadow:
+    0 8px 32px hsl(0 0% 0% / 0.5),
+    0 0 1px hsl(var(--border-strong));
+}
+
+.section-label {
+  @apply px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-center;
+  font-family: var(--font-heading);
+  background: hsl(var(--bg-inset));
+  color: hsl(var(--text-secondary));
+  border-bottom: 1px solid hsl(var(--border-default));
+}
+
+.input-field {
+  @apply bg-transparent border-0 border-b px-1 py-0.5 text-sm;
+  border-color: hsl(var(--border-default));
+  color: hsl(var(--text-primary));
+  caret-color: hsl(var(--class-accent, var(--arcane-400)));
+}
+
+.input-field:focus {
+  border-color: hsl(var(--border-strong));
+  outline: none;
+  box-shadow: 0 1px 0 hsl(var(--class-accent, var(--arcane-400)) / 0.5);
+}
+
+.input-field::placeholder {
+  color: hsl(var(--text-tertiary));
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== TAILWIND THEME EXTENSION ========== */
 @theme inline {
-  /* <CHANGE> Fontes temáticas medievais */
-  --font-sans: "Cinzel Decorative", "Cinzel", "serif";
-  --font-serif: "Merriweather", "Georgia", serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  /* Font families */
+  --font-heading: "Cinzel", "Cinzel Decorative", "Georgia", serif;
+  --font-body: "Inter", "system-ui", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Geist Mono", monospace;
+  --font-handwritten: "Caveat", cursive;
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
+  /* Base palette */
+  --color-bg-primary: hsl(var(--bg-primary));
+  --color-bg-secondary: hsl(var(--bg-secondary));
+  --color-bg-surface: hsl(var(--bg-surface));
+  --color-bg-elevated: hsl(var(--bg-elevated));
+  --color-bg-inset: hsl(var(--bg-inset));
+
+  --color-text-primary: hsl(var(--text-primary));
+  --color-text-secondary: hsl(var(--text-secondary));
+  --color-text-tertiary: hsl(var(--text-tertiary));
+
+  --color-border-default: hsl(var(--border-default));
+  --color-border-strong: hsl(var(--border-strong));
+  --color-border-subtle: hsl(var(--border-subtle));
+
+  /* Arcane palette */
+  --color-arcane-50: hsl(var(--arcane-50));
+  --color-arcane-100: hsl(var(--arcane-100));
+  --color-arcane-200: hsl(var(--arcane-200));
+  --color-arcane-300: hsl(var(--arcane-300));
+  --color-arcane-400: hsl(var(--arcane-400));
+  --color-arcane-500: hsl(var(--arcane-500));
+  --color-arcane-600: hsl(var(--arcane-600));
+  --color-arcane-700: hsl(var(--arcane-700));
+  --color-arcane-glow: hsl(var(--arcane-glow));
+
+  /* Divine palette */
+  --color-divine-50: hsl(var(--divine-50));
+  --color-divine-100: hsl(var(--divine-100));
+  --color-divine-200: hsl(var(--divine-200));
+  --color-divine-300: hsl(var(--divine-300));
+  --color-divine-400: hsl(var(--divine-400));
+  --color-divine-500: hsl(var(--divine-500));
+  --color-divine-600: hsl(var(--divine-600));
+  --color-divine-700: hsl(var(--divine-700));
+  --color-divine-glow: hsl(var(--divine-glow));
+
+  /* Martial palette */
+  --color-martial-50: hsl(var(--martial-50));
+  --color-martial-100: hsl(var(--martial-100));
+  --color-martial-200: hsl(var(--martial-200));
+  --color-martial-300: hsl(var(--martial-300));
+  --color-martial-400: hsl(var(--martial-400));
+  --color-martial-500: hsl(var(--martial-500));
+  --color-martial-600: hsl(var(--martial-600));
+  --color-martial-700: hsl(var(--martial-700));
+  --color-martial-steel: hsl(var(--martial-steel));
+  --color-martial-iron: hsl(var(--martial-iron));
+  --color-martial-glow: hsl(var(--martial-glow));
+
+  /* Dex palette */
+  --color-dex-50: hsl(var(--dex-50));
+  --color-dex-100: hsl(var(--dex-100));
+  --color-dex-200: hsl(var(--dex-200));
+  --color-dex-300: hsl(var(--dex-300));
+  --color-dex-400: hsl(var(--dex-400));
+  --color-dex-500: hsl(var(--dex-500));
+  --color-dex-600: hsl(var(--dex-600));
+  --color-dex-700: hsl(var(--dex-700));
+  --color-dex-shadow: hsl(var(--dex-shadow));
+  --color-dex-glow: hsl(var(--dex-glow));
+
+  /* Nature palette */
+  --color-nature-50: hsl(var(--nature-50));
+  --color-nature-100: hsl(var(--nature-100));
+  --color-nature-200: hsl(var(--nature-200));
+  --color-nature-300: hsl(var(--nature-300));
+  --color-nature-400: hsl(var(--nature-400));
+  --color-nature-500: hsl(var(--nature-500));
+  --color-nature-600: hsl(var(--nature-600));
+  --color-nature-700: hsl(var(--nature-700));
+  --color-nature-bark: hsl(var(--nature-bark));
+  --color-nature-moss: hsl(var(--nature-moss));
+  --color-nature-glow: hsl(var(--nature-glow));
+
+  /* Monster palette */
+  --color-monster-50: hsl(var(--monster-50));
+  --color-monster-100: hsl(var(--monster-100));
+  --color-monster-200: hsl(var(--monster-200));
+  --color-monster-300: hsl(var(--monster-300));
+  --color-monster-400: hsl(var(--monster-400));
+  --color-monster-500: hsl(var(--monster-500));
+  --color-monster-accent: hsl(var(--monster-accent));
+  --color-monster-glow: hsl(var(--monster-glow));
+
+  /* Semantic colors */
+  --color-buff: hsl(var(--buff));
+  --color-buff-subtle: hsl(var(--buff-subtle));
+  --color-buff-text: hsl(var(--buff-text));
+  --color-debuff: hsl(var(--debuff));
+  --color-debuff-subtle: hsl(var(--debuff-subtle));
+  --color-debuff-text: hsl(var(--debuff-text));
+  --color-healing: hsl(var(--healing));
+  --color-healing-subtle: hsl(var(--healing-subtle));
+  --color-healing-text: hsl(var(--healing-text));
+  --color-damage: hsl(var(--damage));
+  --color-damage-subtle: hsl(var(--damage-subtle));
+  --color-damage-text: hsl(var(--damage-text));
+  --color-temp: hsl(var(--temp));
+  --color-temp-subtle: hsl(var(--temp-subtle));
+  --color-temp-text: hsl(var(--temp-text));
+
+  /* Damage types */
+  --color-dmg-fire: hsl(var(--dmg-fire));
+  --color-dmg-cold: hsl(var(--dmg-cold));
+  --color-dmg-lightning: hsl(var(--dmg-lightning));
+  --color-dmg-thunder: hsl(var(--dmg-thunder));
+  --color-dmg-acid: hsl(var(--dmg-acid));
+  --color-dmg-poison: hsl(var(--dmg-poison));
+  --color-dmg-necrotic: hsl(var(--dmg-necrotic));
+  --color-dmg-radiant: hsl(var(--dmg-radiant));
+  --color-dmg-psychic: hsl(var(--dmg-psychic));
+  --color-dmg-force: hsl(var(--dmg-force));
+  --color-dmg-bludgeoning: hsl(var(--dmg-bludgeoning));
+  --color-dmg-piercing: hsl(var(--dmg-piercing));
+  --color-dmg-slashing: hsl(var(--dmg-slashing));
+
+  /* Rarity colors */
+  --color-rarity-common: hsl(var(--rarity-common));
+  --color-rarity-uncommon: hsl(var(--rarity-uncommon));
+  --color-rarity-rare: hsl(var(--rarity-rare));
+  --color-rarity-very-rare: hsl(var(--rarity-very-rare));
+  --color-rarity-legendary: hsl(var(--rarity-legendary));
+  --color-rarity-artifact: hsl(var(--rarity-artifact));
+
+  /* Condition colors */
+  --color-condition-blinded: hsl(var(--condition-blinded));
+  --color-condition-charmed: hsl(var(--condition-charmed));
+  --color-condition-frightened: hsl(var(--condition-frightened));
+  --color-condition-paralyzed: hsl(var(--condition-paralyzed));
+  --color-condition-poisoned: hsl(var(--condition-poisoned));
+  --color-condition-stunned: hsl(var(--condition-stunned));
+  --color-condition-unconscious: hsl(var(--condition-unconscious));
+  --color-condition-restrained: hsl(var(--condition-restrained));
+  --color-condition-invisible: hsl(var(--condition-invisible));
+  --color-condition-exhaustion: hsl(var(--condition-exhaustion));
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-card: var(--radius-card);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-bg-primary text-text-primary;
   }
 
-  /* <CHANGE> Efeitos de brilho prateado para elementos interativos */
-  .glow-silver {
-    box-shadow: var(--glow-silver);
-  }
-
-  .glow-gold {
-    box-shadow: var(--glow-gold);
-  }
-
-  /* Textura sutil de pergaminho */
-  .parchment-texture {
-    background-image: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(75, 46, 5, 0.02) 2px,
-      rgba(75, 46, 5, 0.02) 4px
-    );
-  }
-
-  /* Bordas metálicas */
-  .metal-border {
-    border: 2px solid var(--color-accent);
-    box-shadow:
-      inset 0 1px 2px rgba(255, 255, 255, 0.1),
-      0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  /* Animação de shake para rolagem de dados */
-  @keyframes dice-shake {
-    0%,
-    100% {
-      transform: translateX(0) rotate(0deg);
-    }
-    10% {
-      transform: translateX(-3px) rotate(-5deg);
-    }
-    20% {
-      transform: translateX(3px) rotate(5deg);
-    }
-    30% {
-      transform: translateX(-3px) rotate(-3deg);
-    }
-    40% {
-      transform: translateX(3px) rotate(3deg);
-    }
-    50% {
-      transform: translateX(-2px) rotate(-2deg);
-    }
-    60% {
-      transform: translateX(2px) rotate(2deg);
-    }
-    70% {
-      transform: translateX(-1px) rotate(-1deg);
-    }
-    80% {
-      transform: translateX(1px) rotate(1deg);
-    }
-    90% {
-      transform: translateX(0) rotate(0deg);
-    }
-  }
-
-  .dice-shake {
-    animation: dice-shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-  }
-
-  /* Animação de bounce para o botão de rolar */
-  @keyframes button-bounce {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.95);
-    }
-  }
-
-  .button-bounce {
-    animation: button-bounce 0.3s ease-in-out;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
 }

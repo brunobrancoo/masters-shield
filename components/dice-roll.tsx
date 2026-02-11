@@ -104,6 +104,14 @@ export default function DiceRollModal() {
   const grandTotal = results.reduce((sum, result) => sum + result.total, 0);
   const hasActiveDice = Object.values(diceCount).some((count) => count > 0);
 
+  const getRollClass = (roll: number, sides: number): string => {
+    if (sides === 20) {
+      if (roll === 20) return "animate-crit text-divine-glow glow-divine";
+      if (roll === 1) return "animate-crit text-monster-glow glow-danger";
+    }
+    return "";
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -111,13 +119,13 @@ export default function DiceRollModal() {
           className="group relative transition-transform hover:scale-110 active:scale-95"
           aria-label="Rolar dados"
         >
-          <D20 className="h-14 w-14 text-primary transition-all group-hover:text-primary/80" />
+          <D20 className="h-14 w-14 text-class-accent transition-all group-hover:text-class-accent/80" />
         </button>
       </DialogTrigger>
-      <DialogContent className="min-w-6xl metal-border bg-card/95 backdrop-blur">
+      <DialogContent className="max-w-4xl p-6">
         <DialogHeader>
-          <DialogTitle className="font-sans text-3xl flex items-center gap-3 text-balance">
-            <D20 className="w-8 h-8 text-primary" />
+          <DialogTitle className="font-heading text-3xl flex items-center gap-3 text-balance text-text-primary">
+            <D20 className="w-8 h-8 text-class-accent" />
             Rolador de Dados
           </DialogTitle>
         </DialogHeader>
@@ -125,7 +133,7 @@ export default function DiceRollModal() {
         <div className="space-y-6 py-4">
           {/* Dice Selection - Horizontal List */}
           <div className="space-y-3">
-            <h3 className="font-serif text-sm text-muted-foreground uppercase tracking-wide">
+            <h3 className="font-body text-sm text-text-secondary uppercase tracking-wide section-label mb-3">
               Selecione os dados
             </h3>
             <div className="grid grid-cols-7 gap-2">
@@ -134,13 +142,13 @@ export default function DiceRollModal() {
                 return (
                   <div
                     key={type}
-                    className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-background/50 metal-border-subtle"
+                    className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border-default bg-bg-surface card-inset"
                   >
                     <div
                       className={`relative ${isRolling && diceCount[type] > 0 ? "dice-shake" : ""}`}
                     >
-                      <Icon className="w-8 h-8" />
-                      <span className="absolute -bottom-1 -right-1 text-xs font-bold text-primary bg-background rounded-full w-5 h-5 flex items-center justify-center border border-primary/30">
+                      <Icon className="w-8 h-8 text-text-primary" />
+                      <span className="absolute -bottom-1 -right-1 text-xs font-bold text-class-accent bg-bg-inset rounded-full w-5 h-5 flex items-center justify-center border border-class-accent/30">
                         {label.substring(1)}
                       </span>
                     </div>
@@ -150,12 +158,12 @@ export default function DiceRollModal() {
                         size="sm"
                         onClick={() => updateDiceCount(type, -1)}
                         disabled={diceCount[type] === 0}
-                        className="h-7 w-7 p-0 hover:bg-destructive/20 hover:text-destructive"
+                        className="h-7 w-7 p-0 hover:bg-damage/20 hover:text-damage"
                       >
                         <Minus className="w-3 h-3" />
                       </Button>
                       <div className="flex-1 text-center">
-                        <span className="font-bold text-lg">
+                        <span className="font-bold text-lg font-body text-text-primary">
                           {diceCount[type]}
                         </span>
                       </div>
@@ -164,7 +172,7 @@ export default function DiceRollModal() {
                         size="sm"
                         onClick={() => updateDiceCount(type, 1)}
                         disabled={diceCount[type] >= 99}
-                        className="h-7 w-7 p-0 hover:bg-primary/20 hover:text-primary"
+                        className="h-7 w-7 p-0 hover:bg-class-accent/20 hover:text-class-accent"
                       >
                         <Plus className="w-3 h-3" />
                       </Button>
@@ -181,7 +189,8 @@ export default function DiceRollModal() {
               onClick={handleRoll}
               disabled={!hasActiveDice}
               size="lg"
-              className="flex-1 text-lg font-sans glow-gold disabled:opacity-50"
+              className="flex-1 text-lg font-body"
+              variant="martial"
             >
               <DiceIcon className="w-5 h-5 mr-2" />
               Rolar Dados
@@ -199,10 +208,10 @@ export default function DiceRollModal() {
           {isRolling && (
             <div className="text-center py-8 animate-pulse">
               <DiceIcon
-                className="w-12 h-12 mx-auto mb-2 text-primary animate-spin"
+                className="w-12 h-12 mx-auto mb-2 text-class-accent animate-spin"
                 style={{ animationDuration: "0.8s" }}
               />
-              <p className="text-muted-foreground font-serif text-lg">
+              <p className="text-text-secondary font-body text-lg">
                 Rolando os dados...
               </p>
             </div>
@@ -210,16 +219,16 @@ export default function DiceRollModal() {
           {/* Results Display */}
           {results.length > 0 && !isRolling && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="border-t border-border pt-4">
+              <div className="border-t border-border-default pt-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-serif text-sm text-muted-foreground uppercase tracking-wide">
+                  <h3 className="font-body text-sm text-text-secondary uppercase tracking-wide section-label mb-0">
                     Resultados
                   </h3>
                   <div className="text-right">
-                    <p className="text-xs text-muted-foreground font-sans">
+                    <p className="text-xs text-text-secondary font-body">
                       Total Geral
                     </p>
-                    <p className="text-4xl font-bold text-primary glow-gold">
+                    <p className="text-4xl font-bold text-class-accent glow-class font-mono">
                       {grandTotal}
                     </p>
                   </div>
@@ -229,11 +238,11 @@ export default function DiceRollModal() {
                   {results.map((result, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-4 p-4 rounded-lg border border-border bg-background/50 metal-border-subtle"
+                      className="flex items-center gap-4 p-4 rounded-lg border border-border-default bg-bg-surface card-inset"
                     >
                       <div className="flex items-center gap-2 min-w-[80px]">
-                        <DiceIcon className="w-5 h-5 text-primary" />
-                        <span className="font-bold text-lg">
+                        <DiceIcon className="w-5 h-5 text-class-accent" />
+                        <span className="font-bold text-lg font-body text-text-primary">
                           {result.rolls.length}
                           {result.type}
                         </span>
@@ -244,7 +253,7 @@ export default function DiceRollModal() {
                           {result.rolls.map((roll, rollIdx) => (
                             <span
                               key={rollIdx}
-                              className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-primary/10 border border-primary/30 font-bold text-primary"
+                              className={`inline-flex items-center justify-center w-10 h-10 rounded-md bg-class-accent/10 border border-class-accent/30 font-bold text-text-primary font-mono ${getRollClass(roll, parseInt(result.type.slice(1)))}`}
                             >
                               {roll}
                             </span>
@@ -253,10 +262,10 @@ export default function DiceRollModal() {
                       </div>
 
                       <div className="text-right min-w-[60px]">
-                        <p className="text-xs text-muted-foreground font-sans">
+                        <p className="text-xs text-text-secondary font-body">
                           Total
                         </p>
-                        <p className="text-2xl font-bold text-primary">
+                        <p className="text-2xl font-bold text-class-accent font-mono">
                           {result.total}
                         </p>
                       </div>
@@ -268,14 +277,14 @@ export default function DiceRollModal() {
           )}
 
           {results.length === 0 && hasActiveDice && (
-            <div className="text-center py-8 text-muted-foreground font-serif">
+            <div className="text-center py-8 text-text-secondary font-body">
               <DiceIcon className="w-12 h-12 mx-auto mb-2 opacity-30" />
               <p>Clique em "Rolar Dados" para ver os resultados</p>
             </div>
           )}
 
           {!hasActiveDice && results.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground font-serif">
+            <div className="text-center py-8 text-text-secondary font-body">
               <DiceIcon className="w-12 h-12 mx-auto mb-2 opacity-30" />
               <p>Selecione os dados que deseja rolar</p>
             </div>

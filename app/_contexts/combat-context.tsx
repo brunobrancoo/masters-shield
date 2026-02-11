@@ -1,5 +1,5 @@
 "use client";
-import { createContext, SetStateAction, useContext, useState } from "react";
+import { createContext, SetStateAction, useContext, useState, useEffect } from "react";
 import { useGame } from "./game-context";
 import {
   InitiativeEntry,
@@ -9,12 +9,13 @@ import {
 } from "@/lib/interfaces/interfaces";
 import { DiceRoller } from "@/lib/classes/dices";
 import { getAttMod } from "@/lib/utils";
-
-type InitiativeRoll = {
-  id: string;
-  roll: number;
-  dex: number;
-};
+import { InitiativeRoll } from "@/lib/combat-storage";
+import {
+  getCombat,
+  updateCombat as updateCombatFirebase,
+  clearCombat as clearCombatFirebase,
+  onCombatChange,
+} from "@/lib/firebase-combat-storage";
 
 export interface CombatContextType {
   round: number;
@@ -55,7 +56,7 @@ export interface CombatContextType {
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
 
-export function CombatProvider({ children }: { children: React.ReactNode }) {
+export function CombatProvider({ children, campaignId }: { children: React.ReactNode; campaignId?: string }) {
   const [round, setRound] = useState(1);
   const [onCombat, setOnCombat] = useState(false);
   const [currentTurn, setCurrentTurn] = useState(0);
@@ -75,6 +76,36 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
 
   const { handleSavePlayer, handleSaveMonster, handleUpdateNPC, gameData } =
     useGame();
+
+  useEffect(() => {
+    if (!campaignId) return;
+
+    const unsubscribe = onCombatChange(campaignId, (data) => {
+      if (data) {
+        setRound(data.round ?? 1);
+        setOnCombat(data.onCombat ?? false);
+        setCurrentTurn(data.currentTurn ?? 0);
+        setInitiativeEntries(data.initiativeEntries ?? []);
+        setInitiativeRolls(data.initiativeRolls ?? []);
+      }
+    });
+
+    return unsubscribe;
+  }, [campaignId]);
+
+  useEffect(() => {
+    if (!campaignId) return;
+
+    updateCombatFirebase(campaignId, {
+      round,
+      onCombat,
+      currentTurn,
+      initiativeEntries,
+      initiativeRolls,
+    }).catch((error) => {
+      console.error("Error saving combat data:", error);
+    });
+  }, [campaignId, round, onCombat, currentTurn, initiativeEntries, initiativeRolls]);
 
   const resetAddForm = () => {
     setShowAddForm(false);
@@ -113,7 +144,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           name: monster.name,
           dexMod: getAttMod(monster.attributes.des),
           initiative: getAttMod(monster.attributes.des),
-          hp: monster.hp,
+          hp: monster.maxHp,
           maxHp: monster.maxHp,
           type: "monster",
           sourceId: monster.id,
@@ -127,7 +158,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           dexMod: getAttMod(player.attributes.des),
           name: player.name,
           initiative: getAttMod(player.attributes.des),
-          hp: player.hp,
+          hp: player.maxHp,
           maxHp: player.maxHp,
           type: "player",
           sourceId: player.id,
@@ -141,7 +172,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           dexMod: getAttMod(npc.attributes.des),
           name: npc.name,
           initiative: getAttMod(npc.attributes.des),
-          hp: npc.hp,
+          hp: npc.maxHp,
           maxHp: npc.maxHp,
           type: "npc",
           sourceId: npc.id,
@@ -185,36 +216,17 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
           : e,
       ),
     );
-
-    console.log(id);
-    const player = gameData.players.find((p) => p.id === id);
-    if (player) {
-      const newHp = Math.max(0, Math.min(player.maxHp, player.hp + delta));
-      handleSavePlayer({ ...player, hp: newHp });
-      return;
-    }
-
-    const monster = gameData.monsters.find((m) => m.id === id);
-    if (monster) {
-      const newHp = Math.max(0, Math.min(monster.maxHp, monster.hp + delta));
-      handleSaveMonster({ ...monster, hp: newHp });
-      return;
-    }
-
-    const npc = gameData.npcs.find((n) => n.id === id);
-    if (npc) {
-      const newHp = Math.max(0, Math.min(npc.maxHp, npc.hp + delta));
-      handleUpdateNPC({ ...npc, hp: newHp });
-      return;
-    }
   };
 
-  const clearAll = () => {
+  const clearAll = async () => {
     setInitiativeEntries([]);
     setInitiativeRolls([]);
     setOnCombat(false);
     setCurrentTurn(0);
     setRound(1);
+    if (campaignId) {
+      await clearCombatFirebase(campaignId);
+    }
   };
 
   function rollInitiatives() {
@@ -272,7 +284,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
         dexMod: getAttMod(player.attributes.des),
         name: player.name,
         initiative: Math.floor((player.attributes.des - 10) / 2),
-        hp: player.hp || 0,
+        hp: player.maxHp || 0,
         maxHp: player.maxHp || 0,
         type: "player",
       };
@@ -286,7 +298,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
         dexMod: getAttMod(npc.attributes.des),
         name: npc.name,
         initiative: Math.floor((npc.attributes.des - 10) / 2),
-        hp: npc.hp || 0,
+        hp: npc.maxHp || 0,
         maxHp: npc.maxHp || 0,
         type: "npc",
       };
@@ -301,7 +313,7 @@ export function CombatProvider({ children }: { children: React.ReactNode }) {
         dexMod: getAttMod(monster.attributes.des),
         name: monster.name,
         initiative: Math.floor((monster.attributes.des - 10) / 2),
-        hp: monster.hp || 0,
+        hp: monster.maxHp || 0,
         maxHp: monster.maxHp || 0,
         type: "monster",
       };
