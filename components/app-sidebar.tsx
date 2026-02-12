@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -8,12 +8,10 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import {
   Swords,
   Plus,
-  X,
   Play,
   SkipForward,
   RotateCcw,
@@ -21,33 +19,17 @@ import {
   LogOut,
   Swords as SwitchCampaign,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  InitiativeEntry,
-  Monster,
-  NPC,
-  Player,
-} from "@/lib/interfaces/interfaces";
-import { useGame } from "@/app/_contexts/game-context";
 import { ScrollArea } from "./ui/scroll-area";
 import { useCombat } from "@/app/_contexts/combat-context";
-import { getAttMod } from "@/lib/utils";
-import { getHPColor, getHPClass } from "@/lib/theme";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import InitiativeEntryCard from "./initiative-entry-card";
+import AddEntryForm from "./add-entry-form";
 
-export function AppSidebar() {
+export default function AppSidebar() {
   const router = useRouter();
   const { signOut } = useAuth();
 
   const {
-    addExistingEntry,
     initiativeEntries,
     setInitiativeEntries,
     removeEntry,
@@ -83,15 +65,10 @@ export function AppSidebar() {
     addAllNPCs,
   } = useCombat();
 
-  // Add entry form
-  const [addType, setAddType] = useState<"existing" | "custom">("existing");
-
   const sortedEntries = [...initiativeEntries].sort(
     (a, b) => b.initiative - a.initiative,
   );
   const activeEntry = sortedEntries[currentTurn];
-
-  const { gameData } = useGame();
 
   const updateInitiative = (id: string, value: string) => {
     const num = Number.parseInt(value) || 0;
@@ -140,7 +117,6 @@ export function AppSidebar() {
           <div className="flex flex-col h-full">
             <div className="flex-1 overflow-hidden flex flex-col">
               <div className="space-y-4">
-                {/* Combat Controls */}
                 {initiativeEntries.length > 0 && (
                   <div className="flex gap-2">
                     {!onCombat ? (
@@ -189,7 +165,6 @@ export function AppSidebar() {
                   </div>
                 )}
 
-                {/* Initiative List */}
                 <div className="space-y-2">
                   {sortedEntries.length === 0 ? (
                     <Card className="p-8 text-center card-inset">
@@ -204,131 +179,44 @@ export function AppSidebar() {
                   ) : (
                     sortedEntries.map((entry, index) => {
                       const isCurrentTurn = onCombat && index === currentTurn;
-                      const hpPercent = (entry.hp / entry.maxHp) * 100;
-                      const hpColor = getHPColor(hpPercent);
-                      const hpClass = getHPClass(hpPercent);
-
                       return (
-                        <Card
+                        <InitiativeEntryCard
                           key={entry.id}
-                          className={`p-4 card-inset transition-all ${
-                            isCurrentTurn
-                              ? "ring-2 ring-class-accent glow-class bg-class-surface/30 scale-[1.02]"
-                              : "bg-bg-surface/50"
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            {/* Initiative Number */}
-                            <div className="flex flex-col items-center gap-1 min-w-[60px]">
-                              <Input
-                                type="number"
-                                value={entry.initiative}
-                                onChange={(e) =>
-                                  updateInitiative(entry.id, e.target.value)
-                                }
-                                className="h-12 text-center text-xl font-bold font-body"
-                                disabled={onCombat}
-                              />
-                              <span className="text-xs text-text-secondary font-body">
-                                Iniciativa (
-                                {
-                                  //QUEBROU! TEM QUE TER PRA MONSTER E NPC TAMBÉM
-                                  initiativeRolls.find(
-                                    (roll) => roll.id === entry.id,
-                                  )?.roll
-                                }{" "}
-                                {initiativeRolls.some(
-                                  (roll) => roll.id === entry.id,
-                                ) && "+ "}
-                                dex mod {entry.dexMod})
-                              </span>
-                            </div>
-
-                            {/* Info */}
-                            <div className="flex-1 space-y-2">
-                              <div className="flex items-start justify-between">
-                                <div>
-                                  <h4 className="font-heading font-bold text-lg leading-tight text-text-primary">
-                                    {entry.name}
-                                  </h4>
-                                  <p className="text-xs text-text-secondary capitalize">
-                                    {entry.type}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => removeEntry(entry.id)}
-                                  className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
-                                >
-                                  <X className="w-4 h-4" />
-                                </Button>
-                              </div>
-
-                              {/* HP Bar */}
-                              <div className="space-y-1">
-                                <div className="flex items-center justify-between text-sm">
-                                  <span className="font-body text-text-secondary">
-                                    HP
-                                  </span>
-                                  <span className="font-bold font-body text-text-primary">
-                                    {entry.hp}/{entry.maxHp}
-                                  </span>
-                                </div>
-                                <div className="h-2 bg-bg-inset rounded-full overflow-hidden">
-                                  <div
-                                    className={`h-full transition-all ${hpClass}`}
-                                    style={{ 
-                                      width: `${hpPercent}%`,
-                                      backgroundColor: hpColor,
-                                    }}
-                                  />
-                                </div>
-                                <div className="flex gap-1 justify-end">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => updateHp(entry.id, -5)}
-                                    className="h-7 px-2 hover:bg-damage/20 hover:text-damage"
-                                  >
-                                    -5
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => updateHp(entry.id, -1)}
-                                    className="h-7 px-2 hover:bg-damage/20 hover:text-damage"
-                                  >
-                                    -1
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => updateHp(entry.id, 1)}
-                                    className="h-7 px-2 hover:bg-healing/20 hover:text-healing"
-                                  >
-                                    +1
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => updateHp(entry.id, 5)}
-                                    className="h-7 px-2 hover:bg-healing/20 hover:text-healing"
-                                  >
-                                    +5
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
+                          entry={entry}
+                          index={index}
+                          isCurrentTurn={isCurrentTurn}
+                          updateInitiative={updateInitiative}
+                          removeEntry={removeEntry}
+                          updateHp={updateHp}
+                          onCombat={onCombat}
+                        />
                       );
                     })
                   )}
                 </div>
 
-                {/* Add Entry Form */}
-                {!showAddForm ? (
+                <AddEntryForm
+                  showAddForm={showAddForm}
+                  resetAddForm={resetAddForm}
+                  sourceType={sourceType}
+                  setSourceType={setSourceType as any}
+                  selectedSourceId={selectedSourceId}
+                  setSelectedSourceId={setSelectedSourceId}
+                  getSourceList={getSourceList}
+                  initiativeEntries={initiativeEntries}
+                  addExistingEntry={() => {}}
+                  customName={customName}
+                  setCustomName={setCustomName}
+                  customInitiative={customInitiative}
+                  setCustomInitiative={setCustomInitiative}
+                  customHp={customHp}
+                  setCustomHp={setCustomHp}
+                  customMaxHp={customMaxHp}
+                  setCustomMaxHp={setCustomMaxHp}
+                  addCustomEntry={addCustomEntry}
+                />
+
+                {!showAddForm && (
                   <>
                     <Button
                       onClick={() => setShowAddForm(true)}
@@ -368,129 +256,8 @@ export function AppSidebar() {
                       Adicionar Todos os Monstros
                     </Button>
                   </>
-                ) : (
-                  <Card className="p-4 card-inset bg-bg-surface/50 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-heading font-bold text-text-primary">Novo Participante</h4>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={resetAddForm}
-                        className="h-8 w-8 p-0"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        variant={addType === "existing" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setAddType("existing")}
-                        className="flex-1"
-                      >
-                        Existente
-                      </Button>
-                      <Button
-                        variant={addType === "custom" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setAddType("custom")}
-                        className="flex-1"
-                      >
-                        Personalizado
-                      </Button>
-                    </div>
-
-                    {addType === "existing" ? (
-                      <div className="space-y-3">
-                        <Select
-                          value={sourceType}
-                          onValueChange={(v: any) => setSourceType(v)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="monster">Monstro</SelectItem>
-                            <SelectItem value="player">Jogador</SelectItem>
-                            <SelectItem value="npc">NPC</SelectItem>
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={selectedSourceId}
-                          onValueChange={setSelectedSourceId}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getSourceList().map((item) => {
-                              if (
-                                initiativeEntries.some(
-                                  (entry) => entry.id === item.id,
-                                )
-                              )
-                                return;
-                              return (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {item.name}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-
-                        <Button
-                          onClick={addExistingEntry}
-                          className="w-full"
-                          disabled={!selectedSourceId}
-                        >
-                          Adicionar
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <Input
-                          placeholder="Nome"
-                          value={customName}
-                          onChange={(e) => setCustomName(e.target.value)}
-                        />
-                        <div className="grid grid-cols-3 gap-2">
-                          <Input
-                            type="number"
-                            placeholder="Iniciativa"
-                            value={customInitiative}
-                            onChange={(e) =>
-                              setCustomInitiative(+e.target.value)
-                            }
-                          />
-                          <Input
-                            type="number"
-                            placeholder="HP"
-                            value={customHp}
-                            onChange={(e) => setCustomHp(+e.target.value)}
-                          />
-                          <Input
-                            type="number"
-                            placeholder="Max HP"
-                            value={customMaxHp}
-                            onChange={(e) => setCustomMaxHp(+e.target.value)}
-                          />
-                        </div>
-                        <Button
-                          onClick={addCustomEntry}
-                          className="w-full"
-                          disabled={!customName || !customInitiative}
-                        >
-                          Adicionar
-                        </Button>
-                      </div>
-                    )}
-                  </Card>
                 )}
 
-                {/* Clear All */}
                 {initiativeEntries.length > 0 && (
                   <Button
                     onClick={clearAll}

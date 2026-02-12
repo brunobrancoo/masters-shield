@@ -8,7 +8,7 @@ interface PlayerSorceryPointsSectionProps {
   onSorceryPointChange: (value: number) => void;
 }
 
-export function PlayerSorceryPointsSection({ player, onSorceryPointChange }: PlayerSorceryPointsSectionProps) {
+export default function PlayerSorceryPointsSection({ player, onSorceryPointChange }: PlayerSorceryPointsSectionProps) {
   return (
     <Card className="metal-border bg-purple-500/10 border-purple-500/30">
       <CardHeader>

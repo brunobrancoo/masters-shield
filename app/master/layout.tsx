@@ -4,7 +4,7 @@ import { Cinzel, Inter, JetBrains_Mono, Caveat } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import AppSidebar from "@/components/app-sidebar";
 import { ReactQueryProvider } from "@/components/react-query-provider";
 import { MasterProviders } from "./master-providers";
 

@@ -12,12 +12,20 @@ import {
   GetEquipmentDocument,
 } from '@/lib/generated/graphql';
 import { Spell } from '@/lib/interfaces/interfaces';
+import { filterMeaningfulItems } from './utils';
 
 export function useMonsters(name?: string) {
   return useQuery({
     queryKey: ['monsters', name],
     queryFn: async () => {
-      return graphqlClient.request(GetMonstersDocument, { name });
+      const response = await graphqlClient.request(GetMonstersDocument, { name });
+      if (response.monsters) {
+        return {
+          ...response,
+          monsters: filterMeaningfulItems(response.monsters),
+        };
+      }
+      return response;
     },
   });
 }
@@ -36,7 +44,14 @@ export function useSpells(name?: string, level?: number[]) {
   return useQuery({
     queryKey: ['spells', name, level],
     queryFn: async () => {
-      return graphqlClient.request(GetSpellsDocument, { name, level });
+      const response = await graphqlClient.request(GetSpellsDocument, { name, level });
+      if (response.spells) {
+        return {
+          ...response,
+          spells: filterMeaningfulItems(response.spells),
+        };
+      }
+      return response;
     },
   });
 }
@@ -55,7 +70,14 @@ export function useClasses() {
   return useQuery({
     queryKey: ['classes'],
     queryFn: async () => {
-      return graphqlClient.request(GetClassesDocument);
+      const response = await graphqlClient.request(GetClassesDocument);
+      if (response.classes) {
+        return {
+          ...response,
+          classes: filterMeaningfulItems(response.classes),
+        };
+      }
+      return response;
     },
   });
 }
@@ -74,7 +96,14 @@ export function useRaces() {
   return useQuery({
     queryKey: ['races'],
     queryFn: async () => {
-      return graphqlClient.request(GetRacesDocument);
+      const response = await graphqlClient.request(GetRacesDocument);
+      if (response.races) {
+        return {
+          ...response,
+          races: filterMeaningfulItems(response.races),
+        };
+      }
+      return response;
     },
   });
 }
@@ -93,7 +122,14 @@ export function useEquipment(name?: string) {
   return useQuery({
     queryKey: ['equipment', name],
     queryFn: async () => {
-      return graphqlClient.request(GetEquipmentDocument, { name });
+      const response = await graphqlClient.request(GetEquipmentDocument, { name });
+      if (response.equipments) {
+        return {
+          ...response,
+          equipments: filterMeaningfulItems(response.equipments),
+        };
+      }
+      return response;
     },
   });
 }
@@ -130,3 +166,10 @@ function mapApiSpellToInterface(spell: any): Spell {
 }
 
 export { mapApiSpellToInterface };
+export {
+  isEmptyObject,
+  filterEmptyObjects,
+  isMeaningfulItem,
+  filterMeaningfulItems,
+  sanitizeApiResponse,
+} from './utils';

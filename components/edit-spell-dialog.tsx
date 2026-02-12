@@ -20,7 +20,7 @@ import { Edit, Save } from "lucide-react";
 import { Spell } from "@/lib/interfaces/interfaces";
 import { spellSchema, type SpellFormData } from "@/lib/schemas";
 
-export function EditSpellDialog({
+export default function EditSpellDialog({
   spell,
   index,
   open,

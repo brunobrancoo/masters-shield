@@ -7,7 +7,7 @@ interface PlayerAttributesSectionProps {
   player: Player;
 }
 
-export function PlayerAttributesSection({ player }: PlayerAttributesSectionProps) {
+export default function PlayerAttributesSection({ player }: PlayerAttributesSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>

@@ -12,7 +12,7 @@ interface PlayerHPSectionProps {
   onHPModal: (amount: number) => void;
 }
 
-export function PlayerHPSection({ player, onHPChange, onHPModal }: PlayerHPSectionProps) {
+export default function PlayerHPSection({ player, onHPChange, onHPModal }: PlayerHPSectionProps) {
   return (
     <Card
       className={`metal-border ${getHPBackgroundColor(

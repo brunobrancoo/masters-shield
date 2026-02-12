@@ -13,7 +13,7 @@ interface PlayerNotesSectionProps {
   onSaveNotes: () => void;
 }
 
-export function PlayerNotesSection({ player, editNotes, notesValue, setEditNotes, setNotesValue, onSaveNotes }: PlayerNotesSectionProps) {
+export default function PlayerNotesSection({ player, editNotes, notesValue, setEditNotes, setNotesValue, onSaveNotes }: PlayerNotesSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>
