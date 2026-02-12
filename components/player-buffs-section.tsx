@@ -10,7 +10,7 @@ interface PlayerBuffsSectionProps {
   onRemoveBuff: (index: number) => void;
 }
 
-export function PlayerBuffsSection({ player, onAddBuff, onRemoveBuff }: PlayerBuffsSectionProps) {
+export default function PlayerBuffsSection({ player, onAddBuff, onRemoveBuff }: PlayerBuffsSectionProps) {
   return (
     <Card className="metal-border bg-primary/10 border-primary/30">
       <CardHeader>

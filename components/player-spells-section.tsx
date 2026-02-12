@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
 import { Edit, Trash2 } from "lucide-react";
-import { AddSpellDialog } from "@/components/AddSpellDialog";
-import { EditSpellDialog } from "@/components/EditSpellDialog";
+import AddSpellDialog from "@/components/add-spell-dialog";
+import EditSpellDialog from "@/components/edit-spell-dialog";
 
 interface PlayerSpellsSectionProps {
   player: Player;

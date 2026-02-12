@@ -19,7 +19,7 @@ import { MonsterList } from "@/components/monster-list";
 import { MonsterForm } from "@/components/monster-form";
 import { MonsterSheet } from "@/components/monster-sheet";
 import { PlayerList } from "@/components/player-list";
-import { PlayerForm } from "@/components/player-form";
+import PlayerForm from "@/components/player-form";
 import { PlayerSheet } from "@/components/player-sheet";
 import { NPCGenerator } from "@/components/npc-generator";
 import { NPCList } from "@/components/npc-list";

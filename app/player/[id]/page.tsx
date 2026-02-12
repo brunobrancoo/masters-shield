@@ -14,16 +14,16 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import D20RollDialog from "@/components/d20-roll-dialog";
 import { PlayerNotFound } from "@/components/player-not-found";
-import { PlayerHPSection } from "@/components/player-hp-section";
-import { PlayerAttributesSection } from "@/components/player-attributes-section";
-import { PlayerCombatStatsSection } from "@/components/player-combat-stats-section";
-import { PlayerSpellSlotsSection } from "@/components/player-spell-slots-section";
-import { PlayerSorceryPointsSection } from "@/components/player-sorcery-points-section";
+import PlayerHPSection from "@/components/player-hp-section";
+import PlayerAttributesSection from "@/components/player-attributes-section";
+import PlayerCombatStatsSection from "@/components/player-combat-stats-section";
+import PlayerSpellSlotsSection from "@/components/player-spell-slots-section";
+import PlayerSorceryPointsSection from "@/components/player-sorcery-points-section";
 import { PlayerSpellsSection } from "@/components/player-spells-section";
-import { PlayerInventorySection } from "@/components/player-inventory-section";
-import { PlayerBuffsSection } from "@/components/player-buffs-section";
-import { PlayerDebuffsSection } from "@/components/player-debuffs-section";
-import { PlayerNotesSection } from "@/components/player-notes-section";
+import PlayerInventorySection from "@/components/player-inventory-section";
+import PlayerBuffsSection from "@/components/player-buffs-section";
+import PlayerDebuffsSection from "@/components/player-debuffs-section";
+import PlayerNotesSection from "@/components/player-notes-section";
 import { updatePlayerOrSet } from "@/lib/firebase-storage";
 
 export default function PlayerPage({
@@ -247,7 +247,7 @@ export default function PlayerPage({
             <PlayerSpellSlotsSection player={player} onSpellSlotChange={handleSpellSlotChange} />
             <PlayerSorceryPointsSection player={player} onSorceryPointChange={handleSorceryPointChange} />
             <PlayerSpellsSection player={player} editSpellIndex={editSpellIndex} setEditSpellIndex={setEditSpellIndex} onAddSpell={addSpell} onRemoveSpell={removeSpell} onEditSpell={editSpell} />
-            <PlayerInventorySection player={player} editItemIndex={editItemIndex} setEditItemIndex={setEditItemIndex} onAddItem={addItem} onRemoveItem={removeItem} onToggleEquip={toggleEquip} onUpdateItem={updateItem} />
+            <PlayerInventorySection player={player} editItemIndex={editItemIndex} setEditItemIndex={setEditItemIndex} onAddItem={addItem} onRemoveItem={removeItem} onToggleEquip={toggleEquip} onUpdateItem={updateItem} campaignId={campaignId || ""} />
           </div>
 
           <div className="space-y-6">

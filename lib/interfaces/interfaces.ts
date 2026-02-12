@@ -174,3 +174,28 @@ export interface InitiativeEntry {
   type: "monster" | "player" | "npc" | "custom";
   sourceId?: string;
 }
+
+export interface Homebrew {
+  id: string;
+  name: string;
+  itemType: "item" | "spell" | "feat" | "feature";
+  item?: Item;
+  spell?: Spell;
+  feat?: {
+    index: string;
+    name: string;
+    desc: string[];
+    prerequisites: string[];
+  };
+  feature?: {
+    index: string;
+    name: string;
+    desc: string[];
+    level: number;
+    source: string;
+    class?: string;
+    subclass?: string;
+  };
+  createdAt?: any;
+  updatedAt?: any;
+}

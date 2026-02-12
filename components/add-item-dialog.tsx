@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,28 +14,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
-import { Item } from "@/lib/interfaces/interfaces";
+import { Item, Homebrew } from "@/lib/interfaces/interfaces";
 import { ItemFormData, itemSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
+import { isMeaningfulItem } from "@/lib/api/utils";
+import { createHomebrew, onHomebrewsChange } from "@/lib/firebase-storage";
 
 interface AddItemDialogProps {
   onAdd: (item: Item) => void;
+  campaignId: string;
 }
 
-export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
+export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const { data: equipmentData, isLoading } = useEquipment(
     debouncedSearchQuery,
   );
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
-    null,
-  );
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<"api" | "homebrew">("api");
+  const [homebrewSearchQuery, setHomebrewSearchQuery] = useState("");
+  const debouncedHomebrewSearchQuery = useDebounce(homebrewSearchQuery, 300);
+  const [homebrews, setHomebrews] = useState<Homebrew[]>([]);
 
   const {
     register,
@@ -63,8 +69,19 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
   useEffect(() => {
     if (equipmentData) {
       console.log("D&D 5e API Equipment Response:", equipmentData);
+      console.log("Filtered equipment:", equipmentData.equipments?.filter(isMeaningfulItem));
     }
   }, [equipmentData]);
+
+  useEffect(() => {
+    if (!campaignId) return;
+
+    const unsubscribe = onHomebrewsChange(campaignId, (data) => {
+      setHomebrews(data);
+    });
+
+    return () => unsubscribe();
+  }, [campaignId]);
 
   const parseDamageDice = (
     damageDice: string | undefined,
@@ -225,12 +242,65 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
     }, 0);
   };
 
-  const onSubmit = (data: ItemFormData) => {
-    onAdd(data);
+  const onSubmit = async (data: ItemFormData) => {
+    const item: Item = { ...data, equipped: false };
+    onAdd(item);
+
+    const selectedHomebrew = filteredHomebrews.find(
+      (hb) => hb.name === data.name
+    );
+
+    if (!selectedHomebrew && campaignId) {
+      try {
+        await createHomebrew(campaignId, {
+          name: data.name,
+          itemType: "item",
+          item: item,
+        });
+      } catch (error) {
+        console.error("Failed to save to homebrew:", error);
+      }
+    }
+
     reset();
     setOpen(false);
     setSearchQuery("");
+    setHomebrewSearchQuery("");
     setSelectedItemIndex(null);
+  };
+
+  const filteredHomebrews = useMemo(() => {
+    if (!debouncedHomebrewSearchQuery) {
+      return homebrews.filter((hb) => hb.itemType === "item");
+    }
+
+    return homebrews.filter((hb) => {
+      return (
+        hb.itemType === "item" &&
+        hb.name.toLowerCase().includes(debouncedHomebrewSearchQuery.toLowerCase())
+      );
+    });
+  }, [homebrews, debouncedHomebrewSearchQuery]);
+
+  const handleSelectHomebrewItem = (homebrew: Homebrew) => {
+    setSelectedItemIndex(null);
+
+    if (homebrew.item) {
+      setValue("name", homebrew.item.name, { shouldDirty: true });
+      setValue("type", homebrew.item.type, { shouldDirty: true });
+      setValue("price", homebrew.item.price, { shouldDirty: true });
+      setValue("distance", homebrew.item.distance, { shouldDirty: true });
+      setValue("damage.dice", homebrew.item.damage.dice, { shouldDirty: true });
+      setValue("damage.number", homebrew.item.damage.number, { shouldDirty: true });
+      setValue("damage.type", homebrew.item.damage.type, { shouldDirty: true });
+      setValue("magic", homebrew.item.magic, { shouldDirty: true });
+      setValue("attackbonus", homebrew.item.attackbonus, { shouldDirty: true });
+      setValue("defensebonus", homebrew.item.defensebonus, { shouldDirty: true });
+      setValue("notes", homebrew.item.notes, { shouldDirty: true });
+      setValue("equipped", homebrew.item.equipped, { shouldDirty: true });
+    }
+
+    setTimeout(() => trigger(), 0);
   };
 
   const getTypeColor = (typename: string | undefined) => {
@@ -263,6 +333,7 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
         setOpen(isOpen);
         if (!isOpen) {
           setSearchQuery("");
+          setHomebrewSearchQuery("");
           setSelectedItemIndex(null);
         }
       }}
@@ -284,119 +355,153 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 py-4">
-          <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-            <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-arcane-400 animate-pulse"></span>
-              Buscar na API D&D 5e
-            </Label>
+          <Tabs defaultValue="api" value={activeTab} onValueChange={(v) => setActiveTab(v as "api" | "homebrew")}>
+            <TabsList className="w-full">
+              <TabsTrigger value="api">API D&D 5e</TabsTrigger>
+              <TabsTrigger value="homebrew">Homebrew</TabsTrigger>
+            </TabsList>
 
-            <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 text-text-tertiary">
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-arcane-400 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                )}
-              </div>
-              <Input
-                placeholder="Digite para buscar itens automaticamente..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setSelectedItemIndex(null);
-                }}
-                className="bg-bg-inset border-border-default focus:border-arcane-400 focus:ring-arcane-400/20 h-12 flex-1"
-              />
-            </div>
+            <TabsContent value="api">
+              <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
+                <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-arcane-400 animate-pulse"></span>
+                  Buscar na API D&D 5e
+                </Label>
 
-            <div className="mt-4">
-              {debouncedSearchQuery.length > 0 && (
-                <div className="border border-border-default rounded-md bg-bg-inset max-h-72 overflow-y-auto">
-                  {isLoading ? (
-                    <div className="p-6 text-center">
-                      <div className="w-8 h-8 border-2 border-arcane-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                      <p className="text-sm text-text-secondary">
-                        Consultando a API D&D 5e...
-                      </p>
-                    </div>
-                  ) : equipmentData?.equipments &&
-                    equipmentData.equipments.length > 0 ? (
-                    <div className="divide-y divide-border-subtle">
-                      {equipmentData.equipments.map(
-                        (item: any, idx: number) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => handleSelectApiItem(item, idx)}
-                            className={`w-full text-left px-5 py-4 transition-all flex justify-between items-center group ${selectedItemIndex === idx
-                                ? "bg-arcane-400/10 border-l-4 border-l-arcane-400"
-                                : "hover:bg-bg-surface border-l-4 border-l-transparent"
-                              }`}
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 text-text-tertiary">
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-arcane-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <Input
+                    placeholder="Digite para buscar itens automaticamente..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setSelectedItemIndex(null);
+                    }}
+                    className="bg-bg-inset border-border-default focus:border-arcane-400 focus:ring-arcane-400/20 h-12 flex-1"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  {debouncedSearchQuery.length > 0 && (
+                    <div className="border border-border-default rounded-md bg-bg-inset max-h-72 overflow-y-auto">
+                      {isLoading ? (
+                        <div className="p-6 text-center">
+                          <div className="w-8 h-8 border-2 border-arcane-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                          <p className="text-sm text-text-secondary">
+                            Consultando a API D&D 5e...
+                          </p>
+                        </div>
+                      ) : equipmentData?.equipments &&
+                        equipmentData.equipments.length > 0 ? (
+                        <div className="divide-y divide-border-subtle">
+                          {equipmentData.equipments
+                            .filter(isMeaningfulItem)
+                            .map((item: any, idx: number) => (
+                              <button
+                                key={item?.index || idx}
+                                type="button"
+                                onClick={() => handleSelectApiItem(item, idx)}
+                                className={`w-full text-left px-5 py-4 transition-all flex justify-between items-center group ${selectedItemIndex === idx
+                                    ? "bg-arcane-400/10 border-l-4 border-l-arcane-400"
+                                    : "hover:bg-bg-surface border-l-4 border-l-transparent"
+                                  }`}
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-1">
+                                    <span className="font-semibold text-text-primary group-hover:text-arcane-300 transition-colors">
+                                      {item?.name}
+                                    </span>
+                                    <Badge
+                                      className={`text-[10px] uppercase tracking-wider ${getTypeColor(item?.__typename)}`}
+                                    >
+                                      {getTypeLabel(item?.__typename, item)}
+                                    </Badge>
+                                  </div>
+                                  {item?.desc && item.desc[0] && (
+                                    <p className="text-xs text-text-tertiary line-clamp-1">
+                                      {item.desc[0]}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-4">
+                                  {item?.damage?.damage_dice && (
+                                    <span className="text-sm font-mono text-martial-400">
+                                      {item.damage.damage_dice}
+                                    </span>
+                                  )}
+                                  {item?.cost && (
+                                    <span className="text-sm text-divine-400 font-medium">
+                                      {item.cost.quantity} {item.cost.unit}
+                                    </span>
+                                  )}
+                                  {selectedItemIndex === idx && (
+                                    <span className="text-arcane-400">
+                                      <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M5 13l4 4L19 7"
+                                        />
+                                      </svg>
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            ))}
+                        </div>
+                      ) : (
+                        <div className="p-6 text-center">
+                          <svg
+                            className="w-12 h-12 text-text-tertiary mx-auto mb-3 opacity-50"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-1">
-                                <span className="font-semibold text-text-primary group-hover:text-arcane-300 transition-colors">
-                                  {item?.name}
-                                </span>
-                                <Badge
-                                  className={`text-[10px] uppercase tracking-wider ${getTypeColor(item?.__typename)}`}
-                                >
-                                  {getTypeLabel(item?.__typename, item)}
-                                </Badge>
-                              </div>
-                              {item?.desc && item.desc[0] && (
-                                <p className="text-xs text-text-tertiary line-clamp-1">
-                                  {item.desc[0]}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-4">
-                              {item?.damage?.damage_dice && (
-                                <span className="text-sm font-mono text-martial-400">
-                                  {item.damage.damage_dice}
-                                </span>
-                              )}
-                              {item?.cost && (
-                                <span className="text-sm text-divine-400 font-medium">
-                                  {item.cost.quantity} {item.cost.unit}
-                                </span>
-                              )}
-                              {selectedItemIndex === idx && (
-                                <span className="text-arcane-400">
-                                  <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M5 13l4 4L19 7"
-                                    />
-                                  </svg>
-                                </span>
-                              )}
-                            </div>
-                          </button>
-                        ),
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <p className="text-sm text-text-secondary">
+                            Nenhum item encontrado para "{debouncedSearchQuery}"
+                          </p>
+                          <p className="text-xs text-text-tertiary mt-1">
+                            Tente termos como "sword", "armor",
+                            "shield"...
+                          </p>
+                        </div>
                       )}
                     </div>
-                  ) : (
-                    <div className="p-6 text-center">
+                  )}
+
+                  {debouncedSearchQuery.length === 0 && (
+                    <div className="p-6 text-center border-2 border-dashed border-border-default rounded-md bg-bg-inset/50">
                       <svg
                         className="w-12 h-12 text-text-tertiary mx-auto mb-3 opacity-50"
                         fill="none"
@@ -407,46 +512,83 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={1.5}
-                          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
                       </svg>
                       <p className="text-sm text-text-secondary">
-                        Nenhum item encontrado para "{debouncedSearchQuery}"
+                        Digite para buscar itens na API D&D 5e automaticamente
                       </p>
-                      <p className="text-xs text-text-tertiary mt-1">
-                        Tente termos como "sword", "armor",
-                        "shield"...
+                      <p className="text-xs text-text-tertiary mt-2">
+                        A busca é executada 300ms após você parar de digitar
                       </p>
                     </div>
                   )}
                 </div>
-              )}
+              </div>
+            </TabsContent>
 
-              {debouncedSearchQuery.length === 0 && (
-                <div className="p-6 text-center border-2 border-dashed border-border-default rounded-md bg-bg-inset/50">
-                  <svg
-                    className="w-12 h-12 text-text-tertiary mx-auto mb-3 opacity-50"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <p className="text-sm text-text-secondary">
-                    Digite para buscar itens na API D&D 5e automaticamente
-                  </p>
-                  <p className="text-xs text-text-tertiary mt-2">
-                    A busca é executada 300ms após você parar de digitar
-                  </p>
+            <TabsContent value="homebrew">
+              <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
+                <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-nature-400 animate-pulse"></span>
+                  Buscar na coleção Homebrew
+                </Label>
+
+                <div className="flex items-center gap-3">
+                  <Input
+                    placeholder="Digite para buscar itens homebrew..."
+                    value={homebrewSearchQuery}
+                    onChange={(e) => {
+                      setHomebrewSearchQuery(e.target.value);
+                      setSelectedItemIndex(null);
+                    }}
+                    className="bg-bg-inset border-border-default focus:border-nature-400 h-11 flex-1"
+                  />
                 </div>
-              )}
-            </div>
-          </div>
+
+                <div className="mt-4 border border-border-default rounded-md bg-bg-inset max-h-72 overflow-y-auto">
+                  {filteredHomebrews.length === 0 ? (
+                    <div className="p-6 text-center">
+                      <p className="text-sm text-text-secondary">
+                        {homebrewSearchQuery
+                          ? `Nenhum item homebrew encontrado para "${homebrewSearchQuery}"`
+                          : "Nenhum item homebrew adicionado ainda"}
+                      </p>
+                      <p className="text-xs text-text-tertiary mt-1">
+                        Itens adicionados manualmente aparecerão aqui
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-border-subtle">
+                      {filteredHomebrews.map((homebrew) => (
+                        <button
+                          key={homebrew.id}
+                          type="button"
+                          onClick={() => handleSelectHomebrewItem(homebrew)}
+                          className="w-full text-left px-4 py-3 hover:bg-bg-surface transition-all flex justify-between items-center"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-sm">{homebrew.name}</span>
+                              <Badge className="text-[10px] bg-nature-400/20 text-nature-400">
+                                Custom
+                              </Badge>
+                            </div>
+                            {homebrew.item?.notes && (
+                              <p className="text-xs text-text-tertiary mt-1 line-clamp-1">
+                                {homebrew.item.notes}
+                              </p>
+                            )}
+                          </div>
+                          <Plus className="w-4 h-4 text-nature-400" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
 
           <div className="border-t-2 border-border-default pt-8">
             <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-6 block flex items-center gap-2">
@@ -727,6 +869,7 @@ export default function AddItemDialog({ onAdd }: AddItemDialogProps) {
                 reset();
                 setOpen(false);
                 setSearchQuery("");
+                setHomebrewSearchQuery("");
                 setSelectedItemIndex(null);
               }}
               className="border-border-default hover:bg-bg-surface"

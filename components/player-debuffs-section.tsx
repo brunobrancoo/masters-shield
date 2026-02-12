@@ -10,7 +10,7 @@ interface PlayerDebuffsSectionProps {
   onRemoveDebuff: (index: number) => void;
 }
 
-export function PlayerDebuffsSection({ player, onAddDebuff, onRemoveDebuff }: PlayerDebuffsSectionProps) {
+export default function PlayerDebuffsSection({ player, onAddDebuff, onRemoveDebuff }: PlayerDebuffsSectionProps) {
   return (
     <Card className="metal-border bg-destructive/10 border-destructive/30">
       <CardHeader>

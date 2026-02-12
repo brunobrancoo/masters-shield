@@ -22,7 +22,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PlayerForm } from "@/components/player-form";
+import PlayerForm from "@/components/player-form";
 import { UserPlus } from "lucide-react";
 
 export default function CharacterSelectionPage() {

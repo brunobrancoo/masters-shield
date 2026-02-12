@@ -64,7 +64,7 @@ const spellLevelColors = {
   },
 };
 
-export function PlayerSpellSlotsSection({ player, onSpellSlotChange }: PlayerSpellSlotsSectionProps) {
+export default function PlayerSpellSlotsSection({ player, onSpellSlotChange }: PlayerSpellSlotsSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>

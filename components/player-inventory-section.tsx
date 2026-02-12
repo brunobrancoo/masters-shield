@@ -16,9 +16,10 @@ interface PlayerInventorySectionProps {
   onRemoveItem: (index: number) => void;
   onToggleEquip: (index: number) => void;
   onUpdateItem: (index: number, updatedItem: Item) => void;
+  campaignId: string;
 }
 
-export function PlayerInventorySection({ player, editItemIndex, setEditItemIndex, onAddItem, onRemoveItem, onToggleEquip, onUpdateItem }: PlayerInventorySectionProps) {
+export default function PlayerInventorySection({ player, editItemIndex, setEditItemIndex, onAddItem, onRemoveItem, onToggleEquip, onUpdateItem, campaignId }: PlayerInventorySectionProps) {
   const handleRollItemDamage = (item: Item) => {
     const result = rollItemDamage(item);
     if (result) {
@@ -39,7 +40,7 @@ export function PlayerInventorySection({ player, editItemIndex, setEditItemIndex
               <SwordIcon className="w-6 h-6" />
               Inventário
             </CardTitle>
-            <AddItemDialog onAdd={onAddItem} />
+            <AddItemDialog onAdd={onAddItem} campaignId={campaignId} />
           </div>
         </CardHeader>
         <CardContent>

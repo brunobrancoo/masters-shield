@@ -14,7 +14,7 @@ import {
   queryEqual,
 } from "firebase/firestore";
 import { db } from "./firebase-config";
-import type { Monster, Player, NPC } from "@/lib/interfaces/interfaces";
+import type { Monster, Player, NPC, Homebrew } from "@/lib/interfaces/interfaces";
 import { generateInviteCode } from "./utils/invite-code";
 
 export async function createCampaign(
@@ -265,6 +265,39 @@ export function onNPCsChange(
       (doc) => ({ id: doc.id, ...doc.data() }) as NPC,
     );
     callback(npcs);
+  });
+  return unsubscribe;
+}
+
+export function getHomebrews(campaignId: string) {
+  return getDocs(collection(db, "campaigns", campaignId, "homebrews"));
+}
+
+export async function createHomebrew(
+  campaignId: string,
+  homebrew: Omit<Homebrew, "id" | "createdAt" | "updatedAt">,
+): Promise<string> {
+  const homebrewRef = await addDoc(
+    collection(db, "campaigns", campaignId, "homebrews"),
+    {
+      ...homebrew,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+  );
+  return homebrewRef.id;
+}
+
+export function onHomebrewsChange(
+  campaignId: string,
+  callback: (homebrews: Homebrew[]) => void,
+) {
+  const q = collection(db, "campaigns", campaignId, "homebrews");
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const homebrews = snapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() }) as Homebrew,
+    );
+    callback(homebrews);
   });
   return unsubscribe;
 }

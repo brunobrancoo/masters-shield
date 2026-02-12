@@ -5,7 +5,7 @@ interface PlayerCombatStatsSectionProps {
   player: Player;
 }
 
-export function PlayerCombatStatsSection({ player }: PlayerCombatStatsSectionProps) {
+export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>
