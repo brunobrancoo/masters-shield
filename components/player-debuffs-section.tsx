@@ -1,16 +1,16 @@
-import type { Player, Buff } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Buff } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import AddDebuffDialog from "@/components/add-debuff-dialog";
 
 interface PlayerDebuffsSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   onAddDebuff: (debuff: Buff) => void;
   onRemoveDebuff: (index: number) => void;
 }
 
-export default function PlayerDebuffsSection({ player, onAddDebuff, onRemoveDebuff }: PlayerDebuffsSectionProps) {
+export default function PlayerDebuffsSection({ playableCharacter, onAddDebuff, onRemoveDebuff }: PlayerDebuffsSectionProps) {
   return (
     <Card className="metal-border bg-destructive/10 border-destructive/30">
       <CardHeader>
@@ -23,12 +23,12 @@ export default function PlayerDebuffsSection({ player, onAddDebuff, onRemoveDebu
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {!player.debuffs || player.debuffs.length === 0 ? (
+          {!playableCharacter.debuffs || playableCharacter.debuffs.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
               Nenhum debuff ativo
             </p>
           ) : (
-            player.debuffs.map((debuff, index) => (
+            playableCharacter.debuffs.map((debuff, index) => (
               <div
                 key={index}
                 className="bg-card/50 p-3 rounded text-sm"

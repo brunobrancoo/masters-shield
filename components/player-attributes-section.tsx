@@ -1,13 +1,13 @@
-import type { Player } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollIcon } from "@/components/icons";
 import { calculateModifier } from "@/lib/utils-dnd";
 
 interface PlayerAttributesSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
 }
 
-export default function PlayerAttributesSection({ player }: PlayerAttributesSectionProps) {
+export default function PlayerAttributesSection({ playableCharacter }: PlayerAttributesSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>
@@ -18,7 +18,7 @@ export default function PlayerAttributesSection({ player }: PlayerAttributesSect
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-          {Object.entries(player.attributes).map(([key, value]) => (
+          {Object.entries(playableCharacter.attributes).map(([key, value]) => (
             <Card key={key} className="bg-card text-center">
               <CardContent className="pt-4 pb-3">
                 <p className="text-xs uppercase font-sans text-muted-foreground mb-1">

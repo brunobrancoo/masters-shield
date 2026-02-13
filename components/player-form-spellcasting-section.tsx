@@ -1,28 +1,95 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Sparkles } from "lucide-react";
+import { Wand2 } from "lucide-react";
+import {
+  SPELLCASTING_ABILITY,
+  calculateSpellDC,
+  calculateSpellAttack,
+} from "@/lib/skills";
+import { useClass } from "@/lib/api/hooks";
 
 interface PlayerFormSpellcastingSectionProps {
   register: any;
+  watch: any;
+  setValue: any;
+  classIndex: string;
+  level: number;
+  attributes: { for: number; des: number; con: number; int: number; sab: number; car: number };
+  proficiencyBonus: number;
 }
 
 export default function PlayerFormSpellcastingSection({
   register,
+  watch,
+  setValue,
+  classIndex,
+  level,
+  attributes,
+  proficiencyBonus,
 }: PlayerFormSpellcastingSectionProps) {
+  const getCasterClasses = () => ["bard", "cleric", "druid", "sorcerer", "warlock", "wizard", "paladin", "ranger"];
+  const isCaster = classIndex && getCasterClasses().includes(classIndex.toLowerCase());
+
+  const { data: classData } = useClass(classIndex);
+  const spellcastingAbility = classData?.class?.spellcasting?.spellcasting_ability?.index || SPELLCASTING_ABILITY[classIndex?.toLowerCase() || ""];
+
+  const [spellSlots, setSpellSlots] = useState<Record<number, { current: number; max: number }>>({
+    1: { current: 0, max: 0 },
+    2: { current: 0, max: 0 },
+    3: { current: 0, max: 0 },
+    4: { current: 0, max: 0 },
+    5: { current: 0, max: 0 },
+    6: { current: 0, max: 0 },
+    7: { current: 0, max: 0 },
+    8: { current: 0, max: 0 },
+    9: { current: 0, max: 0 },
+  });
+
+  useEffect(() => {
+    if (!isCaster || !spellcastingAbility) return;
+
+    const spellDC = calculateSpellDC(level, spellcastingAbility as any, attributes);
+    const spellAttack = calculateSpellAttack(level, spellcastingAbility as any, attributes);
+
+    setValue("spellCD", spellDC);
+    setValue("spellAttack", spellAttack);
+  }, [level, spellcastingAbility, JSON.stringify(attributes), proficiencyBonus, isCaster, setValue]);
+
+  useEffect(() => {
+    setValue("spellSlots", spellSlots);
+  }, [spellSlots, setValue]);
+
+  const handleSpellSlotChange = (lvl: number, field: 'current' | 'max', value: number) => {
+    const newSpellSlots = { ...spellSlots };
+    newSpellSlots[lvl] = { ...newSpellSlots[lvl], [field]: value };
+    setSpellSlots(newSpellSlots);
+  };
+
+  if (!isCaster) {
+    return null;
+  }
+
+  const spellAbilityName = spellcastingAbility?.toUpperCase() || "INT";
+
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
       <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
         <Wand2 className="w-4 h-4 text-arcane-400" />
         Magia & Feitiços
       </Label>
+
+      <div className="mb-4 p-3 bg-arcane-400/10 rounded border border-arcane-400/20">
+        <p className="text-sm text-text-secondary">
+          <span className="font-semibold">Atributo de Conjuração:</span> {spellAbilityName}
+        </p>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label
-            htmlFor="spellCD"
-            className="text-text-secondary font-medium"
-          >
+          <Label htmlFor="spellCD" className="text-text-secondary font-medium">
             CD de Magia
           </Label>
           <Input
@@ -30,86 +97,58 @@ export default function PlayerFormSpellcastingSection({
             type="number"
             className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
             {...register("spellCD", { valueAsNumber: true })}
-            placeholder="10"
           />
+          <p className="text-xs text-text-tertiary">8 + Bônus de Proficiência + Mod. {spellAbilityName}</p>
         </div>
         <div className="space-y-2">
-          <Label
-            htmlFor="proficiencyBonus"
-            className="text-text-secondary font-medium"
-          >
-            Bônus de Proficiência
+          <Label htmlFor="spellAttack" className="text-text-secondary font-medium">
+            Bônus de Ataque Mágico
           </Label>
           <Input
-            id="proficiencyBonus"
+            id="spellAttack"
             type="number"
-            min="2"
             className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-            {...register("proficiencyBonus", { valueAsNumber: true })}
-            placeholder="2"
+            {...register("spellAttack", { valueAsNumber: true })}
           />
+          <p className="text-xs text-text-tertiary">Bônus de Proficiência + Mod. {spellAbilityName}</p>
         </div>
       </div>
 
       <div className="mt-4">
         <Label className="text-text-secondary font-medium mb-3 block">
-          Slots de Magia (Máximo)
+          Slots de Magia (Atual / Máximo) - Nível {level}
         </Label>
-        <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-9 gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => (
-            <div key={level}>
-              <div className="flex items-center gap-1 mb-1">
-                <Wand2 className="w-3 h-3 text-arcane-400" />
-                <Label className="text-xs text-text-tertiary">
-                  Nível {level}
-                </Label>
-              </div>
-              <Input
-                type="number"
-                min="0"
-                className="w-full bg-bg-inset border-border-default focus:border-arcane-400 text-center h-9 text-sm"
-                {...(register as any)(`maxSpellSlots.${level}`)}
-                placeholder="0"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => {
+            const slotData = spellSlots[lvl];
 
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div className="space-y-2">
-          <Label
-            htmlFor="sorceryPoints"
-            className="text-text-secondary font-medium flex items-center gap-2"
-          >
-            <Sparkles className="w-3 h-3 text-arcane-400" />
-            Pontos de Feitiçaria (Atual)
-          </Label>
-          <Input
-            id="sorceryPoints"
-            type="number"
-            min="0"
-            className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-            {...register("sorceryPoints", { valueAsNumber: true })}
-            placeholder="0"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label
-            htmlFor="maxSorceryPoints"
-            className="text-text-secondary font-medium flex items-center gap-2"
-          >
-            <Sparkles className="w-3 h-3 text-arcane-400" />
-            Pontos de Feitiçaria (Max)
-          </Label>
-          <Input
-            id="maxSorceryPoints"
-            type="number"
-            min="0"
-            className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-            {...register("maxSorceryPoints", { valueAsNumber: true })}
-            placeholder="0"
-          />
+            return (
+              <div key={lvl}>
+                <div className="flex items-center gap-1 mb-1">
+                  <Wand2 className="w-3 h-3 text-arcane-400" />
+                  <Label className="text-xs text-text-tertiary">Nível {lvl}</Label>
+                </div>
+                <div className="flex gap-1">
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="Atual"
+                    className="flex-1 bg-bg-inset border-border-default focus:border-arcane-400 text-center h-9 text-sm"
+                    value={slotData?.current ?? 0}
+                    onChange={(e) => handleSpellSlotChange(lvl, 'current', parseInt(e.target.value) || 0)}
+                  />
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="Máx"
+                    className="flex-1 bg-bg-inset border-border-default focus:border-arcane-400 text-center h-9 text-sm"
+                    value={slotData?.max ?? 0}
+                    onChange={(e) => handleSpellSlotChange(lvl, 'max', parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

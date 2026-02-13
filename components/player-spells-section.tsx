@@ -1,4 +1,4 @@
-import type { Player, Spell } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Spell } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
@@ -7,7 +7,7 @@ import AddSpellDialog from "@/components/add-spell-dialog";
 import EditSpellDialog from "@/components/edit-spell-dialog";
 
 interface PlayerSpellsSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   editSpellIndex: number | null;
   setEditSpellIndex: (index: number | null) => void;
   onAddSpell: (spell: Spell) => void;
@@ -15,7 +15,7 @@ interface PlayerSpellsSectionProps {
   onEditSpell: (index: number, updatedSpell: Spell) => void;
 }
 
-export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell }: PlayerSpellsSectionProps) {
+export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell }: PlayerSpellsSectionProps) {
   return (
     <>
       <Card className="metal-border">
@@ -30,12 +30,12 @@ export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex,
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {!player.spells || player.spells.length === 0 ? (
+            {!playableCharacter.spells || playableCharacter.spells.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
                 Nenhuma magia conhecida
               </p>
             ) : (
-              player.spells.map((spell, index) => (
+              playableCharacter.spells.map((spell, index) => (
                 <div key={index} className="bg-card/50 p-3 rounded">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -97,9 +97,9 @@ export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex,
         </CardContent>
       </Card>
 
-      {editSpellIndex !== null && player && player.spells && (
+      {editSpellIndex !== null && playableCharacter && playableCharacter.spells && (
         <EditSpellDialog
-          spell={player.spells[editSpellIndex]}
+          spell={playableCharacter.spells[editSpellIndex]}
           index={editSpellIndex}
           open={editSpellIndex !== null}
           setOpen={(open) =>

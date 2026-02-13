@@ -1,4 +1,4 @@
-import type { Player, Item } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Item } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SwordIcon } from "@/components/icons";
@@ -9,7 +9,7 @@ import EditItemDialog from "@/components/edit-item-dialog";
 import { rollItemDamage, formatDamageRoll } from "@/lib/utils/utils";
 
 interface PlayerInventorySectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   editItemIndex: number | null;
   setEditItemIndex: (index: number | null) => void;
   onAddItem: (item: Item) => void;
@@ -19,11 +19,12 @@ interface PlayerInventorySectionProps {
   campaignId: string;
 }
 
-export default function PlayerInventorySection({ player, editItemIndex, setEditItemIndex, onAddItem, onRemoveItem, onToggleEquip, onUpdateItem, campaignId }: PlayerInventorySectionProps) {
+export default function PlayerInventorySection({ playableCharacter, editItemIndex, setEditItemIndex, onAddItem, onRemoveItem, onToggleEquip, onUpdateItem, campaignId }: PlayerInventorySectionProps) {
   const handleRollItemDamage = (item: Item) => {
     const result = rollItemDamage(item);
     if (result) {
-      alert(formatDamageRoll(result.rolls, result.total, item.damage?.type));
+      const damageType = item.damageLegacy?.type || item.damage?.damage_type?.name;
+      alert(formatDamageRoll(result.rolls, result.total, damageType));
     }
   };
 
@@ -45,12 +46,12 @@ export default function PlayerInventorySection({ player, editItemIndex, setEditI
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {!player.inventory || player.inventory.length === 0 ? (
+            {!playableCharacter.inventory || playableCharacter.inventory.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
                 Inventário vazio
               </p>
             ) : (
-              player.inventory.map((item, index) => (
+              playableCharacter.inventory.map((item, index) => (
                 <div key={index} className="bg-card/50 p-3 rounded">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -71,11 +72,11 @@ export default function PlayerInventorySection({ player, editItemIndex, setEditI
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {item.type === "weapon"
-                          ? `${item.type} • ${item.distance} • ${item.damage.dice}d${item.damage.number}${item.damage.type ? ` ${item.damage.type}` : ""}`
+                          ? `${item.type} • ${item.distance || item.weapon_range || ""} • ${item.damageLegacy ? `${item.damageLegacy.dice}d${item.damageLegacy.number}` : item.damage?.damage_dice || ""}${item.damageLegacy?.type || item.damage?.damage_type?.name || ""}`
                           : item.type}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Preço: {item.price} gp{" "}
+                        Preço: {item.price ?? `${item.cost?.quantity ?? 0} ${item.cost?.unit ?? "gp"}`}{" "}
                         {item.attackbonus !== 0 &&
                           `• ATK +${item.attackbonus}`}{" "}
                         {item.defensebonus !== 0 &&
@@ -132,9 +133,9 @@ export default function PlayerInventorySection({ player, editItemIndex, setEditI
         </CardContent>
       </Card>
 
-      {editItemIndex !== null && player && player.inventory && (
+      {editItemIndex !== null && playableCharacter && playableCharacter.inventory && (
         <EditItemDialog
-          item={player.inventory[editItemIndex]}
+          item={playableCharacter.inventory[editItemIndex]}
           index={editItemIndex}
           open={editItemIndex !== null}
           setOpen={(open) =>

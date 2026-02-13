@@ -14,8 +14,17 @@ import {
   queryEqual,
 } from "firebase/firestore";
 import { db } from "./firebase-config";
-import type { Monster, Player, NPC, Homebrew } from "@/lib/interfaces/interfaces";
+import type { Monster, PlayableCharacter, NPC, Homebrew } from "@/lib/interfaces/interfaces";
 import { generateInviteCode } from "./utils/invite-code";
+import { sanitizeForFirebase } from "@/lib/interfaces/interfaces";
+
+export interface Campaign {
+  id: string;
+  name: string;
+  masterId: string;
+  inviteCode: string;
+  members: string[];
+}
 
 export async function createCampaign(
   name: string,
@@ -65,10 +74,11 @@ export async function joinCampaign(
   });
 }
 
-export async function getCampaign(campaignId: string) {
+export async function getCampaign(campaignId: string): Promise<Campaign | null> {
   const campaignRef = doc(db, "campaigns", campaignId);
   const snapshot = await getDoc(campaignRef);
-  return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
+  if (!snapshot.exists()) return null;
+  return { id: snapshot.id, ...snapshot.data() } as Campaign;
 }
 
 export async function regenerateInviteCode(
@@ -83,63 +93,63 @@ export async function regenerateInviteCode(
   return newCode;
 }
 
-export function getPlayers(campaignId: string) {
-  return getDocs(collection(db, "campaigns", campaignId, "players"));
+export function getPlayableCharacters(campaignId: string) {
+  return getDocs(collection(db, "campaigns", campaignId, "playableCharacters"));
 }
 
-export async function getPlayer(
+export async function getPlayableCharacter(
   campaignId: string,
-  playerId: string,
-): Promise<Player | null> {
-  const playerRef = doc(db, "campaigns", campaignId, "players", playerId);
-  const snapshot = await getDoc(playerRef);
+  playableCharacterId: string,
+): Promise<PlayableCharacter | null> {
+  const playableCharacterRef = doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId);
+  const snapshot = await getDoc(playableCharacterRef);
   return snapshot.exists()
-    ? ({ id: snapshot.id, ...snapshot.data() } as Player)
+    ? ({ id: snapshot.id, ...snapshot.data() }) as PlayableCharacter
     : null;
 }
 
-export async function createPlayer(
+export async function createPlayableCharacter(
   campaignId: string,
-  player: Omit<Player, "id">,
+  playableCharacter: Omit<PlayableCharacter, "id">,
 ): Promise<string> {
-  const playerRef = await addDoc(
-    collection(db, "campaigns", campaignId, "players"),
+  const playableCharacterRef = await addDoc(
+    collection(db, "campaigns", campaignId, "playableCharacters"),
     {
-      ...player,
+      ...sanitizeForFirebase(playableCharacter),
       createdAt: serverTimestamp(),
     },
   );
-  return playerRef.id;
+  return playableCharacterRef.id;
 }
 
-export async function updatePlayer(
+export async function updatePlayableCharacter(
   campaignId: string,
-  playerId: string,
-  updates: Partial<Player>,
+  playableCharacterId: string,
+  updates: Partial<PlayableCharacter>,
 ): Promise<void> {
   await updateDoc(
-    doc(db, "campaigns", campaignId, "players", playerId),
-    updates,
+    doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId),
+    sanitizeForFirebase(updates),
   );
 }
 
-export async function updatePlayerOrSet(
+export async function updatePlayableCharacterOrSet(
   campaignId: string,
-  playerId: string,
-  updates: Partial<Player>,
+  playableCharacterId: string,
+  updates: Partial<PlayableCharacter>,
 ): Promise<void> {
   await setDoc(
-    doc(db, "campaigns", campaignId, "players", playerId),
-    updates,
+    doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId),
+    sanitizeForFirebase(updates),
     { merge: true },
   );
 }
 
-export async function deletePlayer(
+export async function deletePlayableCharacter(
   campaignId: string,
-  playerId: string,
+  playableCharacterId: string,
 ): Promise<void> {
-  await deleteDoc(doc(db, "campaigns", campaignId, "players", playerId));
+  await deleteDoc(doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId));
 }
 
 export function getMonsters(campaignId: string) {
@@ -163,7 +173,7 @@ export async function createMonster(
 ): Promise<string> {
   const monsterRef = await addDoc(
     collection(db, "campaigns", campaignId, "monsters"),
-    monster,
+    sanitizeForFirebase(monster),
   );
   return monsterRef.id;
 }
@@ -175,7 +185,7 @@ export async function updateMonster(
 ): Promise<void> {
   await updateDoc(
     doc(db, "campaigns", campaignId, "monsters", monsterId),
-    updates,
+    sanitizeForFirebase(updates),
   );
 }
 
@@ -207,7 +217,7 @@ export async function createNPC(
 ): Promise<string> {
   const npcRef = await addDoc(
     collection(db, "campaigns", campaignId, "npcs"),
-    npc,
+    sanitizeForFirebase(npc),
   );
   return npcRef.id;
 }
@@ -217,7 +227,7 @@ export async function updateNPC(
   npcId: string,
   updates: Partial<NPC>,
 ): Promise<void> {
-  await updateDoc(doc(db, "campaigns", campaignId, "npcs", npcId), updates);
+  await updateDoc(doc(db, "campaigns", campaignId, "npcs", npcId), sanitizeForFirebase(updates));
 }
 
 export async function deleteNPC(
@@ -227,16 +237,16 @@ export async function deleteNPC(
   await deleteDoc(doc(db, "campaigns", campaignId, "npcs", npcId));
 }
 
-export function onPlayersChange(
+export function onPlayableCharactersChange(
   campaignId: string,
-  callback: (players: Player[]) => void,
+  callback: (playableCharacters: PlayableCharacter[]) => void,
 ) {
-  const q = collection(db, "campaigns", campaignId, "players");
+  const q = collection(db, "campaigns", campaignId, "playableCharacters");
   const unsubscribe = onSnapshot(q, (snapshot) => {
-    const players = snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() }) as Player,
+    const playableCharacters = snapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() }) as PlayableCharacter,
     );
-    callback(players);
+    callback(playableCharacters);
   });
   return unsubscribe;
 }
@@ -280,7 +290,7 @@ export async function createHomebrew(
   const homebrewRef = await addDoc(
     collection(db, "campaigns", campaignId, "homebrews"),
     {
-      ...homebrew,
+      ...sanitizeForFirebase(homebrew),
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },

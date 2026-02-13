@@ -1,16 +1,16 @@
-import type { Player, Buff } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Buff } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import AddBuffDialog from "@/components/add-buff-dialog";
 
 interface PlayerBuffsSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   onAddBuff: (buff: Buff) => void;
   onRemoveBuff: (index: number) => void;
 }
 
-export default function PlayerBuffsSection({ player, onAddBuff, onRemoveBuff }: PlayerBuffsSectionProps) {
+export default function PlayerBuffsSection({ playableCharacter, onAddBuff, onRemoveBuff }: PlayerBuffsSectionProps) {
   return (
     <Card className="metal-border bg-primary/10 border-primary/30">
       <CardHeader>
@@ -23,12 +23,12 @@ export default function PlayerBuffsSection({ player, onAddBuff, onRemoveBuff }: 
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {!player.buffs || player.buffs.length === 0 ? (
+          {!playableCharacter.buffs || playableCharacter.buffs.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
               Nenhum buff ativo
             </p>
           ) : (
-            player.buffs.map((buff, index) => (
+            playableCharacter.buffs.map((buff, index) => (
               <div
                 key={index}
                 className="bg-card/50 p-3 rounded text-sm"

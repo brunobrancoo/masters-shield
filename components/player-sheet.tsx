@@ -12,11 +12,11 @@ import { DialogContent } from "@/components/ui/dialog";
 import { ShieldIcon, SwordIcon, ScrollIcon } from "@/components/icons";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
-import { Player } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { getArchetype, getHPColor, getHPClass } from "@/lib/theme";
 
 interface PlayerSheetProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   onEdit: () => void;
   onDelete: () => void;
   onClose: () => void;
@@ -27,7 +27,7 @@ interface PlayerSheetProps {
 }
 
 export function PlayerSheet({
-  player,
+  playableCharacter,
   onEdit,
   onDelete,
   onClose,
@@ -41,8 +41,8 @@ export function PlayerSheet({
     return mod >= 0 ? `+${mod}` : mod.toString();
   };
 
-  const archetype = getArchetype(player.class);
-  const hpPercentage = player.maxHp ? (player.hp / player.maxHp) * 100 : 100;
+  const archetype = getArchetype(playableCharacter.className);
+  const hpPercentage = playableCharacter.maxHp ? (playableCharacter.hp / playableCharacter.maxHp) * 100 : 100;
   const hpColor = getHPColor(hpPercentage);
   const hpClass = getHPClass(hpPercentage);
 
@@ -59,12 +59,12 @@ export function PlayerSheet({
             <div className="flex-1">
               <CardTitle className="font-heading text-3xl flex items-center gap-3 text-text-primary">
                 <ShieldIcon className="w-8 h-8 text-class-accent" />
-                {player.name}
+                {playableCharacter.name}
               </CardTitle>
               <CardDescription className="font-body text-base mt-2 text-text-secondary">
-                {player.race} {player.class} -{" "}
+                {playableCharacter.raceName} {playableCharacter.className} -{" "}
                 <span className="text-class-accent font-bold">
-                  Nível {player.level}
+                  Nível {playableCharacter.level}
                 </span>
               </CardDescription>
             </div>
@@ -84,10 +84,10 @@ export function PlayerSheet({
                   Pontos de Vida
                 </p>
                 <p className="text-4xl font-bold font-body" style={{ color: hpColor }}>
-                  {player.hp}
-                  {player.maxHp && player.maxHp !== player.hp && (
+                  {playableCharacter.hp}
+                  {playableCharacter.maxHp && playableCharacter.maxHp !== playableCharacter.hp && (
                     <span className="text-lg text-text-tertiary ml-2">
-                      / {player.maxHp}
+                      / {playableCharacter.maxHp}
                     </span>
                   )}
                 </p>
@@ -102,7 +102,7 @@ export function PlayerSheet({
               Atributos
             </h3>
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-              {Object.entries(player.attributes).map(([key, value]) => (
+              {Object.entries(playableCharacter.attributes).map(([key, value]) => (
                 <Card key={key} className="card-inset">
                   <CardContent className="pt-4 pb-3 text-center">
                     <p className="section-label mb-1">
@@ -119,7 +119,7 @@ export function PlayerSheet({
           </div>
 
           {/* Inventory */}
-          {(player.inventory && player.inventory.length > 0) && (
+          {(playableCharacter.inventory && playableCharacter.inventory.length > 0) && (
             <div>
               <h3 className="font-heading text-xl mb-3 flex items-center gap-2 text-text-primary">
                 <SwordIcon className="w-5 h-5 text-class-accent" />
@@ -128,7 +128,7 @@ export function PlayerSheet({
               <Card className="card-inset">
                 <CardContent className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {player.inventory.map((item, index) => (
+                    {playableCharacter.inventory.map((item, index) => (
                       <div
                         key={index}
                         className="bg-bg-surface p-3 rounded border border-border-subtle"
@@ -148,13 +148,13 @@ export function PlayerSheet({
                         </div>
                         <p className="text-xs text-text-secondary">
                           {item.type === "weapon"
-                            ? `Arma • ${item.distance === "melee" ? "Corpo a corpo" : "À distância"} • ${item.damage.dice}d${item.damage.number}${item.damage.type ? ` ${item.damage.type}` : ""}`
+                            ? `Arma • ${item.distance === "melee" ? "Corpo a corpo" : "À distância"} • ${item.damageLegacy ? `${item.damageLegacy.dice}d${item.damageLegacy.number}` : item.damage?.damage_dice || ""}${item.damageLegacy?.type || item.damage?.damage_type?.name || ""}`
                             : item.type === "armor"
                               ? "Armadura"
                               : "Escudo"}
                         </p>
                         <p className="text-xs text-text-secondary">
-                          Preço: {item.price} gp{" "}
+                          Preço: {item.price ?? `${item.cost?.quantity ?? 0} ${item.cost?.unit ?? "gp"}`}{" "}
                           {item.attackbonus !== 0 &&
                             `• ATK +${item.attackbonus}`}{" "}
                           {item.defensebonus !== 0 &&
@@ -174,13 +174,13 @@ export function PlayerSheet({
           )}
 
           {/* Notes */}
-          {player.notes && (
+          {playableCharacter.notes && (
             <div>
               <h3 className="font-heading text-xl mb-3 text-text-primary">Anotações</h3>
               <Card className="card-inset">
                 <CardContent className="p-4">
                   <p className="font-handwritten leading-relaxed text-pretty text-text-primary">
-                    {player.notes}
+                    {playableCharacter.notes}
                   </p>
                 </CardContent>
               </Card>

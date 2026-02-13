@@ -23,7 +23,11 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { Spell } from "@/lib/interfaces/interfaces";
 import { spellSchema, type SpellFormData } from "@/lib/schemas";
 
-export default function AddSpellDialog({ onAdd }: { onAdd: (spell: Spell) => void }) {
+export default function AddSpellDialog({
+  onAdd,
+}: {
+  onAdd: (spell: Spell) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -167,7 +171,7 @@ export default function AddSpellDialog({ onAdd }: { onAdd: (spell: Spell) => voi
                             concentration: spell.concentration,
                             ritual: spell.ritual,
                           });
-                          setOpen(false);
+                          // setOpen(false);
                         }}
                         className="w-full text-left px-5 py-3 hover:bg-bg-surface transition-colors group"
                       >

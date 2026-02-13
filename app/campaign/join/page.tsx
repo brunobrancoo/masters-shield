@@ -37,7 +37,7 @@ export default function JoinCampaignPage() {
 
       const campaignDoc = snapshot.docs[0];
       await joinCampaign(campaignDoc.id, user.uid);
-      router.push("/campaign/select");
+      router.push(`/campaign/${campaignDoc.id}`);
     } catch (error: any) {
       setError(error.message || "Erro ao entrar na campanha");
       setLoading(false);

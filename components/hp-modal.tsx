@@ -14,14 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import { Player } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/interfaces/interfaces";
 
 interface HPModalProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   onApply: (amount: number) => void;
 }
 
-export default function HPModal({ player, onApply }: HPModalProps) {
+export default function HPModal({ playableCharacter, onApply }: HPModalProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
@@ -42,7 +42,7 @@ export default function HPModal({ player, onApply }: HPModalProps) {
           Editar HP Personalizado
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="p-14">
         <DialogHeader>
           <DialogTitle>Editar Pontos de Vida</DialogTitle>
           <DialogDescription>
@@ -63,8 +63,10 @@ export default function HPModal({ player, onApply }: HPModalProps) {
           </div>
           <p className="text-sm text-muted-foreground">
             HP atual:{" "}
-            <span className="font-bold text-destructive">{player.hp}</span> /{" "}
-            {player.maxHp}
+            <span className="font-bold text-destructive">
+              {playableCharacter.hp}
+            </span>{" "}
+            / {playableCharacter.maxHp}
           </p>
         </div>
         <DialogFooter>

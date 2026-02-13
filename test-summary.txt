@@ -1,0 +1,114 @@
+RESOURCE INITIALIZATION AND STARTING EQUIPMENT TEST SUMMARY
+=========================================================
+
+TEST DATE: February 13, 2026
+OVERALL STATUS: ❌ CRITICAL ISSUES FOUND
+
+EXECUTIVE SUMMARY
+-----------------
+The resource initialization and starting equipment features have critical issues:
+- Resource initialization logic causes user edits to be overwritten
+- Starting equipment feature is completely not implemented
+- Display components have minor issues
+
+TEST RESULTS
+============
+
+Test 1: Resource Initialization from API Data
+-----------------------------------------------
+Status: ❌ CRITICAL FAILURES
+
+All classes with spendable resources have the same critical bug:
+- Sorcerer (sorcery points) - ❌ FAIL
+- Monk (ki points) - ❌ FAIL
+- Barbarian (rages) - ❌ FAIL
+- Bard (inspiration) - ❌ FAIL
+- Paladin (channel divinity) - ❌ FAIL
+- Cleric (channel divinity) - ❌ FAIL
+
+Issue: Forms use `APIValue || watchedValue` pattern which causes:
+- User edits to be overwritten whenever form re-renders
+- Complete loss of user data
+
+Test 2: Display-Only Features
+-------------------------------
+Status: ⚠️ PARTIAL PASS
+
+- Paladin Aura Range - ✅ PASS
+- Monk Unarmored Movement - ❌ MISSING
+- Barbarian Unarmored Movement - ❌ IMPORTED BUT NOT USED
+
+Test 3: Class Starting Equipment Inventory
+---------------------------------------------
+Status: ❌ NOT IMPLEMENTED
+
+All tests fail because feature is not implemented:
+- New character with Fighter class - ❌ FAIL
+- Class switching (Fighter → Wizard) - ❌ FAIL
+- Multiple class changes - ❌ FAIL
+- Edge cases - ❌ FAIL
+
+Blocker: GraphQL query missing equipment details
+
+Test 4: Form State Persistence
+-------------------------------
+Status: ❌ NOT APPLICABLE
+
+Cannot test because resource initialization is broken and
+starting equipment is not implemented.
+
+CRITICAL ISSUES
+===============
+
+1. Resource Initialization Logic (CRITICAL)
+   - Location: All class resource forms
+   - Impact: User data loss on form re-render
+   - Fix: Remove object reconstruction, use watched value directly
+
+2. SorceryPointsSection Reactivity (CRITICAL)
+   - Location: components/class-resource-sections.tsx
+   - Impact: UI doesn't update when props change
+   - Fix: Add useEffect to sync state with props
+
+3. Class Starting Equipment (BLOCKER)
+   - Location: lib/graphql/classes.graphql, PlayerFormIdentitySection
+   - Impact: Major feature completely missing
+   - Fix: Update GraphQL query, implement inventory population
+
+MINOR ISSUES
+============
+
+1. UnarmoredMovementDisplay missing from Monk form
+2. UnarmoredMovementDisplay not used in Barbarian form
+
+RECOMMENDATIONS
+===============
+
+IMMEDIATE (Before Release):
+1. Fix SorceryPointsSection reactivity (add useEffect)
+2. Fix all resource form initialization logic
+3. Implement class starting equipment
+
+HIGH PRIORITY:
+4. Add UnarmoredMovementDisplay to Monk and Barbarian forms
+
+LOW PRIORITY:
+5. Add "Reset to Default" buttons for resources
+6. Add visual indicators for low resources
+
+ESTIMATED FIX TIME
+===================
+- Resource initialization: 2-3 hours
+- Starting equipment: 2-3 hours
+- Display components: 1 hour
+- Testing: 2 hours
+Total: 7-9 hours
+
+CONCLUSION
+==========
+DO NOT RELEASE until resource initialization is fixed.
+Current behavior causes user data loss.
+
+Starting equipment is a major missing feature that should be
+implemented before release.
+
