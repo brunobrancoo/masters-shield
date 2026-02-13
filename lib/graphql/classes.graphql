@@ -3,6 +3,20 @@ query GetClasses {
     index
     name
     hit_die
+    proficiency_choices {
+      choose
+      type
+      from {
+        options {
+          item {
+            ... on Proficiency {
+              index
+              name
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -12,10 +26,586 @@ query GetClass($index: String!) {
     name
     hit_die
     proficiencies {
+      index
       name
+      type
     }
     saving_throws {
+      index
       name
+    }
+    spellcasting {
+      level
+      spellcasting_ability {
+        index
+        name
+      }
+    }
+    subclasses {
+      index
+      name
+    }
+    class_levels {
+      level
+      prof_bonus
+      features {
+        index
+        name
+        desc
+      }
+      spellcasting {
+        cantrips_known
+        spells_known
+        spell_slots_level_1
+        spell_slots_level_2
+        spell_slots_level_3
+        spell_slots_level_4
+        spell_slots_level_5
+        spell_slots_level_6
+        spell_slots_level_7
+        spell_slots_level_8
+        spell_slots_level_9
+      }
+      class_specific {
+        action_surges
+        arcane_recovery_levels
+        aura_range
+        bardic_inspiration_die
+        brutal_critical_dice
+        channel_divinity_charges
+        destroy_undead_cr
+        extra_attacks
+        favored_enemies
+        favored_terrain
+        indomitable_uses
+        invocations_known
+        ki_points
+        magical_secrets_max_5
+        magical_secrets_max_7
+        magical_secrets_max_9
+        martial_arts {
+          dice_count
+          dice_value
+        }
+        metamagic_known
+        mystic_arcanum_level_6
+        mystic_arcanum_level_7
+        mystic_arcanum_level_8
+        mystic_arcanum_level_9
+        rage_count
+        rage_damage_bonus
+        sneak_attack {
+          dice_count
+          dice_value
+        }
+        song_of_rest_die
+        sorcery_points
+        unarmored_movement
+        wild_shape_fly
+        wild_shape_max_cr
+        wild_shape_swim
+        creating_spell_slots {
+          sorcery_point_cost
+          spell_slot_level
+        }
+      }
+    }
+    starting_equipment {
+      quantity
+      equipment {
+        ... on Armor {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          armor_category
+          armor_class {
+            base
+            dex_bonus
+            max_bonus
+          }
+          str_minimum
+          stealth_disadvantage
+          equipment_category {
+            name
+          }
+        }
+        ... on Weapon {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          weapon_category
+          weapon_range
+          category_range
+          damage {
+            damage_dice
+            damage_type {
+              name
+            }
+          }
+          two_handed_damage {
+            damage_dice
+            damage_type {
+              name
+            }
+          }
+          range {
+            long
+            normal
+          }
+          throw_range {
+            long
+            normal
+          }
+          equipment_category {
+            name
+          }
+        }
+        ... on Tool {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          tool_category
+          equipment_category {
+            name
+          }
+        }
+        ... on Gear {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          gear_category {
+            name
+          }
+        }
+        ... on Pack {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          equipment_category {
+            name
+          }
+          gear_category {
+            name
+          }
+        }
+        ... on Ammunition {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          quantity
+        }
+        ... on Vehicle {
+          index
+          name
+          desc
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          vehicle_category
+          speed {
+            quantity
+            unit
+          }
+          capacity
+        }
+      }
+    }
+    starting_equipment_options {
+      desc
+      choose
+      type
+      from {
+        ... on EquipmentOptionDefault {
+          equipment {
+            ... on Armor {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              armor_category
+              armor_class {
+                base
+                dex_bonus
+                max_bonus
+              }
+              str_minimum
+              stealth_disadvantage
+              equipment_category {
+                name
+              }
+            }
+            ... on Weapon {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              weapon_category
+              weapon_range
+              category_range
+              damage {
+                damage_dice
+                damage_type {
+                  name
+                }
+              }
+              two_handed_damage {
+                damage_dice
+                damage_type {
+                  name
+                }
+              }
+              range {
+                long
+                normal
+              }
+              throw_range {
+                long
+                normal
+              }
+              equipment_category {
+                name
+              }
+            }
+            ... on Tool {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              tool_category
+              equipment_category {
+                name
+              }
+            }
+            ... on Gear {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              gear_category {
+                name
+              }
+            }
+            ... on Pack {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              equipment_category {
+                name
+              }
+              gear_category {
+                name
+              }
+            }
+            ... on Ammunition {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              quantity
+            }
+            ... on Vehicle {
+              index
+              name
+              desc
+              cost {
+                quantity
+                unit
+              }
+              weight
+              updated_at
+              properties {
+                name
+                desc
+              }
+              vehicle_category
+              speed {
+                quantity
+                unit
+              }
+              capacity
+            }
+          }
+        }
+        ... on EquipmentOptionMultiple {
+          options {
+            item {
+              ... on Armor {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                armor_category
+                armor_class {
+                  base
+                  dex_bonus
+                  max_bonus
+                }
+                str_minimum
+                stealth_disadvantage
+                equipment_category {
+                  name
+                }
+              }
+              ... on Weapon {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                weapon_category
+                weapon_range
+                category_range
+                damage {
+                  damage_dice
+                  damage_type {
+                    name
+                  }
+                }
+                two_handed_damage {
+                  damage_dice
+                  damage_type {
+                    name
+                  }
+                }
+                range {
+                  long
+                  normal
+                }
+                throw_range {
+                  long
+                  normal
+                }
+                equipment_category {
+                  name
+                }
+              }
+              ... on Tool {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                tool_category
+                equipment_category {
+                  name
+                }
+              }
+              ... on Gear {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                gear_category {
+                  name
+                }
+              }
+              ... on Pack {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                equipment_category {
+                  name
+                }
+                gear_category {
+                  name
+                }
+              }
+              ... on Ammunition {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                quantity
+              }
+              ... on Vehicle {
+                index
+                name
+                desc
+                cost {
+                  quantity
+                  unit
+                }
+                weight
+                updated_at
+                properties {
+                  name
+                  desc
+                }
+                vehicle_category
+                speed {
+                  quantity
+                  unit
+                }
+                capacity
+              }
+            }
+            quantity
+          }
+        }
+      }
     }
   }
 }

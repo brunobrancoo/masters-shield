@@ -1,17 +1,9 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Sparkles, BookOpen, TrendingUp } from "lucide-react";
 import { useClasses, useRaces } from "@/lib/api/hooks";
-
-interface PlayerFormData {
-  name: string;
-  race: string;
-  class: string;
-  level: number;
-}
 
 interface PlayerFormBasicInfoSectionProps {
   register: any;
@@ -58,7 +50,7 @@ export default function PlayerFormBasicInfoSection({
 
         <div className="space-y-2">
           <Label
-            htmlFor="race"
+            htmlFor="raceName"
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             Raça
@@ -66,31 +58,31 @@ export default function PlayerFormBasicInfoSection({
           <div className="flex gap-2">
             <Sparkles className="w-4 h-4 text-nature-400 mt-3 flex-shrink-0" />
             <Input
-              id="race"
+              id="raceName"
               list="races-list"
               className="bg-bg-inset border-border-default focus:border-nature-400 h-11"
-              {...register("race")}
+              {...register("raceName")}
               placeholder="Ex: Humano, Elfo"
             />
+            <datalist id="races-list">
+              {racesData?.races?.map((r: any) => (
+                <option key={r.index} value={r.name}>
+                  {r.name}
+                </option>
+              ))}
+            </datalist>
           </div>
-          <datalist id="races-list">
-            {racesData?.races?.map((r: any) => (
-              <option key={r.index} value={r.name}>
-                {r.name}
-              </option>
-            ))}
-          </datalist>
-          {errors.race && (
+          {errors.raceName && (
             <p className="text-destructive text-xs flex items-center gap-1">
               <span className="w-1 h-1 rounded-full bg-destructive" />
-              {errors.race.message}
+              {errors.raceName.message}
             </p>
           )}
         </div>
 
         <div className="space-y-2">
           <Label
-            htmlFor="class"
+            htmlFor="className"
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             Classe
@@ -98,24 +90,24 @@ export default function PlayerFormBasicInfoSection({
           <div className="flex gap-2">
             <BookOpen className="w-4 h-4 text-arcane-400 mt-3 flex-shrink-0" />
             <Input
-              id="class"
+              id="className"
               list="classes-list"
               className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-              {...register("class")}
+              {...register("className")}
               placeholder="Ex: Guerreiro, Mago"
             />
+            <datalist id="classes-list">
+              {classesData?.classes?.map((c: any) => (
+                <option key={c.index} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </datalist>
           </div>
-          <datalist id="classes-list">
-            {classesData?.classes?.map((c: any) => (
-              <option key={c.index} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </datalist>
-          {errors.class && (
+          {errors.className && (
             <p className="text-destructive text-xs flex items-center gap-1">
               <span className="w-1 h-1 rounded-full bg-destructive" />
-              {errors.class.message}
+              {errors.className.message}
             </p>
           )}
         </div>

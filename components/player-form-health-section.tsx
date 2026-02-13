@@ -2,16 +2,21 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, ShieldCheck } from "lucide-react";
+import { Heart, ShieldCheck, Dices } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PlayerFormHealthSectionProps {
   register: any;
   errors: any;
+  onRollMaxHP?: () => void;
+  showRollButton?: boolean;
 }
 
 export default function PlayerFormHealthSection({
   register,
   errors,
+  onRollMaxHP,
+  showRollButton = false,
 }: PlayerFormHealthSectionProps) {
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
@@ -47,16 +52,28 @@ export default function PlayerFormHealthSection({
           >
             Pontos de Vida Máximos
           </Label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-1">
             <ShieldCheck className="w-4 h-4 text-divine-400 mt-3 flex-shrink-0" />
             <Input
               id="maxHp"
               type="number"
               min="1"
-              className="bg-bg-inset border-border-default focus:border-divine-400 h-11"
+              className="bg-bg-inset border-border-default focus:border-divine-400 h-11 flex-1"
               {...register("maxHp", { valueAsNumber: true })}
               placeholder="10"
             />
+            {showRollButton && onRollMaxHP && (
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={onRollMaxHP}
+                className="h-11 w-11 flex-shrink-0"
+                title="Rolar HP"
+              >
+                <Dices className="w-4 h-4 text-text-secondary" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

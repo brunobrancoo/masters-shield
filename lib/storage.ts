@@ -1,4 +1,4 @@
-import { GameData, Player } from "./interfaces/interfaces";
+import { GameData, PlayableCharacter } from "./interfaces/interfaces";
 import {
   calculateProficiencyBonus,
   defaultSpellSlots,
@@ -8,7 +8,7 @@ const STORAGE_KEY = "masters-shield";
 
 export function loadGameData(): GameData {
   if (typeof window === "undefined") {
-    return { monsters: [], players: [], npcs: [] };
+    return { monsters: [], playableCharacters: [], npcs: [] };
   }
 
   try {
@@ -17,7 +17,7 @@ export function loadGameData(): GameData {
       const parsed = JSON.parse(data);
 
       // Migrate players with missing fields
-      const players = parsed.players.map((player: Player) => ({
+      const playableCharacters = parsed.players.map((player: any) => ({
         ...player,
         // Default values for new fields
         ac: player.ac ?? 10,
@@ -29,21 +29,24 @@ export function loadGameData(): GameData {
           calculateProficiencyBonus(player.level),
         spellSlots: player.spellSlots ?? defaultSpellSlots(),
         maxSpellSlots: player.maxSpellSlots ?? defaultSpellSlots(),
-        sorceryPoints: player.sorceryPoints ?? 0,
+        sorceryPointsLegacy: player.sorceryPoints ?? 0,
         maxSorceryPoints: player.maxSorceryPoints ?? 0,
+        profBonus: player.profBonus ?? 0,
         skills: player.skills ?? [],
-        features: player.features ?? [],
+        classFeatures: player.classFeatures ?? [],
+        customFeatures: player.customFeatures ?? [],
+        featFeatures: player.featFeatures ?? [],
         buffs: player.buffs ?? [],
         debuffs: player.debuffs ?? [],
       }));
 
-      return { ...parsed, players };
+      return { ...parsed, playableCharacters };
     }
   } catch (error) {
     console.error("Erro ao carregar dados:", error);
   }
 
-  return { monsters: [], players: [], npcs: [] };
+  return { monsters: [], playableCharacters: [], npcs: [] };
 }
 
 export function saveGameData(data: GameData): void {

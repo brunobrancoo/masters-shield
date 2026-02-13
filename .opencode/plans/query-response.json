@@ -1,0 +1,3107 @@
+{
+  "data": {
+    "class": {
+      "class_levels": [
+        {
+          "ability_score_bonuses": 0,
+          "level": 1,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 0,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 0,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "Choose a sorcerous origin, which describes the source of your innate magical power, such as Draconic Bloodline.",
+                "Your choice grants you features when you choose it at 1st level and again at 6th, 14th, and 18th level."
+              ],
+              "index": "sorcerous-origin",
+              "level": 1,
+              "name": "Sorcerous Origin",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            },
+            {
+              "desc": [
+                "An event in your past, or in the life of a parent or ancestor, left an indelible mark on you, infusing you with arcane magic. This font of magic, whatever its origin, fuels your spells."
+              ],
+              "index": "spellcasting-sorcerer",
+              "level": 1,
+              "name": "Spellcasting: Sorcerer",
+              "reference": "/api/2014/classes/sorcerer/spellcasting",
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 2,
+          "spellcasting": {
+            "cantrips_known": 4,
+            "spell_slots_level_1": 2,
+            "spell_slots_level_2": 0,
+            "spell_slots_level_3": 0,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 2
+          }
+        },
+        {
+          "ability_score_bonuses": 0,
+          "level": 2,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 0,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 2,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "As a bonus action on your turn, you can expend one spell slot and gain a number of sorcery points equal to the slot's level.."
+              ],
+              "index": "flexible-casting-converting-spell-slot",
+              "level": 2,
+              "name": "Flexible Casting: Converting Spell Slot",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            },
+            {
+              "desc": [
+                "You can transform unexpended sorcery points into one spell slot as a bonus action on your turn. The Creating Spell Slots table shows the cost of creating a spell slot of a given level. You can create spell slots no higher in level than 5th. ",
+                "Any spell slot you create with this feature vanishes when you finish a long rest."
+              ],
+              "index": "flexible-casting-creating-spell-slots",
+              "level": 2,
+              "name": "Flexible Casting: Creating Spell Slots",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            },
+            {
+              "desc": [
+                "At 2nd level, you tap into a deep wellspring of magic within yourself. This wellspring is represented by sorcery points, which allow you to create a variety of magical effects.",
+                "Sorcery Points",
+                "You have 2 sorcery points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer table. You can never have more sorcery points than shown on the table for your level. You regain all spent sorcery points when you finish a long rest."
+              ],
+              "index": "font-of-magic",
+              "level": 2,
+              "name": "Font of Magic",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 2,
+          "spellcasting": {
+            "cantrips_known": 4,
+            "spell_slots_level_1": 3,
+            "spell_slots_level_2": 0,
+            "spell_slots_level_3": 0,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 3
+          }
+        },
+        {
+          "ability_score_bonuses": 0,
+          "level": 3,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 3,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "At 3rd level, you gain the ability to twist your spells to suit your needs. You gain two of the following Metamagic options of your choice. You gain another one at 10th and 17th level.",
+                "You can use only one Metamagic option on a spell when you cast it, unless otherwise noted."
+              ],
+              "index": "metamagic-1",
+              "level": 3,
+              "name": "Metamagic",
+              "reference": null,
+              "feature_specific": {
+                "invocations": []
+              },
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 2,
+          "spellcasting": {
+            "cantrips_known": 4,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 2,
+            "spell_slots_level_3": 0,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 4
+          }
+        },
+        {
+          "ability_score_bonuses": 1,
+          "level": 4,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 4,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+              ],
+              "index": "sorcerer-ability-score-improvement-1",
+              "level": 4,
+              "name": "Ability Score Improvement",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 2,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 0,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 5
+          }
+        },
+        {
+          "ability_score_bonuses": 1,
+          "level": 5,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 5,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 3,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 2,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 6
+          }
+        },
+        {
+          "ability_score_bonuses": 1,
+          "level": 6,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 6,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "Choose a sorcerous origin, which describes the source of your innate magical power, such as Draconic Bloodline.",
+                "Your choice grants you features when you choose it at 1st level and again at 6th, 14th, and 18th level."
+              ],
+              "index": "sorcerous-origin-improvement-1",
+              "level": 6,
+              "name": "Sorcerous Origin feature",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 3,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 0,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 7
+          }
+        },
+        {
+          "ability_score_bonuses": 1,
+          "level": 7,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 7,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 3,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 1,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 8
+          }
+        },
+        {
+          "ability_score_bonuses": 2,
+          "level": 8,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 8,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+              ],
+              "index": "sorcerer-ability-score-improvement-2",
+              "level": 8,
+              "name": "Ability Score Improvement",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 3,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 2,
+            "spell_slots_level_5": 0,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 9
+          }
+        },
+        {
+          "ability_score_bonuses": 2,
+          "level": 9,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 2,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 9,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 4,
+          "spellcasting": {
+            "cantrips_known": 5,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 1,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 10
+          }
+        },
+        {
+          "ability_score_bonuses": 2,
+          "level": 10,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 10,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "At 3rd level, you gain the ability to twist your spells to suit your needs. You gain two of the following Metamagic options of your choice. You gain another one at 10th and 17th level.",
+                "You can use only one Metamagic option on a spell when you cast it, unless otherwise noted."
+              ],
+              "index": "metamagic-2",
+              "level": 10,
+              "name": "Metamagic",
+              "reference": null,
+              "feature_specific": {
+                "invocations": []
+              },
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 4,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 0,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 11
+          }
+        },
+        {
+          "ability_score_bonuses": 2,
+          "level": 11,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 11,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 4,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 12
+          }
+        },
+        {
+          "ability_score_bonuses": 3,
+          "level": 12,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 12,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+              ],
+              "index": "sorcerer-ability-score-improvement-3",
+              "level": 12,
+              "name": "Ability Score Improvement",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 4,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 0,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 12
+          }
+        },
+        {
+          "ability_score_bonuses": 3,
+          "level": 13,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 13,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 5,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 13
+          }
+        },
+        {
+          "ability_score_bonuses": 3,
+          "level": 14,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 14,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "Choose a sorcerous origin, which describes the source of your innate magical power, such as Draconic Bloodline.",
+                "Your choice grants you features when you choose it at 1st level and again at 6th, 14th, and 18th level."
+              ],
+              "index": "sorcerous-origin-improvement-2",
+              "level": 14,
+              "name": "Sorcerous Origin feature",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 5,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 0,
+            "spell_slots_level_9": 0,
+            "spells_known": 13
+          }
+        },
+        {
+          "ability_score_bonuses": 3,
+          "level": 15,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 3,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 15,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [],
+          "prof_bonus": 5,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 0,
+            "spells_known": 14
+          }
+        },
+        {
+          "ability_score_bonuses": 4,
+          "level": 16,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 4,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 16,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+              ],
+              "index": "sorcerer-ability-score-improvement-4",
+              "level": 16,
+              "name": "Ability Score Improvement",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 5,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 0,
+            "spells_known": 14
+          }
+        },
+        {
+          "ability_score_bonuses": 4,
+          "level": 17,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 4,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 17,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "At 3rd level, you gain the ability to twist your spells to suit your needs. You gain two of the following Metamagic options of your choice. You gain another one at 10th and 17th level.",
+                "You can use only one Metamagic option on a spell when you cast it, unless otherwise noted."
+              ],
+              "index": "metamagic-3",
+              "level": 17,
+              "name": "Metamagic",
+              "reference": null,
+              "feature_specific": {
+                "invocations": []
+              },
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 6,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 2,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 1,
+            "spells_known": 15
+          }
+        },
+        {
+          "ability_score_bonuses": 4,
+          "level": 18,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 4,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 18,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "Choose a sorcerous origin, which describes the source of your innate magical power, such as Draconic Bloodline.",
+                "Your choice grants you features when you choose it at 1st level and again at 6th, 14th, and 18th level."
+              ],
+              "index": "sorcerous-origin-improvement-3",
+              "level": 18,
+              "name": "Sorcerous Origin feature",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 6,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 3,
+            "spell_slots_level_6": 1,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 1,
+            "spells_known": 15
+          }
+        },
+        {
+          "ability_score_bonuses": 5,
+          "level": 19,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 4,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 19,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "When you reach 4th level, and again at 8th, 12th, 16th, and 19th level, you can increase one ability score of your choice by 2, or you can increase two ability scores of your choice by 1. As normal, you can't increase an ability score above 20 using this feature."
+              ],
+              "index": "sorcerer-ability-score-improvement-5",
+              "level": 19,
+              "name": "Ability Score Improvement",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 6,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 3,
+            "spell_slots_level_6": 2,
+            "spell_slots_level_7": 1,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 1,
+            "spells_known": 15
+          }
+        },
+        {
+          "ability_score_bonuses": 5,
+          "level": 20,
+          "class_specific": {
+            "action_surges": null,
+            "arcane_recovery_levels": null,
+            "aura_range": null,
+            "bardic_inspiration_die": null,
+            "brutal_critical_dice": null,
+            "channel_divinity_charges": null,
+            "destroy_undead_cr": null,
+            "extra_attacks": null,
+            "favored_enemies": null,
+            "favored_terrain": null,
+            "indomitable_uses": null,
+            "invocations_known": null,
+            "ki_points": null,
+            "magical_secrets_max_5": null,
+            "magical_secrets_max_7": null,
+            "magical_secrets_max_9": null,
+            "metamagic_known": 4,
+            "mystic_arcanum_level_6": null,
+            "mystic_arcanum_level_7": null,
+            "mystic_arcanum_level_8": null,
+            "mystic_arcanum_level_9": null,
+            "rage_count": null,
+            "rage_damage_bonus": null,
+            "song_of_rest_die": null,
+            "sorcery_points": 20,
+            "unarmored_movement": null,
+            "wild_shape_fly": null,
+            "wild_shape_max_cr": null,
+            "wild_shape_swim": null,
+            "creating_spell_slots": [
+              {
+                "sorcery_point_cost": 2,
+                "spell_slot_level": 1
+              },
+              {
+                "sorcery_point_cost": 3,
+                "spell_slot_level": 2
+              },
+              {
+                "sorcery_point_cost": 5,
+                "spell_slot_level": 3
+              },
+              {
+                "sorcery_point_cost": 6,
+                "spell_slot_level": 4
+              },
+              {
+                "sorcery_point_cost": 7,
+                "spell_slot_level": 5
+              }
+            ],
+            "martial_arts": null,
+            "sneak_attack": null
+          },
+          "features": [
+            {
+              "desc": [
+                "At 20th level, you regain 4 expended sorcery points whenever you finish a short rest."
+              ],
+              "index": "sorcerous-restoration",
+              "level": 20,
+              "name": "Sorcerous Restoration",
+              "reference": null,
+              "feature_specific": null,
+              "updated_at": "2025-10-24T20:42:13.151Z",
+              "prerequisites": null,
+              "parent": null
+            }
+          ],
+          "prof_bonus": 6,
+          "spellcasting": {
+            "cantrips_known": 6,
+            "spell_slots_level_1": 4,
+            "spell_slots_level_2": 3,
+            "spell_slots_level_3": 3,
+            "spell_slots_level_4": 3,
+            "spell_slots_level_5": 3,
+            "spell_slots_level_6": 2,
+            "spell_slots_level_7": 2,
+            "spell_slots_level_8": 1,
+            "spell_slots_level_9": 1,
+            "spells_known": 15
+          }
+        }
+      ],
+      "hit_die": 6,
+      "index": "sorcerer",
+      "name": "Sorcerer",
+      "proficiencies": [
+        {
+          "name": "Crossbows, light"
+        },
+        {
+          "name": "Daggers"
+        },
+        {
+          "name": "Darts"
+        },
+        {
+          "name": "Quarterstaffs"
+        },
+        {
+          "name": "Saving Throw: CHA"
+        },
+        {
+          "name": "Saving Throw: CON"
+        },
+        {
+          "name": "Slings"
+        }
+      ],
+      "saving_throws": [
+        {
+          "name": "CHA"
+        },
+        {
+          "name": "CON"
+        }
+      ],
+      "spellcasting": {
+        "level": 1,
+        "info": [
+          {
+            "name": "Cantrips",
+            "desc": [
+              "At 1st level, you know four cantrips of your choice from the sorcerer spell list. You learn additional sorcerer cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Sorcerer table."
+            ]
+          },
+          {
+            "name": "Spell Slots",
+            "desc": [
+              "The Sorcerer table shows how many spell slots you have to cast your spells of 1st level and higher. To cast one of these sorcerer spells, you must expend a slot of the spell's level or higher. You regain all expended spell slots when you finish a long rest.",
+              "For example, if you know the 1st-level spell burning hands and have a 1st-level and a 2nd-level spell slot available, you can cast burning hands using either slot."
+            ]
+          },
+          {
+            "name": "Spells Known of 1st Level and Higher",
+            "desc": [
+              "You know two 1st-level spells of your choice from the sorcerer spell list.",
+              "The Spells Known column of the Sorcerer table shows when you learn more sorcerer spells of your choice. Each of these spells must be of a level for which you have spell slots. For instance, when you reach 3rd level in this class, you can learn one new spell of 1st or 2nd level. ",
+              "Additionally, when you gain a level in this class, you can choose one of the sorcerer spells you know and replace it with another spell from the sorcerer spell list, which also must be of a level for which you have spell slots."
+            ]
+          },
+          {
+            "name": "Spellcasting Ability",
+            "desc": [
+              "Charisma is your spellcasting ability for your sorcerer spells, since the power of your magic relies on your ability to project your will into the world. You use your Charisma whenever a spell refers to your spellcasting ability. In addition, you use your Charisma modifier when setting the saving throw DC for a sorcerer spell you cast and when making an attack roll with one.",
+              "Spell save DC = 8 + your proficiency bonus + your Charisma modifier.",
+              "Spell attack modifier = your proficiency bonus + your Charisma modifier."
+            ]
+          },
+          {
+            "name": "Spellcasting Focus",
+            "desc": [
+              "You can use an arcane focus as a spellcasting focus for your sorcerer spells."
+            ]
+          }
+        ],
+        "spellcasting_ability": {
+          "name": "CHA"
+        }
+      },
+      "spells": [
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": true,
+          "damage": null,
+          "dc": {
+            "dc_success": "none",
+            "dc_type": {
+              "desc": [
+                "Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.",
+                "A Wisdom check might reflect an effort to read body language, understand someone's feelings, notice things about the environment, or care for an injured person. The Animal Handling, Insight, Medicine, Perception, and Survival skills reflect aptitude in certain kinds of Wisdom checks."
+              ],
+              "name": "WIS",
+              "full_name": "Wisdom",
+              "index": "wis"
+            },
+            "desc": "On failure, the target can be affected by one of the following effects of your choice for the duration. [Asleep. The target falls unconscious. It wakes up if it takes any damage or if another creature uses its action to shake the sleeper awake.] [Panicked. The target is frightened of you. On each of its turns, the frightened creature must take the Dash action and move away from you by the safest and shortest available route, unless there is nowhere to move. If the target moves to a place at least 60 feet away from you where it can no longer see you, this effect ends.] [Sickened. The target has disadvantage on attack rolls and ability checks. At the end of each of its turns, it can make another wisdom saving throw. If it succeeds, the effect ends.]"
+          },
+          "desc": [
+            "For the spell's duration, your eyes become an inky void imbued with dread power. One creature of your choice within 60 feet of you that you can see must succeed on a wisdom saving throw or be affected by one of the following effects of your choice for the duration. On each of your turns until the spell ends, you can use your action to target another creature but can't target a creature again if it has succeeded on a saving throw against this casting of eyebite.",
+            "***Asleep.*** The target falls unconscious. It wakes up if it takes any damage or if another creature uses its action to shake the sleeper awake.",
+            "***Panicked.*** The target is frightened of you. On each of its turns, the frightened creature must take the Dash action and move away from you by the safest and shortest available route, unless there is nowhere to move. If the target moves to a place at least 60 feet away from you where it can no longer see you, this effect ends.",
+            "***Sickened.*** The target has disadvantage on attack rolls and ability checks. At the end of each of its turns, it can make another wisdom saving throw. If it succeeds, the effect ends."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "eyebite",
+          "level": 6,
+          "material": null,
+          "name": "Eyebite",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Necromancy"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 10,
+            "type": "sphere"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "An immobile, faintly shimmering barrier springs into existence in a 10-foot radius around you and remains for the duration.",
+            "Any spell of 5th level or lower cast from outside the barrier can't affect creatures or objects within it, even if the spell is cast using a higher level spell slot. Such a spell can target creatures and objects within the barrier, but the spell has no effect on them. Similarly, the area within the barrier is excluded from the areas affected by such spells."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": [
+            "When you cast this spell using a spell slot of 7th level or higher, the barrier blocks spells of one level higher for each slot level above 6th."
+          ],
+          "index": "globe-of-invulnerability",
+          "level": 6,
+          "material": "A glass or crystal bead that shatters when the spell ends.",
+          "name": "Globe of Invulnerability",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Abjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "M"],
+          "concentration": false,
+          "damage": null,
+          "dc": {
+            "dc_success": "none",
+            "dc_type": {
+              "desc": [
+                "Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.",
+                "A Wisdom check might reflect an effort to read body language, understand someone's feelings, notice things about the environment, or care for an injured person. The Animal Handling, Insight, Medicine, Perception, and Survival skills reflect aptitude in certain kinds of Wisdom checks."
+              ],
+              "name": "WIS",
+              "full_name": "Wisdom",
+              "index": "wis"
+            },
+            "desc": null
+          },
+          "desc": [
+            "You suggest a course of activity (limited to a sentence or two) and magically influence up to twelve creatures of your choice that you can see within range and that can hear and understand you. Creatures that can't be charmed are immune to this effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable. Asking the creature to stab itself, throw itself onto a spear, immolate itself, or do some other obviously harmful act automatically negates the effect of the spell.",
+            "Each target must make a wisdom saving throw. On a failed save, it pursues the course of action you described to the best of its ability. The suggested course of action can continue for the entire duration. If the suggested activity can be completed in a shorter time, the spell ends when the subject finishes what it was asked to do.",
+            "You can also specify conditions that will trigger a special activity during the duration. For example, you might suggest that a group of soldiers give all their money to the first beggar they meet. If the condition isn't met before the spell ends, the activity isn't performed.",
+            "If you or any of your companions damage a creature affected by this spell, the spell ends for that creature."
+          ],
+          "duration": "24 hours",
+          "higher_level": [
+            "When you cast this spell using a 7th-level spell slot, the duration is 10 days. When you use an 8th-level spell slot, the duration is 30 days. When you use a 9th-level spell slot, the duration is a year and a day."
+          ],
+          "index": "mass-suggestion",
+          "level": 6,
+          "material": "A snake's tongue and either a bit of honeycomb or a drop of sweet oil.",
+          "name": "Mass Suggestion",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Enchantment"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 40,
+            "type": "cone"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "Choose an area of terrain no larger than 40 feet on a side within range. You can reshape dirt, sand, or clay in the area in any manner you choose for the duration. You can raise or lower the area's elevation, create or fill in a trench, erect or flatten a wall, or form a pillar. The extent of any such changes can't exceed half the area's largest dimension. So, if you affect a 40-foot square, you can create a pillar up to 20 feet high, raise or lower the square's elevation by up to 20 feet, dig a trench up to 20 feet deep, and so on. It takes 10 minutes for these changes to complete.",
+            "At the end of every 10 minutes you spend concentrating on the spell, you can choose a new area of terrain to affect.",
+            "Because the terrain's transformation occurs slowly, creatures in the area can't usually be trapped or injured by the ground's movement.",
+            "This spell can't manipulate natural stone or stone construction. Rocks and structures shift to accommodate the new terrain. If the way you shape the terrain would make a structure unstable, it might collapse.",
+            "Similarly, this spell doesn't directly affect plant growth. The moved earth carries any plants along with it."
+          ],
+          "duration": "Up to 2 hours",
+          "higher_level": null,
+          "index": "move-earth",
+          "level": 6,
+          "material": "An iron blade and a small bag containing a mixture of soils--clay, loam, and sand.",
+          "name": "Move Earth",
+          "range": "120 feet",
+          "ritual": false,
+          "school": {
+            "name": "Transmutation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 60,
+            "type": "line"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Radiant damage, dealt by a cleric's flame strike spell or an angel's smiting weapon, sears the flesh like fire and overloads the spirit with power."
+              ],
+              "index": "radiant",
+              "name": "Radiant"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Constitution measures health, stamina, and vital force.",
+                "Constitution checks are uncommon, and no skills apply to Constitution checks, because the endurance this ability represents is largely passive rather than involving a specific effort on the part of a character or monster."
+              ],
+              "name": "CON",
+              "full_name": "Constitution",
+              "index": "con"
+            },
+            "desc": "On a failed save, the creature is blinded until your next turn. On a successful save, it isn't blinded by this spell."
+          },
+          "desc": [
+            "A beam of brilliant light flashes out from your hand in a 5-foot-wide, 60-foot-long line. Each creature in the line must make a constitution saving throw. On a failed save, a creature takes 6d8 radiant damage and is blinded until your next turn. On a successful save, it takes half as much damage and isn't blinded by this spell. Undead and oozes have disadvantage on this saving throw.",
+            "You can create a new line of radiance as your action on any turn until the spell ends.",
+            "For the duration, a mote of brilliant radiance shines in your hand. It sheds bright light in a 30-foot radius and dim light for an additional 30 feet. This light is sunlight."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "sunbeam",
+          "level": 6,
+          "material": "A magnifying glass.",
+          "name": "Sunbeam",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "This spell gives the willing creature you touch the ability to see things as they actually are. For the duration, the creature has truesight, notices secret doors hidden by magic, and can see into the Ethereal Plane, all out to a range of 120 feet."
+          ],
+          "duration": "1 hour",
+          "higher_level": null,
+          "index": "true-seeing",
+          "level": 6,
+          "material": "An ointment for the eyes that costs 25gp; is made from mushroom powder, saffron, and fat; and is consumed by the spell.",
+          "name": "True Seeing",
+          "range": "Touch",
+          "ritual": false,
+          "school": {
+            "name": "Divination"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 20,
+            "type": "sphere"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Red dragons breathe fire, and many spells conjure flames to deal fire damage."
+              ],
+              "index": "fire",
+              "name": "Fire"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": null
+          },
+          "desc": [
+            "A beam of yellow light flashes from your pointing finger, then condenses to linger at a chosen point within range as a glowing bead for the duration. When the spell ends, either because your concentration is broken or because you decide to end it, the bead blossoms with a low roar into an explosion of flame that spreads around corners. Each creature in a 20-foot-radius sphere centered on that point must make a dexterity saving throw. A creature takes fire damage equal to the total accumulated damage on a failed save, or half as much damage on a successful one.",
+            "The spell's base damage is 12d6. If at the end of your turn the bead has not yet detonated, the damage increases by 1d6.",
+            "If the glowing bead is touched before the interval has expired, the creature touching it must make a dexterity saving throw. On a failed save, the spell ends immediately, causing the bead to erupt in flame. On a successful save, the creature can throw the bead up to 40 feet. When it strikes a creature or a solid object, the spell ends, and the bead explodes.",
+            "The fire damages objects in the area and ignites flammable objects that aren't being worn or carried."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": [
+            "When you cast this spell using a spell slot of 8th level or higher, the base damage increases by 1d6 for each slot level above 7th."
+          ],
+          "index": "delayed-blast-fireball",
+          "level": 7,
+          "material": "A tiny ball of bat guano and sulfur.",
+          "name": "Delayed Blast Fireball",
+          "range": "150 feet",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You step into the border regions of the Ethereal Plane, in the area where it overlaps with your current plane. You remain in the Border Ethereal for the duration or until you use your action to dismiss the spell. During this time, you can move in any direction. If you move up or down, every foot of movement costs an extra foot. You can see and hear the plane you originated from, but everything there looks gray, and you can't see anything more than 60 feet away.",
+            "While on the Ethereal Plane, you can only affect and be affected by other creatures on that plane. Creatures that aren't on the Ethereal Plane can't perceive you and can't interact with you, unless a special ability or magic has given them the ability to do so.",
+            "You ignore all objects and effects that aren't on the Ethereal Plane, allowing you to move through objects you perceive on the plane you originated from.",
+            "When the spell ends, you immediately return to the plane you originated from in the spot you currently occupy. If you occupy the same spot as a solid object or creature when this happens, you are immediately shunted to the nearest unoccupied space that you can occupy and take force damage equal to twice the number of feet you are moved.",
+            "This spell has no effect if you cast it while you are on the Ethereal Plane or a plane that doesn't border it, such as one of the Outer Planes."
+          ],
+          "duration": "8 hours",
+          "higher_level": [
+            "When you cast this spell using a spell slot of 8th level or higher, you can target up to three willing creatures (including you) for each slot level above 7th. The creatures must be within 10 feet of you when you cast the spell."
+          ],
+          "index": "etherealness",
+          "level": 7,
+          "material": null,
+          "name": "Etherealness",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Transmutation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": false,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Necrotic damage, dealt by certain undead and a spell such as chill touch, withers matter and even the soul."
+              ],
+              "index": "necrotic",
+              "name": "Necrotic"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Constitution measures health, stamina, and vital force.",
+                "Constitution checks are uncommon, and no skills apply to Constitution checks, because the endurance this ability represents is largely passive rather than involving a specific effort on the part of a character or monster."
+              ],
+              "name": "CON",
+              "full_name": "Constitution",
+              "index": "con"
+            },
+            "desc": null
+          },
+          "desc": [
+            "You send negative energy coursing through a creature that you can see within range, causing it searing pain. The target must make a constitution saving throw. It takes 7d8 + 30 necrotic damage on a failed save, or half as much damage on a successful one.",
+            "A humanoid killed by this spell rises at the start of your next turn as a zombie that is permanently under your command, following your verbal orders to the best of its ability."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "finger-of-death",
+          "level": 7,
+          "material": null,
+          "name": "Finger of Death",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Necromancy"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 100,
+            "type": "cube"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": false,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Red dragons breathe fire, and many spells conjure flames to deal fire damage."
+              ],
+              "index": "fire",
+              "name": "Fire"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": null
+          },
+          "desc": [
+            "A storm made up of sheets of roaring flame appears in a location you choose within range. The area of the storm consists of up to ten 10-foot cubes, which you can arrange as you wish. Each cube must have at least one face adjacent to the face of another cube. Each creature in the area must make a dexterity saving throw. It takes 7d10 fire damage on a failed save, or half as much damage on a successful one.",
+            "The fire damages objects in the area and ignites flammable objects that aren't being worn or carried. If you choose, plant life in the area is unaffected by this spell."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "fire-storm",
+          "level": 7,
+          "material": null,
+          "name": "Fire Storm",
+          "range": "150 feet",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": "melee",
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": false,
+          "damage": null,
+          "dc": {
+            "dc_success": "none",
+            "dc_type": {
+              "desc": [
+                "Charisma measures your ability to interact effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.",
+                "A Charisma check might arise when you try to influence or entertain others, when you try to make an impression or tell a convincing lie, or when you are navigating a tricky social situation. The Deception, Intimidation, Performance, and Persuasion skills reflect aptitude in certain kinds of Charisma checks."
+              ],
+              "name": "CHA",
+              "full_name": "Charisma",
+              "index": "cha"
+            },
+            "desc": "If the creature fails this save, it is transported to a random location on the plane of existence you specify. A creature so transported must find its own way back to your current plane of existence."
+          },
+          "desc": [
+            "You and up to eight willing creatures who link hands in a circle are transported to a different plane of existence. You can specify a target destination in general terms, such as the City of Brass on the Elemental Plane of Fire or the palace of Dispater on the second level of the Nine Hells, and you appear in or near that destination. If you are trying to reach the City of Brass, for example, you might arrive in its Street of Steel, before its Gate of Ashes, or looking at the city from across the Sea of Fire, at the GM's discretion.",
+            "Alternatively, if you know the sigil sequence of a teleportation circle on another plane of existence, this spell can take you to that circle. If the teleportation circle is too small to hold all the creatures you transported, they appear in the closest unoccupied spaces next to the circle.",
+            "You can use this spell to banish an unwilling creature to another plane. Choose a creature within your reach and make a melee spell attack against it. On a hit, the creature must make a charisma saving throw. If the creature fails this save, it is transported to a random location on the plane of existence you specify. A creature so transported must find its own way back to your current plane of existence."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "plane-shift",
+          "level": 7,
+          "material": "A forked, metal rod worth at least 250 gp, attuned to a particular plane of existence.",
+          "name": "Plane Shift",
+          "range": "Touch",
+          "ritual": false,
+          "school": {
+            "name": "Conjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 60,
+            "type": "cone"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": false,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": null
+          },
+          "dc": {
+            "dc_success": "other",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": "For each target, roll a d8 to determine which color ray affects it."
+          },
+          "desc": [
+            "Eight multicolored rays of light flash from your hand. Each ray is a different color and has a different power and purpose. Each creature in a 60-foot cone must make a dexterity saving throw. For each target, roll a d8 to determine which color ray affects it.",
+            "***1. Red.*** The target takes 10d6 fire damage on a failed save, or half as much damage on a successful one.",
+            "***2. Orange.*** The target takes 10d6 acid damage on a failed save, or half as much damage on a successful one.",
+            "***3. Yellow.*** The target takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.",
+            "***4. Green.*** The target takes 10d6 poison damage on a failed save, or half as much damage on a successful one.",
+            "***5. Blue.*** The target takes 10d6 cold damage on a failed save, or half as much damage on a successful one.",
+            "***6. Indigo.*** On a failed save, the target is restrained. It must then make a constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don't need to be consecutive; keep track of both until the target collects three of a kind.",
+            "***7. Violet.*** On a failed save, the target is blinded. It must then make a wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of existence of the GM's choosing and is no longer blinded. (Typically, a creature that is on a plane that isn't its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.)",
+            "***8. Special.*** The target is struck by two rays. Roll twice more, rerolling any 8."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "prismatic-spray",
+          "level": 7,
+          "material": null,
+          "name": "Prismatic Spray",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 50,
+            "type": "cylinder"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": null,
+          "dc": {
+            "dc_success": "other",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": "A creature can make a dexterity saving throw to grab onto a fixed object it can reach, thus avoiding the fall."
+          },
+          "desc": [
+            "This spell reverses gravity in a 50-foot-radius, 100-foot high cylinder centered on a point within range. All creatures and objects that aren't somehow anchored to the ground in the area fall upward and reach the top of the area when you cast this spell. A creature can make a dexterity saving throw to grab onto a fixed object it can reach, thus avoiding the fall.",
+            "If some solid object (such as a ceiling) is encountered in this fall, falling objects and creatures strike it just as they would during a normal downward fall. If an object or creature reaches the top of the area without striking anything, it remains there, oscillating slightly, for the duration.",
+            "At the end of the duration, affected objects and creatures fall back down."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "reverse-gravity",
+          "level": 7,
+          "material": "A lodestone and iron filings.",
+          "name": "Reverse Gravity",
+          "range": "100 feet",
+          "ritual": false,
+          "school": {
+            "name": "Transmutation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 10,
+            "type": "cube"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "This spell instantly transports you and up to eight willing creatures of your choice that you can see within range, or a single object that you can see within range, to a destination you select. If you target an object, it must be able to fit entirely inside a 10-foot cube, and it can't be held or carried by an unwilling creature.",
+            "The destination you choose must be known to you, and it must be on the same plane of existence as you. Your familiarity with the destination determines whether you arrive there successfully. The GM rolls d100 and consults the table.",
+            "| Familiarity | Mishap | Similar Area | Off Target | On Target |",
+            "|---|---|---|---|---|",
+            "| Permanent circle | -- | -- | -- | 01-100 |",
+            "| Associated object | -- | -- | -- | 01-100 |",
+            "| Very familiar | 01-05 | 06-13 | 14-24 | 25-100 |",
+            "| Seen casually | 01-33 | 34-43 | 44-53 | 54-100 |",
+            "| Viewed once | 01-43 | 44-53 | 54-73 | 74-100 |",
+            "| Description | 01-43 | 44-53 | 54-73 | 74-100 |",
+            "| False destination | 01-50 | 51-100 | -- | -- |",
+            "***Familiarity.*** \"Permanent circle\" means a permanent teleportation circle whose sigil sequence you know.",
+            "\"Associated object\" means that you possess an object taken from the desired destination within the last six months, such as a book from a wizard's library, bed linen from a royal suite, or a chunk of marble from a lich's secret tomb.",
+            "\"Very familiar\" is a place you have been very often, a place you have carefully studied, or a place you can see when you cast the spell.",
+            "\"Seen casually\" is someplace you have seen more than once but with which you aren't very familiar.",
+            "\"Viewed once\" is a place you have seen once, possibly using magic.",
+            "\"Description\" is a place whose location and appearance you know through someone else's description, perhaps from a map.",
+            "\"False destination\" is a place that doesn't exist. Perhaps you tried to scry an enemy's sanctum but instead viewed an illusion, or you are attempting to teleport to a familiar location that no longer exists.",
+            "***On Target.*** You and your group (or the target object) appear where you want to.",
+            "***Off Target.*** You and your group (or the target object) appear a random distance away from the destination in a random direction. Distance off target is 1d10 x 1d10 percent of the distance that was to be traveled. For example, if you tried to travel 120 miles, landed off target, and rolled a 5 and 3 on the two d10s, then you would be off target by 15 percent, or 18 miles. The GM determines the direction off target randomly by rolling a d8 and designating 1 as north, 2 as northeast, 3 as east, and so on around the points of the compass.  If you were teleporting to a coastal city and wound up 18 miles out at sea, you could be in trouble.",
+            "***Similar Area.*** You and your group (or the target object) wind up in a different area that's visually or thematically similar to the target area. If you are heading for your home laboratory, for example, you might wind up in another wizard's laboratory or in an alchemical supply shop that has many of the same tools and implements as your laboratory. Generally, you appear in the closest similar place, but since the spell has no range limit, you could conceivably wind up anywhere on the plane.",
+            "***Mishap.*** The spell's unpredictable magic results in a difficult journey. Each teleporting creature (or the target object) takes 3d10 force damage, and the GM rerolls on the table to see where you wind up (multiple mishaps can occur, dealing damage each time)."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "teleport",
+          "level": 7,
+          "material": null,
+          "name": "Teleport",
+          "range": "10 feet",
+          "ritual": false,
+          "school": {
+            "name": "Conjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": true,
+          "damage": null,
+          "dc": {
+            "dc_success": "none",
+            "dc_type": {
+              "desc": [
+                "Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.",
+                "A Wisdom check might reflect an effort to read body language, understand someone's feelings, notice things about the environment, or care for an injured person. The Animal Handling, Insight, Medicine, Perception, and Survival skills reflect aptitude in certain kinds of Wisdom checks."
+              ],
+              "name": "WIS",
+              "full_name": "Wisdom",
+              "index": "wis"
+            },
+            "desc": "On failure, the creature is charmed by you for the duration."
+          },
+          "desc": [
+            "You attempt to beguile a creature that you can see within range. It must succeed on a wisdom saving throw or be charmed by you for the duration. If you or creatures that are friendly to you are fighting it, it has advantage on the saving throw.",
+            "While the creature is charmed, you have a telepathic link with it as long as the two of you are on the same plane of existence. You can use this telepathic link to issue commands to the creature while you are conscious (no action required), which it does its best to obey. You can specify a simple and general course of action, such as \"Attack that creature,\" \"Run over there,\" or \"Fetch that object.\" If the creature completes the order and doesn't receive further direction from you, it defends and preserves itself to the best of its ability.",
+            "You can use your action to take total and precise control of the target. Until the end of your next turn, the creature takes only the actions you choose, and doesn't do anything that you don't allow it to do. During this time, you can also cause the creature to use a reaction, but this requires you to use your own reaction as well.",
+            "Each time the target takes damage, it makes a new wisdom saving throw against the spell. If the saving throw succeeds, the spell ends."
+          ],
+          "duration": "Up to 1 hour",
+          "higher_level": [
+            "When you cast this spell with a 9th-level spell slot, the duration is concentration, up to 8 hours."
+          ],
+          "index": "dominate-monster",
+          "level": 8,
+          "material": null,
+          "name": "Dominate Monster",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Enchantment"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 100,
+            "type": "sphere"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You create a seismic disturbance at a point on the ground that you can see within range. For the duration, an intense tremor rips through the ground in a 100-foot-radius circle centered on that point and shakes creatures and structures in contact with the ground in that area.",
+            "The ground in the area becomes difficult terrain. Each creature on the ground that is concentrating must make a constitution saving throw. On a failed save, the creature's concentration is broken.",
+            "When you cast this spell and at the end of each turn you spend concentrating on it, each creature on the ground in the area must make a dexterity saving throw. On a failed save, the creature is knocked prone.",
+            "This spell can have additional effects depending on the terrain in the area, as determined by the GM.",
+            "Fissures. Fissures open throughout the spell's area at the start of your next turn after you cast the spell. A total of 1d6 such fissures open in locations chosen by the GM. Each is 1d10 x 10 feet deep, 10 feet wide, and extends from one edge of the spell's area to the opposite side. A creature standing on a spot where a fissure opens must succeed on a dexterity saving throw or fall in. A creature that successfully saves moves with the fissure's edge as it opens.",
+            "A fissure that opens beneath a structure causes it to automatically collapse (see below).",
+            "Structures. The tremor deals 50 bludgeoning damage to any structure in contact with the ground in the area when you cast the spell and at the start of each of your turns until the spell ends. If a structure drops to 0 hit points, it collapses and potentially damages nearby creatures. A creature within half the distance of a structure's height must make a dexterity saving throw. On a failed save, the creature takes 5d6 bludgeoning damage, is knocked prone, and is buried in the rubble, requiring a DC 20 Strength (Athletics) check as an action to escape. The GM can adjust the DC higher or lower, depending on the nature of the rubble. On a successful save, the creature takes half as much damage and doesn't fall prone or become buried."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "earthquake",
+          "level": 8,
+          "material": "A pinch of dirt, a piece of rock, and a lump of clay.",
+          "name": "Earthquake",
+          "range": "500 feet",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 20,
+            "type": "sphere"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": true,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Red dragons breathe fire, and many spells conjure flames to deal fire damage."
+              ],
+              "index": "fire",
+              "name": "Fire"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": null
+          },
+          "desc": [
+            "A swirling cloud of smoke shot through with white-hot embers appears in a 20-foot-radius sphere centered on a point within range. The cloud spreads around corners and is heavily obscured. It lasts for the duration or until a wind of moderate or greater speed (at least 10 miles per hour) disperses it.",
+            "When the cloud appears, each creature in it must make a dexterity saving throw. A creature takes 10d8 fire damage on a failed save, or half as much damage on a successful one. A creature must also make this saving throw when it enters the spell's area for the first time on a turn or ends its turn there.",
+            "The cloud moves 10 feet directly away from you in a direction that you choose at the start of each of your turns."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "incendiary-cloud",
+          "level": 8,
+          "material": null,
+          "name": "Incendiary Cloud",
+          "range": "150 feet",
+          "ritual": false,
+          "school": {
+            "name": "Conjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You speak a word of power that can overwhelm the mind of one creature you can see within range, leaving it dumbfounded. If the target has 150 hit points or fewer, it is stunned. Otherwise, the spell has no effect.",
+            "The stunned target must make a constitution saving throw at the end of each of its turns. On a successful save, this stunning effect ends."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "power-word-stun",
+          "level": 8,
+          "material": null,
+          "name": "Power Word Stun",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Enchantment"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 60,
+            "type": "cylinder"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Druid"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": false,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Radiant damage, dealt by a cleric's flame strike spell or an angel's smiting weapon, sears the flesh like fire and overloads the spirit with power."
+              ],
+              "index": "radiant",
+              "name": "Radiant"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Constitution measures health, stamina, and vital force.",
+                "Constitution checks are uncommon, and no skills apply to Constitution checks, because the endurance this ability represents is largely passive rather than involving a specific effort on the part of a character or monster."
+              ],
+              "name": "CON",
+              "full_name": "Constitution",
+              "index": "con"
+            },
+            "desc": "On failure, the creature is also blinded for 1 minute."
+          },
+          "desc": [
+            "Brilliant sunlight flashes in a 60-foot radius centered on a point you choose within range. Each creature in that light must make a constitution saving throw. On a failed save, a creature takes 12d6 radiant damage and is blinded for 1 minute. On a successful save, it takes half as much damage and isn't blinded by this spell. Undead and oozes have disadvantage on this saving throw.",
+            "A creature blinded by this spell makes another constitution saving throw at the end of each of its turns. On a successful save, it is no longer blinded.",
+            "This spell dispels any darkness in its area that was created by a spell."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "sunburst",
+          "level": 8,
+          "material": "Fire and a piece of sunstone.",
+          "name": "Sunburst",
+          "range": "150 feet",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Cleric"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S", "M"],
+          "concentration": true,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You conjure a portal linking an unoccupied space you can see within range to a precise location on a different plane of existence. The portal is a circular opening, which you can make 5 to 20 feet in diameter. You can orient the portal in any direction you choose. The portal lasts for the duration.",
+            "The portal has a front and a back on each plane where it appears. Travel through the portal is possible only by moving through its front. Anything that does so is instantly transported to the other plane, appearing in the unoccupied space nearest to the portal.",
+            "Deities and other planar rulers can prevent portals created by this spell from opening in their presence or anywhere within their domains.",
+            "When you cast this spell, you can speak the name of a specific creature (a pseudonym, title, or nickname doesn't work). If that creature is on a plane other than the one you are on, the portal opens in the named creature's immediate vicinity and draws the creature through it to the nearest unoccupied space on your side of the portal. You gain no special power over the creature, and it is free to act as the GM deems appropriate. It might leave, attack you, or help you."
+          ],
+          "duration": "Up to 1 minute",
+          "higher_level": null,
+          "index": "gate",
+          "level": 9,
+          "material": "A diamond worth at least 5,000gp.",
+          "name": "Gate",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Conjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": {
+            "size": 40,
+            "type": "sphere"
+          },
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V", "S"],
+          "concentration": false,
+          "damage": {
+            "damage_at_character_level": null,
+            "damage_type": {
+              "desc": [
+                "Red dragons breathe fire, and many spells conjure flames to deal fire damage."
+              ],
+              "index": "fire",
+              "name": "Fire"
+            }
+          },
+          "dc": {
+            "dc_success": "half",
+            "dc_type": {
+              "desc": [
+                "Dexterity measures agility, reflexes, and balance.",
+                "A Dexterity check can model any attempt to move nimbly, quickly, or quietly, or to keep from falling on tricky footing. The Acrobatics, Sleight of Hand, and Stealth skills reflect aptitude in certain kinds of Dexterity checks."
+              ],
+              "name": "DEX",
+              "full_name": "Dexterity",
+              "index": "dex"
+            },
+            "desc": null
+          },
+          "desc": [
+            "Blazing orbs of fire plummet to the ground at four different points you can see within range. Each creature in a 40-foot-radius sphere centered on each point you choose must make a dexterity saving throw. The sphere spreads around corners. A creature takes 20d6 fire damage and 20d6 bludgeoning damage on a failed save, or half as much damage on a successful one. A creature in the area of more than one fiery burst is affected only once.",
+            "The spell damages objects in the area and ignites flammable objects that aren't being worn or carried."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "meteor-swarm",
+          "level": 9,
+          "material": null,
+          "name": "Meteor Swarm",
+          "range": "1 mile",
+          "ritual": false,
+          "school": {
+            "name": "Evocation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Bard"
+            },
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Warlock"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You utter a word of power that can compel one creature you can see within range to die instantly. If the creature you choose has 100 hit points or fewer, it dies. Otherwise, the spell has no effect."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "power-word-kill",
+          "level": 9,
+          "material": null,
+          "name": "Power Word Kill",
+          "range": "60 feet",
+          "ritual": false,
+          "school": {
+            "name": "Enchantment"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "You briefly stop the flow of time for everyone but yourself. No time passes for other creatures, while you take 1d4 + 1 turns in a row, during which you can use actions and move as normal.",
+            "This spell ends if one of the actions you use during this period, or any effects that you create during this period, affects a creature other than you or an object being worn or carried by someone other than you. In addition, the spell ends if you move to a place more than 1,000 feet from the location where you cast it."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "time-stop",
+          "level": 9,
+          "material": null,
+          "name": "Time Stop",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Transmutation"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        },
+        {
+          "area_of_effect": null,
+          "attack_type": null,
+          "casting_time": "1 action",
+          "classes": [
+            {
+              "name": "Sorcerer"
+            },
+            {
+              "name": "Wizard"
+            }
+          ],
+          "components": ["V"],
+          "concentration": false,
+          "damage": null,
+          "dc": null,
+          "desc": [
+            "Wish is the mightiest spell a mortal creature can cast. By simply speaking aloud, you can alter the very foundations of reality in accord with your desires.",
+            "The basic use of this spell is to duplicate any other spell of 8th level or lower. You don't need to meet any requirements in that spell, including costly components. The spell simply takes effect.",
+            "Alternatively, you can create one of the following effects of your choice:",
+            "- You create one object of up to 25,000 gp in value that isn't a magic item. The object can be no more than 300 feet in any dimension, and it appears in an unoccupied space you can see on the ground.",
+            "- You allow up to twenty creatures that you can see to regain all hit points, and you end all effects on them described in the greater restoration spell.",
+            "- You grant up to ten creatures that you can see resistance to a damage type you choose.",
+            "- You grant up to ten creatures you can see immunity to a single spell or other magical effect for 8 hours. For instance, you could make yourself and all your companions immune to a lich's life drain attack.",
+            "- You undo a single recent event by forcing a reroll of any roll made within the last round (including your last turn). Reality reshapes itself to accommodate the new result. For example, a wish spell could undo an opponent's successful save, a foe's critical hit, or a friend's failed save. You can force the reroll to be made with advantage or disadvantage, and you can choose whether to use the reroll or the original roll.",
+            "You might be able to achieve something beyond the scope of the above examples. State your wish to the GM as precisely as possible. The GM has great latitude in ruling what occurs in such an instance; the greater the wish, the greater the likelihood that something goes wrong. This spell might simply fail, the effect you desire might only be partly achieved, or you might suffer some unforeseen consequence as a result of how you worded the wish. For example, wishing that a villain were dead might propel you forward in time to a period when that villain is no longer alive, effectively removing you from the game. Similarly, wishing for a legendary magic item or artifact might instantly transport you to the presence of the item's current owner.",
+            "The stress of casting this spell to produce any effect other than duplicating another spell weakens you. After enduring that stress, each time you cast a spell until you finish a long rest, you take 1d10 necrotic damage per level of that spell. This damage can't be reduced or prevented in any way. In addition, your Strength drops to 3, if it isn't 3 or lower already, for 2d4 days. For each of those days that you spend resting and doing nothing more than light activity, your remaining recovery time decreases by 2 days. Finally, there is a 33 percent chance that you are unable to cast wish ever again if you suffer this stress."
+          ],
+          "duration": "Instantaneous",
+          "higher_level": null,
+          "index": "wish",
+          "level": 9,
+          "material": null,
+          "name": "Wish",
+          "range": "Self",
+          "ritual": false,
+          "school": {
+            "name": "Conjuration"
+          },
+          "subclasses": [],
+          "updated_at": "2025-10-24T20:42:14.619Z",
+          "heal_at_slot_level": null
+        }
+      ],
+      "starting_equipment": [
+        {
+          "quantity": 2,
+          "equipment": {
+            "index": "dagger",
+            "name": "Dagger",
+            "desc": null,
+            "cost": {
+              "quantity": 2,
+              "unit": "gp"
+            },
+            "weight": 1,
+            "updated_at": "2025-10-24T20:42:12.926Z",
+            "weapon_category": "Simple",
+            "weapon_range": "Melee",
+            "category_range": "Simple Melee",
+            "damage": {
+              "damage_dice": "1d4",
+              "damage_type": {
+                "name": "Piercing"
+              }
+            },
+            "two_handed_damage": null,
+            "range": {
+              "long": null,
+              "normal": 5
+            },
+            "throw_range": {
+              "long": 60,
+              "normal": 20
+            },
+            "equipment_category": {
+              "name": "Weapon"
+            }
+          }
+        }
+      ],
+      "subclasses": [
+        {
+          "name": "Draconic"
+        }
+      ],
+      "updated_at": "2025-10-24T20:42:12.459Z",
+      "proficiency_choices": [
+        {
+          "choose": 2
+        }
+      ],
+      "starting_equipment_options": [
+        {
+          "choose": 1
+        },
+        {
+          "choose": 1
+        },
+        {
+          "choose": 1
+        }
+      ]
+    }
+  }
+}

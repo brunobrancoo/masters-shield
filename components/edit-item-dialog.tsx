@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Item } from "@/lib/interfaces/interfaces";
-import { ItemFormData, itemSchema } from "@/lib/schemas";
+import { ItemFormFormData, itemFormSchema } from "@/lib/schemas";
 
 interface EditItemDialogProps {
   item: Item;
@@ -37,18 +37,22 @@ export default function EditItemDialog({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ItemFormData>({
-    resolver: zodResolver(itemSchema),
+  } = useForm<ItemFormFormData>({
+    resolver: zodResolver(itemFormSchema),
     defaultValues: {
       name: item.name,
-      price: item.price,
+      price: item.price || 0,
       type: item.type,
-      distance: item.distance,
-      damage: item.damage,
+      distance: item.distance || "melee",
+      damage: item.damageLegacy || {
+        dice: 1,
+        number: 4,
+        type: "",
+      },
       magic: item.magic,
       attackbonus: item.attackbonus,
       defensebonus: item.defensebonus,
-      notes: item.notes,
+      notes: item.notes || "",
       equipped: item.equipped,
     },
   });
@@ -56,20 +60,37 @@ export default function EditItemDialog({
   useEffect(() => {
     reset({
       name: item.name,
-      price: item.price,
+      price: item.price || 0,
       type: item.type,
-      distance: item.distance,
-      damage: item.damage,
+      distance: item.distance || "melee",
+      damage: item.damageLegacy || {
+        dice: 1,
+        number: 4,
+        type: "",
+      },
       magic: item.magic,
       attackbonus: item.attackbonus,
       defensebonus: item.defensebonus,
-      notes: item.notes,
+      notes: item.notes || "",
       equipped: item.equipped,
     });
   }, [item, reset]);
 
-  const onSubmit = (data: ItemFormData) => {
-    onUpdate(index, data);
+  const onSubmit = (data: ItemFormFormData) => {
+    const updatedItem: Item = {
+      ...item,
+      name: data.name,
+      price: data.price,
+      type: data.type,
+      distance: data.distance,
+      damageLegacy: data.damage,
+      magic: data.magic,
+      attackbonus: data.attackbonus,
+      defensebonus: data.defensebonus,
+      notes: data.notes,
+      equipped: data.equipped,
+    };
+    onUpdate(index, updatedItem);
     reset();
     setOpen(false);
   };

@@ -5,43 +5,204 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Package, Plus, Trash2 } from "lucide-react";
+import { Package, Plus, Trash2, Edit, Check } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
-import { useFieldArray } from "react-hook-form";
 import { isMeaningfulItem } from "@/lib/api/utils";
+import EditItemDialog from "./edit-item-dialog";
+import { convertApiEquipmentToItem } from "@/lib/interfaces/interfaces";
 
 interface PlayerFormInventorySectionProps {
-  register: any;
-  control: any;
-  watch: any;
-  setValue: any;
+  fields: any[];
+  onAddItem: (item: any) => void;
+  onRemoveItem: (index: number) => void;
+  onToggleEquip: (index: number) => void;
+  onUpdateItem: (index: number, updatedItem: any) => void;
   itemSearchQuery: string;
   setItemSearchQuery: (value: string) => void;
-  setSelectedEquipmentIndex: (value: number | null) => void;
   selectedEquipmentIndex: number | null;
-  fields: any[];
+  setSelectedEquipmentIndex: (value: number | null) => void;
+  startingEquipmentOptions?: any[];
+  selectedStartingEquipmentCount?: number;
+  isNewCharacter?: boolean;
 }
 
 export default function PlayerFormInventorySection({
-  register,
-  control,
-  watch,
-  setValue,
+  fields,
+  onAddItem,
+  onRemoveItem,
+  onToggleEquip,
+  onUpdateItem,
   itemSearchQuery,
   setItemSearchQuery,
-  setSelectedEquipmentIndex,
   selectedEquipmentIndex,
-  fields,
+  setSelectedEquipmentIndex,
+  startingEquipmentOptions,
+  selectedStartingEquipmentCount = 0,
+  isNewCharacter = false,
 }: PlayerFormInventorySectionProps) {
+  const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
+  const [selectedStartingEquipmentIndices, setSelectedStartingEquipmentIndices] = useState<
+    Set<number>
+  >(new Set());
+  // Track which items in inventory are from starting equipment options
+  const [startingEquipmentToInventoryIndex, setStartingEquipmentToInventoryIndex] =
+    useState<Map<number, number>>(new Map());
   const debouncedItemSearch = useDebounce(itemSearchQuery, 300);
   const { data: equipmentData, isLoading: loadingEquipment } =
     useEquipment(debouncedItemSearch);
 
-  const { append, remove } = useFieldArray({
-    control,
-    name: "inventory",
-  });
+  const toggleStartingEquipment = (index: number, option: any) => {
+    const newSelected = new Set(selectedStartingEquipmentIndices);
+    const newMapping = new Map(startingEquipmentToInventoryIndex);
+
+    if (newSelected.has(index)) {
+      // Deselect: remove the item from inventory
+      newSelected.delete(index);
+      const inventoryIndex = newMapping.get(index);
+      if (inventoryIndex !== undefined) {
+        onRemoveItem(inventoryIndex);
+        newMapping.delete(index);
+        // Update indices for items after the removed one
+        for (const [key, value] of newMapping.entries()) {
+          if (value > inventoryIndex) {
+            newMapping.set(key, value - 1);
+          }
+        }
+      }
+    } else {
+      // Select: add the item to inventory
+      newSelected.add(index);
+      if (option.item) {
+        const baseItem = convertApiEquipmentToItem(option.item, "class");
+        const quantity = option.quantity || 1;
+        for (let i = 0; i < quantity; i++) {
+          onAddItem({ ...baseItem });
+        }
+        newMapping.set(index, fields.length);
+      }
+    }
+    setSelectedStartingEquipmentIndices(newSelected);
+    setStartingEquipmentToInventoryIndex(newMapping);
+  };
+
+  const StartingEquipmentCards = () => {
+    console.log("StartingEquipmentCards render:", {
+      isNewCharacter,
+      startingEquipmentOptions,
+      length: startingEquipmentOptions?.length,
+    });
+
+    if (
+      !isNewCharacter ||
+      !startingEquipmentOptions ||
+      startingEquipmentOptions.length === 0
+    ) {
+      return null;
+    }
+
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs text-text-tertiary uppercase tracking-wider">
+            Equipamento Inicial
+          </Label>
+          <Badge
+            className={`text-[10px] ${
+              selectedStartingEquipmentIndices.size >=
+              selectedStartingEquipmentCount
+                ? "bg-nature-400/20 text-nature-400"
+                : "bg-arcane-400/20 text-arcane-400"
+            }`}
+          >
+            {selectedStartingEquipmentIndices.size}/{selectedStartingEquipmentCount}
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {startingEquipmentOptions.map((option: any, idx: number) => {
+            const isSelected = selectedStartingEquipmentIndices.has(idx);
+            const isLimitReached =
+              selectedStartingEquipmentIndices.size >=
+              selectedStartingEquipmentCount;
+
+            // Hide remaining options when limit is reached
+            if (!isSelected && isLimitReached) {
+              return null;
+            }
+
+            const item = option.item;
+            const quantity = option.quantity || 1;
+            const isSelectedHidden = !isSelected && isLimitReached;
+
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => toggleStartingEquipment(idx, option)}
+                disabled={isSelectedHidden}
+                className={`relative p-3 rounded-lg border text-left transition-all ${
+                  isSelected
+                    ? "bg-arcane-500/10 border-arcane-400"
+                    : "bg-bg-inset border-border-default hover:border-arcane-400/50"
+                } ${isSelectedHidden ? "hidden" : ""}`}
+              >
+                {isSelected && (
+                  <div className="absolute top-2 right-2">
+                    <div className="w-5 h-5 rounded-full bg-arcane-400 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 pr-6">
+                    <span className="font-semibold text-sm text-text-primary">
+                      {item?.name || "Item"}
+                    </span>
+                    {quantity > 1 && (
+                      <Badge className="text-[10px] bg-nature-400/20 text-nature-400">
+                        x{quantity}
+                      </Badge>
+                    )}
+                    <Badge className="text-[10px] uppercase tracking-wider">
+                      {item?.equipment_category?.name || "item"}
+                    </Badge>
+                  </div>
+
+                  {item?.cost && (
+                    <p className="text-xs text-text-tertiary mt-1">
+                      {item.cost.quantity * quantity} {item.cost.unit}
+                    </p>
+                  )}
+
+                  {item?.weight && (
+                    <p className="text-xs text-text-tertiary">
+                      {item.weight * quantity} lb
+                    </p>
+                  )}
+
+                  {item?.damage?.damage_dice && (
+                    <p className="text-xs text-text-tertiary">
+                      Dano: {item.damage.damage_dice}{" "}
+                      {item.damage.damage_type?.name}
+                    </p>
+                  )}
+
+                  {item?.armor_class && (
+                    <p className="text-xs text-text-tertiary">
+                      CA: {item.armor_class.base}
+                      {item.armor_class.dex_bonus && " + DES"}
+                    </p>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const parseDamageDice = (
     damageDice: string | undefined,
@@ -83,15 +244,6 @@ export default function PlayerFormInventorySection({
     );
   };
 
-  const handleSelectEquipment = (equipment: any, index: number) => {
-    setSelectedEquipmentIndex(index);
-    const currentRace = (watch as any)("race") || "";
-    const currentClass = (watch as any)("class") || "";
-    setValue("name", equipment.name || "", { shouldDirty: true });
-    setValue("race", currentRace);
-    setValue("class", currentClass);
-  };
-
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
       <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
@@ -100,6 +252,7 @@ export default function PlayerFormInventorySection({
       </Label>
 
       <div className="space-y-4">
+        <StartingEquipmentCards />
         <div className="bg-bg-inset rounded-lg border border-border-default p-4">
           <Label className="text-xs text-text-tertiary uppercase tracking-wider mb-2 block flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-arcane-400 animate-pulse"></span>
@@ -143,13 +296,12 @@ export default function PlayerFormInventorySection({
                 <div className="divide-y divide-border-subtle">
                   {equipmentData.equipments
                     .filter(isMeaningfulItem)
-                    .map(
-                      (item: any, idx: number) => (
+                    .map((item: any, idx: number) => (
                       <button
                         key={item?.index || idx}
                         type="button"
                         onClick={() => {
-                          append({
+                          onAddItem({
                             name: item.name || "",
                             price: item.cost
                               ? item.cost.unit === "gp"
@@ -200,8 +352,8 @@ export default function PlayerFormInventorySection({
                           )}
                         </div>
                         <Plus className="w-4 h-4 text-arcane-400" />
-                        </button>
-                      ))}
+                      </button>
+                    ))}
                 </div>
               </div>
             )}
@@ -227,34 +379,59 @@ export default function PlayerFormInventorySection({
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs text-text-tertiary mt-1">
-                  {field.type === "weapon"
-                    ? `Arma • ${field.distance === "melee" ? "Corpo a corpo" : "À distância"} • ${field.damage.dice}d${field.damage.number}${field.damage.type ? ` ${field.damage.type}` : ""}`
-                    : field.type === "armor"
-                      ? "Armadura"
-                      : "Escudo"}
-                </p>
+                <p className="text-xs text-text-tertiary mt-1">{field.type}</p>
                 <p className="text-xs text-text-tertiary">
                   <span className="mr-1">💰</span>
                   {field.price} gp{" "}
                   {field.attackbonus !== 0 && `• ATK +${field.attackbonus}`}{" "}
-                  {field.defensebonus !== 0 &&
-                    `• DEF +${field.defensebonus}`}
+                  {field.defensebonus !== 0 && `• DEF +${field.defensebonus}`}
                 </p>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => remove(index)}
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              <div className="flex gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onToggleEquip(index)}
+                >
+                  {field.equipped ? (
+                    <span className="text-xs">Desequipar</span>
+                  ) : (
+                    <span className="text-xs">Equipar</span>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setEditItemIndex(index)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onRemoveItem(index)}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      {editItemIndex !== null && fields[editItemIndex] && (
+        <EditItemDialog
+          item={fields[editItemIndex]}
+          index={editItemIndex}
+          open={editItemIndex !== null}
+          setOpen={(open) => setEditItemIndex(open ? editItemIndex : null)}
+          onUpdate={onUpdateItem}
+        />
+      )}
     </div>
   );
 }

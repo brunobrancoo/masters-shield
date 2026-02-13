@@ -70,6 +70,7 @@ export default function EditSpellDialog({
   const onSubmit = (data: z.infer<typeof spellSchema>) => {
     const updatedSpell: Spell = {
       ...spell,
+      index: data.name.toLowerCase().replace(/\s+/g, '-'),
       name: data.name,
       level: data.level,
       school: data.school,

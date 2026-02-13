@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { UsersIcon, ShieldIcon, SwordIcon } from "@/components/icons";
 import { CrossIcon, ForkKnifeIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { Player } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/interfaces/interfaces";
 
 interface PlayerListProps {
-  players: Player[];
-  onSelectPlayerAction: (player: Player) => void;
+  players: PlayableCharacter[];
+  onSelectPlayerAction: (player: PlayableCharacter) => void;
   onDeletePlayerAction: (id: string) => void;
-  onSaveAction: (player: Player) => void;
+  onSaveAction: (player: PlayableCharacter) => void;
 }
 
 export function PlayerList({
@@ -33,8 +33,8 @@ export function PlayerList({
   const filteredPlayers = players.filter((player) => {
     return (
       player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.class.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.race.toLowerCase().includes(searchTerm.toLowerCase())
+      player.className.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      player.raceName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -72,7 +72,7 @@ export function PlayerList({
                       {player.name}
                     </CardTitle>
                     <CardDescription className="font-serif mt-1">
-                      {player.race} {player.class}
+                      {player.raceName} {player.className}
                     </CardDescription>
                   </div>
                   <div className="flex gap-4">

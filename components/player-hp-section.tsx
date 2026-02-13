@@ -1,4 +1,4 @@
-import type { Player } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldIcon } from "@/components/icons";
@@ -7,17 +7,17 @@ import HPModal from "@/components/hp-modal";
 import { getHPBackgroundColor, getHPColor } from "@/lib/utils/player-utils";
 
 interface PlayerHPSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   onHPChange: (delta: number) => void;
   onHPModal: (amount: number) => void;
 }
 
-export default function PlayerHPSection({ player, onHPChange, onHPModal }: PlayerHPSectionProps) {
+export default function PlayerHPSection({ playableCharacter, onHPChange, onHPModal }: PlayerHPSectionProps) {
   return (
     <Card
       className={`metal-border ${getHPBackgroundColor(
-        player.hp,
-        player.maxHp,
+        playableCharacter.hp,
+        playableCharacter.maxHp,
       )}`}
     >
       <CardHeader>
@@ -38,14 +38,14 @@ export default function PlayerHPSection({ player, onHPChange, onHPModal }: Playe
           <div className="text-center">
             <p
               className={`text-6xl font-bold ${getHPColor(
-                player.hp,
-                player.maxHp,
+                playableCharacter.hp,
+                playableCharacter.maxHp,
               )}`}
             >
-              {player.hp}
+              {playableCharacter.hp}
             </p>
             <p className="text-sm text-muted-foreground">
-              / {player.maxHp}
+              / {playableCharacter.maxHp}
             </p>
           </div>
           <Button
@@ -56,7 +56,7 @@ export default function PlayerHPSection({ player, onHPChange, onHPModal }: Playe
             <Plus className="w-5 h-5" />
           </Button>
         </div>
-        <HPModal player={player} onApply={onHPModal} />
+        <HPModal playableCharacter={playableCharacter} onApply={onHPModal} />
       </CardContent>
     </Card>
   );

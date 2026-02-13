@@ -20,10 +20,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
 import { Item, Homebrew } from "@/lib/interfaces/interfaces";
-import { ItemFormData, itemSchema } from "@/lib/schemas";
+import { ItemFormData, ItemFormFormData, itemSchema, itemFormSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
 import { isMeaningfulItem } from "@/lib/api/utils";
 import { createHomebrew, onHomebrewsChange } from "@/lib/firebase-storage";
+import { sanitizeForFirebase } from "@/lib/interfaces/interfaces";
 
 interface AddItemDialogProps {
   onAdd: (item: Item) => void;
@@ -50,14 +51,14 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     setValue,
     trigger,
     formState: { errors },
-  } = useForm<ItemFormData>({
-    resolver: zodResolver(itemSchema),
+  } = useForm<ItemFormFormData>({
+    resolver: zodResolver(itemFormSchema),
     defaultValues: {
       name: "",
       price: 0,
       type: "weapon",
       distance: "melee",
-      damage: { dice: 1, number: 4, type: "" },
+      damage: { dice:1, number:4, type: "" },
       magic: false,
       attackbonus: 0,
       defensebonus: 0,
@@ -242,9 +243,36 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     }, 0);
   };
 
-  const onSubmit = async (data: ItemFormData) => {
-    const item: Item = { ...data, equipped: false };
-    onAdd(item);
+  const onSubmit = async (data: ItemFormFormData) => {
+    const item: Item = {
+      index: data.name.toLowerCase().replace(/\s+/g, '-'),
+      name: data.name,
+      cost: {
+        quantity: data.price,
+        unit: 'gp',
+      },
+      type: data.type,
+      equipment_category: { index: data.type.toLowerCase(), name: data.type },
+      gear_category: null,
+      desc: [],
+      magic: data.magic,
+      attackbonus: data.attackbonus,
+      defensebonus: data.defensebonus,
+      notes: data.notes,
+      equipped: false,
+      source: 'custom',
+      weapon_category: data.type === 'weapon' ? 'simple' : undefined,
+      weapon_range: data.type === 'weapon' ? data.distance : undefined,
+      category_range: data.type === 'weapon' ? data.distance : undefined,
+      damage: data.damage ? {
+        damage_dice: `${data.damage.dice}d${data.damage.number}`,
+        damage_type: data.damage.type ? { index: data.damage.type.toLowerCase(), name: data.damage.type } : undefined,
+      } : undefined,
+      range: data.type === 'weapon' ? { normal: 5 } : undefined,
+    };
+
+    const sanitizedItem = sanitizeForFirebase(item);
+    await onAdd(sanitizedItem);
 
     const selectedHomebrew = filteredHomebrews.find(
       (hb) => hb.name === data.name
@@ -255,7 +283,10 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
         await createHomebrew(campaignId, {
           name: data.name,
           itemType: "item",
-          item: item,
+          item: {
+            ...sanitizedItem,
+            desc: [data.notes],
+          },
         });
       } catch (error) {
         console.error("Failed to save to homebrew:", error);
@@ -288,11 +319,14 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     if (homebrew.item) {
       setValue("name", homebrew.item.name, { shouldDirty: true });
       setValue("type", homebrew.item.type, { shouldDirty: true });
-      setValue("price", homebrew.item.price, { shouldDirty: true });
-      setValue("distance", homebrew.item.distance, { shouldDirty: true });
-      setValue("damage.dice", homebrew.item.damage.dice, { shouldDirty: true });
-      setValue("damage.number", homebrew.item.damage.number, { shouldDirty: true });
-      setValue("damage.type", homebrew.item.damage.type, { shouldDirty: true });
+      setValue("price", homebrew.item.cost?.quantity || 0, { shouldDirty: true });
+      setValue("distance", homebrew.item.weapon_range || homebrew.item.category_range || "melee", { shouldDirty: true });
+      const damageDiceMatch = homebrew.item.damage?.damage_dice?.match(/^(\d+)d(\d+)$/i);
+      if (damageDiceMatch) {
+        setValue("damage.dice", parseInt(damageDiceMatch[1], 10), { shouldDirty: true });
+        setValue("damage.number", parseInt(damageDiceMatch[2], 10), { shouldDirty: true });
+      }
+      setValue("damage.type", homebrew.item.damage?.damage_type?.name || "", { shouldDirty: true });
       setValue("magic", homebrew.item.magic, { shouldDirty: true });
       setValue("attackbonus", homebrew.item.attackbonus, { shouldDirty: true });
       setValue("defensebonus", homebrew.item.defensebonus, { shouldDirty: true });

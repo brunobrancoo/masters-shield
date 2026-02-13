@@ -2,15 +2,23 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Wind, Zap, Eye, Sword, Wand2 } from "lucide-react";
+import { Shield, Wind, Zap, Eye, Sword } from "lucide-react";
+import { calculateModifier } from "@/lib/skills";
 
 interface PlayerFormCombatStatsSectionProps {
   register: any;
+  watch?: any;
+  attributes?: any;
 }
 
 export default function PlayerFormCombatStatsSection({
   register,
+  watch,
+  attributes,
 }: PlayerFormCombatStatsSectionProps) {
+  const dexModifier = attributes?.des ? calculateModifier(attributes.des) : 0;
+  const initiativeBonus = watch?.("initiativeBonus") || 0;
+  const totalInitiative = dexModifier + initiativeBonus;
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
       <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
@@ -58,15 +66,23 @@ export default function PlayerFormCombatStatsSection({
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             <Zap className="w-3 h-3 text-arcane-400" />
-            Bônus de Iniciativa
+            Iniciativa
           </Label>
-          <Input
-            id="initiativeBonus"
-            type="number"
-            className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-            {...register("initiativeBonus", { valueAsNumber: true })}
-            placeholder="0"
-          />
+          <div className="flex gap-2">
+            <Input
+              id="initiativeBonus"
+              type="number"
+              className="bg-bg-inset border-border-default focus:border-arcane-400 h-11 flex-1"
+              {...register("initiativeBonus", { valueAsNumber: true })}
+              placeholder="Bônus"
+            />
+            <div className="bg-bg-inset border border-border-default px-3 h-11 flex items-center justify-center min-w-[60px] text-text-primary font-medium">
+              {dexModifier >= 0 ? `+${dexModifier}` : dexModifier}
+            </div>
+          </div>
+          <p className="text-xs text-text-secondary">
+            Total: <span className="font-semibold">{totalInitiative >= 0 ? `+${totalInitiative}` : totalInitiative}</span>
+          </p>
         </div>
         <div className="space-y-2">
           <Label
@@ -86,33 +102,17 @@ export default function PlayerFormCombatStatsSection({
         </div>
         <div className="space-y-2">
           <Label
-            htmlFor="attackBaseBonus"
+            htmlFor="profBonus"
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             <Sword className="w-3 h-3 text-martial-400" />
-            Bônus de Ataque Base
+            Bônus de Proficiência
           </Label>
           <Input
-            id="attackBaseBonus"
+            id="profBonus"
             type="number"
             className="bg-bg-inset border-border-default focus:border-martial-400 h-11"
-            {...register("attackBaseBonus", { valueAsNumber: true })}
-            placeholder="0"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label
-            htmlFor="spellAttack"
-            className="text-text-secondary font-medium flex items-center gap-2"
-          >
-            <Wand2 className="w-3 h-3 text-arcane-400" />
-            Ataque de Magia
-          </Label>
-          <Input
-            id="spellAttack"
-            type="number"
-            className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
-            {...register("spellAttack", { valueAsNumber: true })}
+            {...register("profBonus", { valueAsNumber: true })}
             placeholder="0"
           />
         </div>

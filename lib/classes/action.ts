@@ -1,4 +1,4 @@
-import { Player, Monster, Item } from "../interfaces/interfaces";
+import { PlayableCharacter, Monster, Item } from "../interfaces/interfaces";
 
 // --- Placeholder Interfaces & Classes ---
 // Estas interfaces e classes são placeholders e devem ser substituídas
@@ -43,7 +43,7 @@ class DiceRoller {
  */
 export interface ResolveContext {
   combatState: CombatState;
-  target?: Player | Monster; // O alvo é opcional
+  target?: PlayableCharacter | Monster; // O alvo é opcional
 }
 
 /**
@@ -79,7 +79,7 @@ export class Action {
   private ability?: string;
 
   constructor(
-    private readonly actor: Player | Monster,
+    private readonly actor: PlayableCharacter | Monster,
     private readonly type: ActionType
   ) {}
 

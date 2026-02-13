@@ -1,0 +1,53 @@
+query GetBackgrounds {
+  backgrounds {
+    index
+    name
+  }
+}
+
+query GetBackground($index: String!) {
+  background(index: $index) {
+    index
+    name
+    feature {
+      name
+      desc
+    }
+    starting_proficiencies {
+      index
+      name
+      type
+    }
+    starting_equipment {
+      equipment {
+        index
+        name
+        cost {
+          quantity
+          unit
+        }
+        equipment_category {
+          index
+          name
+        }
+        gear_category {
+          index
+          name
+        }
+      }
+      quantity
+    }
+    language_options {
+      choose
+      type
+      from {
+        options {
+          item {
+            index
+            name
+          }
+        }
+      }
+    }
+  }
+}

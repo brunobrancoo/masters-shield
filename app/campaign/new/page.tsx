@@ -34,7 +34,9 @@ export default function NewCampaignPage() {
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <Card className="metal-border bg-card/50">
           <CardHeader>
-            <CardTitle className="font-sans text-2xl">Criar Nova Campanha</CardTitle>
+            <CardTitle className="font-sans text-2xl">
+              Criar Nova Campanha
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,7 +50,11 @@ export default function NewCampaignPage() {
                   className="metal-border"
                 />
               </div>
-              <Button type="submit" disabled={loading || !name.trim()} className="glow-silver">
+              <Button
+                type="submit"
+                disabled={loading || !name.trim()}
+                className="glow-silver"
+              >
                 {loading ? "Criando..." : "Criar Campanha"}
               </Button>
             </form>

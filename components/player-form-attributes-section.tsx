@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Gauge, Dice1 } from "lucide-react";
+import { Gauge, Dice1, Zap } from "lucide-react";
 import { generateAttributes } from "@/lib/dice";
 import { Attributes, attributeKeys } from "@/lib/interfaces/interfaces";
 
@@ -11,12 +11,14 @@ interface PlayerFormAttributesSectionProps {
   register: any;
   errors: any;
   setValue: any;
+  remainingAbilityScoreImprovements?: number;
 }
 
 export default function PlayerFormAttributesSection({
   register,
   errors,
   setValue,
+  remainingAbilityScoreImprovements = 0,
 }: PlayerFormAttributesSectionProps) {
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
@@ -43,6 +45,20 @@ export default function PlayerFormAttributesSection({
           Rolar Atributos
         </Button>
       </div>
+
+      {remainingAbilityScoreImprovements > 0 && (
+        <div className="mb-4 p-3 bg-arcane-400/10 rounded border border-arcane-400/20">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-arcane-400" />
+            <div className="text-sm text-text-secondary">
+              <p className="font-semibold">Melhoria de Atributos</p>
+              <p className="text-xs mt-1">
+                {remainingAbilityScoreImprovements} melhoria{remainingAbilityScoreImprovements > 1 ? 's' : ''} de atributo disponível{remainingAbilityScoreImprovements > 1 ? 'is' : ''}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {(["for", "des", "con", "int", "sab", "car"] as const).map(

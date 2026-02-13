@@ -2,60 +2,36 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Player } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { useForm, useFieldArray } from "react-hook-form";
-import { playerSchema } from "@/lib/schemas";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useClass } from "@/lib/api/hooks";
+import { playableCharacterSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
+import { convertApiEquipmentToItem } from "@/lib/interfaces/interfaces";
 
-import PlayerFormBasicInfoSection from "./player-form-basic-info-section";
+import PlayerFormIdentitySection from "./player-form-identity-section";
 import PlayerFormHealthSection from "./player-form-health-section";
 import PlayerFormCombatStatsSection from "./player-form-combat-stats-section";
 import PlayerFormSpellcastingSection from "./player-form-spellcasting-section";
+import ClassResourceFormSection from "./class-resource-form-section";
 import PlayerFormAttributesSection from "./player-form-attributes-section";
 import PlayerFormInventorySection from "./player-form-inventory-section";
 import PlayerFormNotesSection from "./player-form-notes-section";
-import PlayerFormSkillsSection from "./player-form-skills-section";
-
-const skillSchema = z.object({
-  name: z.string().min(1),
-  description: z.string(),
-  savingThrowAttribute: z.enum(["for", "des", "con", "int", "sab", "car"]),
-});
-
-const featureSchema = z.object({
-  name: z.string().min(1),
-  description: z.string(),
-  uses: z.number().optional(),
-  source: z.string(),
-});
-
-const buffSchema = z.object({
-  name: z.string().min(1),
-  duration: z.string().optional(),
-  description: z.string(),
-  source: z.string(),
-  affects: z.object({
-    effect: z.string(),
-    amount: z.number(),
-  }),
-});
-
-type PlayerFormData = z.infer<typeof playerSchema>;
-type SkillFormData = z.infer<typeof skillSchema>;
-type FeatureFormData = z.infer<typeof featureSchema>;
-type BuffFormData = z.infer<typeof buffSchema>;
+import PlayerFormSkillsSection from "./player-form-dnd-skills-section";
+import RaceFeaturesSection from "./race-features-section";
+import ClassFeaturesSection from "./class-features-section";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getProficiencyBonus, calculateModifier } from "@/lib/skills";
 
 interface PlayerFormProps {
-  player?: Player;
-  onSaveAction: (player: Player) => void;
+  playableCharacter?: PlayableCharacter;
+  onSaveAction: (playableCharacter: PlayableCharacter) => void;
   onCancelAction?: () => void;
   hideActions?: boolean;
 }
 
 export default function PlayerForm({
-  player,
+  playableCharacter,
   onSaveAction,
   onCancelAction,
   hideActions = false,
@@ -64,6 +40,9 @@ export default function PlayerForm({
   const [selectedEquipmentIndex, setSelectedEquipmentIndex] = useState<
     number | null
   >(null);
+  const [previousClassIndex, setPreviousClassIndex] = useState<string | null>(
+    null,
+  );
 
   const {
     register,
@@ -73,18 +52,35 @@ export default function PlayerForm({
     reset,
     setValue,
     watch,
-  } = useForm<PlayerFormData>({
-    resolver: zodResolver(playerSchema),
-    defaultValues: player
+  } = useForm<any>({
+    resolver: zodResolver(playableCharacterSchema),
+    defaultValues: playableCharacter
       ? {
-          ...player,
-          inventory: (player as any).inventory || [],
+          ...playableCharacter,
+          inventory: playableCharacter.inventory || [],
         }
       : {
           name: "",
-          race: "",
-          class: "",
+          raceIndex: "",
+          raceName: "",
+          classIndex: "",
+          className: "",
           level: 1,
+          subclassIndex: "",
+          subclassName: "",
+          backgroundIndex: "",
+          backgroundName: "",
+          raceTraits: [],
+          backgroundFeature: "",
+          classFeatures: [],
+          customFeatures: [],
+          featFeatures: [],
+          selectedProficiencies: [],
+          raceProficiencies: [],
+          backgroundProficiencies: [],
+          classProficiencies: [],
+          classEquipment: [],
+          backgroundEquipment: [],
           hp: 10,
           maxHp: 10,
           attributes: {
@@ -102,47 +98,52 @@ export default function PlayerForm({
           initiativeBonus: 0,
           passivePerception: 10,
           proficiencyBonus: 2,
-          sorceryPoints: 0,
-          maxSorceryPoints: 0,
           skills: [],
-          features: [],
+          spellSlots: {
+            1: { current: 0, max: 0 },
+            2: { current: 0, max: 0 },
+            3: { current: 0, max: 0 },
+            4: { current: 0, max: 0 },
+            5: { current: 0, max: 0 },
+            6: { current: 0, max: 0 },
+            7: { current: 0, max: 0 },
+            8: { current: 0, max: 0 },
+            9: { current: 0, max: 0 },
+          },
+          spellsKnown: [],
+          spellAttack: 0,
+          spellCD: 0,
+          sorceryPoints: undefined,
+          kiPoints: undefined,
+          rages: undefined,
+          inspiration: undefined,
+          channelDivinityCharges: undefined,
+          invocationsKnown: undefined,
+          featResources: undefined,
           buffs: [],
           debuffs: [],
-          spellCD: 0,
-          spellAttack: 0,
-          attackBaseBonus: 0,
-          spells: [],
-          spellSlots: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-          maxSpellSlots: {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-            6: 0,
-            7: 0,
-            8: 0,
-            9: 0,
-          },
+          profBonus: 0,
+          abilityScoreImprovementsUsed: 0,
+          wildShapeForm: "",
         },
   });
 
   const {
-    fields: skillFields,
-    append: appendSkill,
-    remove: removeSkill,
+    fields: customFeatureFields,
+    append: appendCustomFeature,
+    remove: removeCustomFeature,
   } = useFieldArray({
     control,
-    name: "skills",
+    name: "customFeatures",
   });
 
   const {
-    fields: featureFields,
-    append: appendFeature,
-    remove: removeFeature,
+    fields: featFeatureFields,
+    append: appendFeatFeature,
+    remove: removeFeatFeature,
   } = useFieldArray({
     control,
-    name: "features",
+    name: "featFeatures",
   });
 
   const {
@@ -168,69 +169,276 @@ export default function PlayerForm({
     name: "inventory",
   });
 
-  useEffect(() => {
-    if (player) {
-      reset(player);
-    }
-  }, [player, reset]);
+  const watchedClassIndex = watch("classIndex");
+  const watchedLevel = watch("level") || 1;
+  const watchedAttributes = watch("attributes");
+  const watchedBackgroundIndex = watch("backgroundIndex");
 
-  const onSubmit = (data: PlayerFormData) => {
-    onSaveAction({
-      ...player,
-      ...data,
-      id: player?.id,
-      notes: data.notes || "",
-      maxHp: data.maxHp,
-      spells: player?.spells || [],
-    } as Player);
+  const proficiencyBonus = getProficiencyBonus(watchedLevel);
+
+  useEffect(() => {
+    setValue("proficiencyBonus", proficiencyBonus);
+  }, [watchedLevel, proficiencyBonus, setValue]);
+
+  const { data: classData } = useClass(watchedClassIndex || "");
+
+  console.log("classData:", JSON.stringify(classData, null, 2));
+  console.log("starting_equipment_options:", (classData?.class as any)?.starting_equipment_options);
+
+  const hitDie = classData?.class?.hit_die || 8;
+
+  const levelData = classData?.class?.class_levels?.find(
+    (l: any) => l.level === watchedLevel,
+  );
+  const classProfBonus = levelData?.prof_bonus || proficiencyBonus;
+
+  useEffect(() => {
+    if (levelData?.prof_bonus !== undefined) {
+      setValue("proficiencyBonus", levelData.prof_bonus);
+    }
+  }, [levelData, setValue]);
+
+  // Auto-calculate AC based on DEX modifier
+  useEffect(() => {
+    const dexModifier = calculateModifier(watchedAttributes?.des || 10);
+    setValue("ac", 10 + dexModifier);
+  }, [watchedAttributes?.des, setValue]);
+
+  // Populate inventory with class starting equipment when class changes
+  // Only for new characters (no playableCharacter prop)
+  useEffect(() => {
+    // Only populate for new characters (not loading existing ones)
+    if (playableCharacter) {
+      return;
+    }
+
+    // Only populate if class has actually changed
+    if (watchedClassIndex && watchedClassIndex !== previousClassIndex) {
+      const startingEquipment = classData?.class?.starting_equipment;
+
+      if (startingEquipment && startingEquipment.length > 0) {
+        // Convert starting equipment to Item format
+        const convertedItems: any[] = [];
+
+        startingEquipment.forEach((classEquipment: any) => {
+          if (classEquipment.equipment) {
+            const baseItem = convertApiEquipmentToItem(
+              classEquipment.equipment,
+              "class",
+            );
+
+            // Create multiple items based on quantity
+            for (let i = 0; i < classEquipment.quantity; i++) {
+              convertedItems.push({ ...baseItem });
+            }
+          }
+        });
+
+        // Set the inventory with starting equipment
+        setValue("inventory", convertedItems);
+      }
+
+      // Update previous class index
+      setPreviousClassIndex(watchedClassIndex);
+    }
+  }, [
+    watchedClassIndex,
+    classData,
+    playableCharacter,
+    previousClassIndex,
+    setValue,
+  ]);
+
+  const totalAbilityScoreImprovementsEarned =
+    classData?.class?.class_levels?.reduce((sum: number, level: any) => {
+      return sum + (level.ability_score_bonuses || 0);
+    }, 0) || 0;
+  const abilityScoreImprovementsUsed =
+    watch("abilityScoreImprovementsUsed") || 0;
+  const remainingAbilityScoreImprovements = Math.max(
+    0,
+    totalAbilityScoreImprovementsEarned - abilityScoreImprovementsUsed,
+  );
+
+  const handleRollMaxHP = () => {
+    const conModifier = calculateModifier(watchedAttributes?.con || 10);
+
+    let maxHP = 0;
+
+    if (watchedLevel === 1) {
+      // Level 1: Full hit die
+      maxHP = hitDie + conModifier;
+    } else {
+      // Level 2+: Roll hit die for each level, add CON mod × level
+      maxHP = hitDie; // Full hit die for level 1
+
+      for (let i = 2; i <= watchedLevel; i++) {
+        maxHP += Math.floor(Math.random() * hitDie) + 1; // Roll hit die
+      }
+
+      maxHP += watchedLevel * conModifier; // Add CON modifier for each level
+    }
+
+    setValue("maxHp", Math.max(1, maxHP));
+    setValue("hp", Math.max(1, maxHP));
+  };
+
+  const handleAddItem = (item: any) => {
+    append(item);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    remove(index);
+  };
+
+  const handleToggleEquip = (index: number) => {
+    const currentItem = fields[index] as any;
+    setValue(`inventory.${index}.equipped`, !currentItem.equipped);
+  };
+
+  const handleUpdateItem = (index: number, updatedItem: any) => {
+    setValue(`inventory.${index}`, updatedItem);
+  };
+
+  useEffect(() => {
+    if (playableCharacter) {
+      reset(playableCharacter as any);
+    }
+  }, [playableCharacter, reset]);
+
+  const onSubmit = (data: any) => {
+    const filteredData: any = {};
+
+    for (const [key, value] of Object.entries(data)) {
+      if (value === undefined) continue;
+
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        const filteredNested: any = {};
+        for (const [nestedKey, nestedValue] of Object.entries(value)) {
+          if (nestedValue !== undefined) {
+            filteredNested[nestedKey] = nestedValue;
+          }
+        }
+        if (Object.keys(filteredNested).length > 0) {
+          filteredData[key] = filteredNested;
+        }
+      } else {
+        filteredData[key] = value;
+      }
+    }
+
+    const characterData: PlayableCharacter = {
+      ...playableCharacter,
+      ...filteredData,
+      notes: filteredData.notes || "",
+      maxHp: filteredData.maxHp,
+    } as PlayableCharacter;
+
+    if (playableCharacter?.id) {
+      characterData.id = playableCharacter.id;
+    }
+
+    onSaveAction(characterData);
   };
 
   return (
     <form id="player-form" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-6">
-        <PlayerFormBasicInfoSection register={register} errors={errors} />
+        <PlayerFormIdentitySection
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+        />
 
-        <PlayerFormHealthSection register={register} errors={errors} />
+        <PlayerFormHealthSection
+          register={register}
+          errors={errors}
+          onRollMaxHP={handleRollMaxHP}
+          showRollButton={!!watchedClassIndex}
+        />
 
-        <PlayerFormCombatStatsSection register={register} />
-
-        <PlayerFormSpellcastingSection register={register} />
+        <PlayerFormCombatStatsSection
+          register={register}
+          watch={watch}
+          attributes={watchedAttributes}
+        />
 
         <PlayerFormAttributesSection
           register={register}
           errors={errors}
           setValue={setValue}
+          remainingAbilityScoreImprovements={remainingAbilityScoreImprovements}
+        />
+
+        <PlayerFormSkillsSection
+          register={register}
+          setValue={setValue}
+          watch={watch}
+          errors={errors}
+          classIndex={watch("classIndex")}
+          backgroundIndex={watch("backgroundIndex")}
+          attributes={watch("attributes")}
+          proficiencyBonus={watch("proficiencyBonus") || 2}
+        />
+
+        <RaceFeaturesSection
+          raceIndex={watch("raceIndex")}
+          register={register}
+          watch={watch}
+          errors={errors}
+        />
+
+        <ClassFeaturesSection
+          classIndex={watch("classIndex")}
+          level={watch("level") || 1}
+          subclassIndex={watch("subclassIndex")}
+          register={register}
+          watch={watch}
+          errors={errors}
+        />
+
+        <PlayerFormSpellcastingSection
+          register={register}
+          watch={watch}
+          setValue={setValue}
+          classIndex={watch("classIndex")}
+          level={watch("level") || 1}
+          attributes={watch("attributes")}
+          proficiencyBonus={watch("proficiencyBonus") || 2}
+        />
+
+        <ClassResourceFormSection
+          classIndex={watch("classIndex")}
+          classData={classData}
+          level={watch("level") || 1}
+          watch={watch}
+          setValue={setValue}
+          register={register}
         />
 
         <PlayerFormInventorySection
-          register={register}
-          control={control}
-          watch={watch}
-          setValue={setValue}
+          fields={fields}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+          onToggleEquip={handleToggleEquip}
+          onUpdateItem={handleUpdateItem}
           itemSearchQuery={itemSearchQuery}
           setItemSearchQuery={setItemSearchQuery}
-          setSelectedEquipmentIndex={setSelectedEquipmentIndex}
           selectedEquipmentIndex={selectedEquipmentIndex}
-          fields={fields}
+          setSelectedEquipmentIndex={setSelectedEquipmentIndex}
+          startingEquipmentOptions={
+            (classData?.class as any)?.starting_equipment_options?.[0]?.from?.options ||
+            []
+          }
+          selectedStartingEquipmentCount={
+            (classData?.class as any)?.starting_equipment_options?.[0]?.choose ||
+            0
+          }
+          isNewCharacter={!playableCharacter}
         />
 
         <PlayerFormNotesSection register={register} />
-
-        <PlayerFormSkillsSection
-          control={control}
-          skillFields={skillFields}
-          featureFields={featureFields}
-          buffFields={buffFields}
-          debuffFields={debuffFields}
-          appendSkill={appendSkill}
-          removeSkill={removeSkill}
-          appendFeature={appendFeature}
-          removeFeature={removeFeature}
-          appendBuff={appendBuff}
-          removeBuff={removeBuff}
-          appendDebuff={appendDebuff}
-          removeDebuff={removeDebuff}
-        />
 
         {!hideActions && (
           <div className="flex justify-end gap-3 pt-4 border-t border-border-default">
@@ -242,7 +450,7 @@ export default function PlayerForm({
               className="bg-arcane-500 hover:bg-arcane-400 text-white glow-arcane"
             >
               <Plus className="w-4 h-4 mr-2" />
-              {player ? "Salvar Jogador" : "Criar Personagem"}
+              {playableCharacter ? "Salvar Jogador" : "Criar Personagem"}
             </Button>
           </div>
         )}

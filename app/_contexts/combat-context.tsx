@@ -5,7 +5,7 @@ import {
   InitiativeEntry,
   Monster,
   NPC,
-  Player,
+  PlayableCharacter,
 } from "@/lib/interfaces/interfaces";
 import { DiceRoller } from "@/lib/classes/dices";
 import { getAttMod } from "@/lib/utils";
@@ -45,9 +45,9 @@ export interface CombatContextType {
   clearAll: () => void;
   updateHp: (id: string, delta: number) => void;
   addExistingEntry: () => void;
-  getSourceList: () => Monster[] | Player[] | NPC[];
-  sourceType: "monster" | "player" | "npc";
-  setSourceType: (value: SetStateAction<"monster" | "player" | "npc">) => void;
+  getSourceList: () => Monster[] | PlayableCharacter[] | NPC[];
+  sourceType: "monster" | "playableCharacter" | "npc";
+  setSourceType: (value: SetStateAction<"monster" | "playableCharacter" | "npc">) => void;
   addAllPlayers: () => void;
   addAllNPCs: () => void;
   addAllMonsters: () => void;
@@ -69,7 +69,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   const [customMaxHp, setCustomMaxHp] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState("");
-  const [sourceType, setSourceType] = useState<"monster" | "player" | "npc">(
+  const [sourceType, setSourceType] = useState<"monster" | "playableCharacter" | "npc">(
     "monster",
   );
   const [initiativeRolls, setInitiativeRolls] = useState<InitiativeRoll[]>([]);
@@ -117,13 +117,13 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   };
 
   const monsters = gameData.monsters;
-  const players = gameData.players;
+  const players = gameData.playableCharacters;
   const npcs = gameData.npcs;
   const getSourceList = () => {
     switch (sourceType) {
       case "monster":
         return monsters;
-      case "player":
+      case "playableCharacter":
         return players;
       case "npc":
         return npcs;
@@ -150,7 +150,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
           sourceId: monster.id,
         };
       }
-    } else if (sourceType === "player") {
+    } else if (sourceType === "playableCharacter") {
       const player = players.find((p) => p.id === selectedSourceId);
       if (player) {
         newEntry = {
@@ -160,7 +160,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
           initiative: getAttMod(player.attributes.des),
           hp: player.maxHp,
           maxHp: player.maxHp,
-          type: "player",
+          type: "playableCharacter",
           sourceId: player.id,
         };
       }
@@ -278,7 +278,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   }
 
   function addAllPlayers() {
-    const entries: InitiativeEntry[] = gameData.players.map((player) => {
+    const entries: InitiativeEntry[] = gameData.playableCharacters.map((player) => {
       return {
         id: player.id,
         dexMod: getAttMod(player.attributes.des),
@@ -286,7 +286,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
         initiative: Math.floor((player.attributes.des - 10) / 2),
         hp: player.maxHp || 0,
         maxHp: player.maxHp || 0,
-        type: "player",
+        type: "playableCharacter",
       };
     });
     setInitiativeEntries((prev) => [...prev, ...entries]);

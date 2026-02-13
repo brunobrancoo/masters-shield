@@ -89,12 +89,7 @@ export default function CampaignSelectPage() {
                 key={campaign.id}
                 className="parchment-texture metal-border hover:glow-gold transition-all cursor-pointer"
                 onClick={() => {
-                  const isMaster = campaign.masterId === user?.uid;
-                  if (isMaster) {
-                    router.push(`/master?campaignId=${campaign.id}`);
-                  } else {
-                    router.push(`/player?campaignId=${campaign.id}`);
-                  }
+                  router.push(`/campaign/${campaign.id}`);
                 }}
               >
                 <CardHeader>

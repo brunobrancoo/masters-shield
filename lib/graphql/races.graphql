@@ -13,9 +13,67 @@ query GetRace($index: String!) {
     speed
     ability_bonuses {
       ability_score {
+        index
         name
       }
       bonus
+    }
+    size
+    size_description
+    language_desc
+    languages {
+      index
+      name
+    }
+    traits {
+      index
+      name
+      desc
+      proficiencies {
+        index
+        name
+        type
+      }
+      proficiency_choices {
+        choose
+        type
+        from {
+          options {
+            item {
+              ... on Proficiency {
+                index
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+    ability_bonus_options {
+      choose
+      type
+      from {
+        options {
+          ability_score {
+            index
+            name
+          }
+          bonus
+          option_type
+        }
+      }
+    }
+    language_options {
+      choose
+      type
+      from {
+        options {
+          item {
+            index
+            name
+          }
+        }
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { Player, Spell } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Spell } from "@/lib/interfaces/interfaces";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
@@ -7,15 +7,20 @@ import AddSpellDialog from "@/components/add-spell-dialog";
 import EditSpellDialog from "@/components/edit-spell-dialog";
 
 interface PlayerSpellsSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
   editSpellIndex: number | null;
   setEditSpellIndex: (index: number | null) => void;
   onAddSpell: (spell: Spell) => void;
   onRemoveSpell: (index: number) => void;
   onEditSpell: (index: number, updatedSpell: Spell) => void;
+  campaignId: string;
 }
 
-export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell }: PlayerSpellsSectionProps) {
+export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell, campaignId }: PlayerSpellsSectionProps) {
+  // Use spellList if available, otherwise fall back to legacy spells
+  const spells = playableCharacter.spellList || playableCharacter.spells || [];
+  const editSpell = editSpellIndex !== null ? spells[editSpellIndex] : null;
+
   return (
     <>
       <Card className="metal-border">
@@ -25,17 +30,17 @@ export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex,
               <SparklesIcon className="w-6 h-6" />
               Magias
             </CardTitle>
-            <AddSpellDialog onAdd={onAddSpell} />
+            <AddSpellDialog onAdd={onAddSpell} campaignId={campaignId} />
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {!player.spells || player.spells.length === 0 ? (
+            {!spells || spells.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
                 Nenhuma magia conhecida
               </p>
             ) : (
-              player.spells.map((spell, index) => (
+              spells.map((spell, index) => (
                 <div key={index} className="bg-card/50 p-3 rounded">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -97,9 +102,9 @@ export function PlayerSpellsSection({ player, editSpellIndex, setEditSpellIndex,
         </CardContent>
       </Card>
 
-      {editSpellIndex !== null && player && player.spells && (
+      {editSpellIndex !== null && playableCharacter && editSpell && (
         <EditSpellDialog
-          spell={player.spells[editSpellIndex]}
+          spell={editSpell}
           index={editSpellIndex}
           open={editSpellIndex !== null}
           setOpen={(open) =>

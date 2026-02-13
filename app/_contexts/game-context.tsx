@@ -1,6 +1,6 @@
 "use client";
 
-import { GameData, Monster, NPC, Player } from "@/lib/interfaces/interfaces";
+import { GameData, Monster, NPC, PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { MonsterFormData, NPCFormData } from "@/lib/schemas";
 import {
   createContext,
@@ -17,11 +17,11 @@ import {
   deleteMonster,
   getMonsters,
   onMonstersChange,
-  createPlayer,
-  updatePlayer,
-  deletePlayer,
-  getPlayers,
-  onPlayersChange,
+  createPlayableCharacter,
+  updatePlayableCharacter,
+  deletePlayableCharacter,
+  getPlayableCharacters,
+  onPlayableCharactersChange,
   createNPC,
   updateNPC,
   deleteNPC,
@@ -42,8 +42,8 @@ interface GameContextType {
   setActiveTab: Dispatch<SetStateAction<string>>;
   monsterView: ViewMode;
   setMonsterViewState: Dispatch<SetStateAction<ViewMode>>;
-  playerView: ViewMode;
-  setPlayerViewState: Dispatch<SetStateAction<ViewMode>>;
+  playableCharacterView: ViewMode;
+  setPlayableCharacterViewState: Dispatch<SetStateAction<ViewMode>>;
   npcView: "generator" | "list" | "sheet";
   setNPCViewState: Dispatch<SetStateAction<"generator" | "list" | "sheet">>;
   selectedNPC: NPC | undefined;
@@ -53,13 +53,13 @@ interface GameContextType {
   handleSaveMonster: (monster: Monster) => void;
   handleUpdateMonster: (monster: MonsterFormData) => void;
   handleDeleteMonster: (id: string) => void;
-  handleSavePlayer: (player: Player) => void;
+  handleSavePlayer: (player: PlayableCharacter) => void;
   handleGenerateNPC: (npc: NPC) => void;
   handleUpdateNPC: (data: NPC) => void;
   handleDeleteNPC: (id: string) => void;
-  selectedPlayer: Player | undefined;
-  handleDeletePlayer: (id: string) => void;
-  setSelectedPlayer: Dispatch<SetStateAction<Player | undefined>>;
+  selectedPlayableCharacter: PlayableCharacter | undefined;
+  handleDeletePlayableCharacter: (id: string) => void;
+  setSelectedPlayableCharacter: Dispatch<SetStateAction<PlayableCharacter | undefined>>;
   loading: boolean;
 }
 
@@ -75,7 +75,7 @@ export function GameProvider({
   );
   const [gameData, setGameData] = useState<GameData>({
     monsters: [],
-    players: [],
+    playableCharacters: [],
     npcs: [],
   });
   const [loading, setLoading] = useState(true);
@@ -84,8 +84,8 @@ export function GameProvider({
   const [monsterView, setMonsterViewState] = useState<ViewMode>("list");
   const [selectedMonster, setSelectedMonster] = useState<Monster | undefined>();
 
-  const [playerView, setPlayerViewState] = useState<ViewMode>("list");
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | undefined>();
+  const [playableCharacterView, setPlayableCharacterViewState] = useState<ViewMode>("list");
+  const [selectedPlayableCharacter, setSelectedPlayableCharacter] = useState<PlayableCharacter | undefined>();
 
   const [npcView, setNPCViewState] = useState<"generator" | "list" | "sheet">(
     "generator",
@@ -99,8 +99,8 @@ export function GameProvider({
     const unsubscribeMonsters = onMonstersChange(campaignId, (monsters) => {
       setGameData((prev) => ({ ...prev, monsters }));
     });
-    const unsubscribePlayers = onPlayersChange(campaignId, (players) => {
-      setGameData((prev) => ({ ...prev, players }));
+    const unsubscribePlayableCharacters = onPlayableCharactersChange(campaignId, (playableCharacters) => {
+      setGameData((prev) => ({ ...prev, playableCharacters }));
     });
     const unsubscribeNPCs = onNPCsChange(campaignId, (npcs) => {
       setGameData((prev) => ({ ...prev, npcs }));
@@ -110,7 +110,7 @@ export function GameProvider({
 
     return () => {
       unsubscribeMonsters();
-      unsubscribePlayers();
+      unsubscribePlayableCharacters();
       unsubscribeNPCs();
     };
   }, [campaignId]);
@@ -162,35 +162,35 @@ export function GameProvider({
     setSelectedMonster(undefined);
   };
 
-  const handleSavePlayer = async (player: Player) => {
+  const handleSavePlayer = async (player: PlayableCharacter) => {
     if (!campaignId) return;
 
     try {
       if (player.id) {
-        await updatePlayer(campaignId, player.id, player);
+        await updatePlayableCharacter(campaignId, player.id, player);
         console.log("Player updated successfully:", player.name);
       } else {
-        const newPlayerId = await createPlayer(campaignId, player);
+        const newPlayerId = await createPlayableCharacter(campaignId, player);
         console.log("Player created successfully with ID:", newPlayerId);
       }
     } catch (error) {
       console.error("Error saving player:", error);
       throw error;
     }
-    setPlayerViewState("list");
-    setSelectedPlayer(undefined);
+    setPlayableCharacterViewState("list");
+    setSelectedPlayableCharacter(undefined);
   };
 
-  const handleDeletePlayer = async (id: string) => {
+  const handleDeletePlayableCharacter = async (id: string) => {
     if (!campaignId) return;
 
     try {
-      await deletePlayer(campaignId, id);
+      await deletePlayableCharacter(campaignId, id);
     } catch (error) {
       console.error("Error deleting player:", error);
     }
-    setPlayerViewState("list");
-    setSelectedPlayer(undefined);
+    setPlayableCharacterViewState("list");
+    setSelectedPlayableCharacter(undefined);
   };
 
   const handleGenerateNPC = async (npc: NPC) => {
@@ -241,12 +241,12 @@ export function GameProvider({
     gameData,
     monsterView,
     npcView,
-    playerView,
+    playableCharacterView,
     selectedNPC,
     selectedMonster,
     setSelectedMonster,
     setMonsterViewState,
-    setPlayerViewState,
+    setPlayableCharacterViewState,
     setNPCViewState,
     handleDeleteMonster,
     handleUpdateMonster,
@@ -255,9 +255,9 @@ export function GameProvider({
     handleSavePlayer,
     handleUpdateNPC,
     handleDeleteNPC,
-    handleDeletePlayer,
-    selectedPlayer,
-    setSelectedPlayer,
+    handleDeletePlayableCharacter,
+    selectedPlayableCharacter,
+    setSelectedPlayableCharacter,
     campaignId,
     setCampaignId,
     loading,

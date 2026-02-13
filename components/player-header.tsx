@@ -7,7 +7,7 @@ import { useGame } from "@/app/_contexts/game-context";
 export function PlayerHeader() {
   const { gameData } = useGame();
   return (
-    <header className="border-b border-border-default bg-bg-surface/50 sticky top-0 z-40">
+    <header className="border-b border-border-default bg-bg-surface/50 top-0 z-40">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -28,7 +28,7 @@ export function PlayerHeader() {
                 <div className="flex gap-6 text-center">
                   <div>
                     <p className="text-2xl font-bold text-class-accent font-body">
-                      {gameData.players.length}
+                      {gameData.playableCharacters.length}
                     </p>
                     <p className="text-xs text-text-secondary font-body">
                       Jogadores

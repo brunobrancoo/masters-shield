@@ -1,0 +1,472 @@
+query Class($index: String!) {
+  class(index: $index) {
+    class_levels {
+      ability_score_bonuses
+
+      level
+      class_specific {
+        action_surges
+        arcane_recovery_levels
+        aura_range
+        bardic_inspiration_die
+        brutal_critical_dice
+        channel_divinity_charges
+
+        destroy_undead_cr
+        extra_attacks
+        favored_enemies
+        favored_terrain
+        indomitable_uses
+        invocations_known
+        ki_points
+        magical_secrets_max_5
+        magical_secrets_max_7
+        magical_secrets_max_9
+
+        metamagic_known
+        mystic_arcanum_level_6
+        mystic_arcanum_level_7
+        mystic_arcanum_level_8
+        mystic_arcanum_level_9
+        rage_count
+        rage_damage_bonus
+
+        song_of_rest_die
+        sorcery_points
+        unarmored_movement
+        wild_shape_fly
+        wild_shape_max_cr
+        wild_shape_swim
+        creating_spell_slots {
+          sorcery_point_cost
+          spell_slot_level
+        }
+        martial_arts {
+          dice_count
+          dice_value
+        }
+        sneak_attack {
+          dice_count
+          dice_value
+        }
+      }
+      features {
+        desc
+        index
+        level
+        name
+        reference
+        feature_specific {
+          invocations {
+            desc
+
+            index
+            level
+            name
+            reference
+
+            updated_at
+            prerequisites {
+              ... on LevelPrerequisite {
+                type
+                level
+              }
+              ... on FeaturePrerequisite {
+                type
+                feature {
+                  name
+                }
+              }
+              ... on SpellPrerequisite {
+                type
+                spell {
+                  area_of_effect {
+                    size
+                    type
+                  }
+                  attack_type
+                  casting_time
+
+                  components
+                  concentration
+                  damage {
+                    damage_type {
+                      index
+                      name
+                      desc
+                      updated_at
+                    }
+                    damage_at_slot_level {
+                      level
+                      value
+                    }
+                    damage_at_character_level {
+                      level
+                      value
+                    }
+                  }
+                  dc {
+                    dc_type {
+                      desc
+                      full_name
+                      index
+                      name
+                      skills {
+                        ability_score {
+                          desc
+                          full_name
+                          index
+                          name
+                          updated_at
+                        }
+                        desc
+                        index
+                        name
+                        updated_at
+                      }
+                      updated_at
+                    }
+                    dc_success
+                    desc
+                  }
+                  desc
+                  duration
+                  higher_level
+                  index
+                  level
+                  material
+                  name
+                  range
+                  ritual
+                  school {
+                    name
+                  }
+                  updated_at
+                  heal_at_slot_level {
+                    level
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+        updated_at
+        prerequisites {
+          ... on LevelPrerequisite {
+            type
+            level
+          }
+          ... on FeaturePrerequisite {
+            type
+            feature {
+              name
+            }
+          }
+          ... on SpellPrerequisite {
+            type
+            spell {
+              name
+            }
+          }
+        }
+        parent {
+          subclass {
+            desc
+            index
+            name
+          }
+        }
+      }
+      prof_bonus
+      spellcasting {
+        cantrips_known
+        spell_slots_level_1
+        spell_slots_level_2
+        spell_slots_level_3
+        spell_slots_level_4
+        spell_slots_level_5
+        spell_slots_level_6
+        spell_slots_level_7
+        spell_slots_level_8
+        spell_slots_level_9
+        spells_known
+      }
+    }
+    hit_die
+    index
+    name
+    proficiencies {
+      name
+    }
+    saving_throws {
+      name
+    }
+    spellcasting {
+      level
+
+      info {
+        name
+        desc
+      }
+      spellcasting_ability {
+        name
+      }
+    }
+    spells {
+      area_of_effect {
+        size
+        type
+      }
+      attack_type
+      casting_time
+      classes {
+        name
+      }
+      components
+      concentration
+      damage {
+        damage_at_character_level {
+          level
+          value
+        }
+        damage_type {
+          desc
+          index
+          name
+        }
+      }
+      dc {
+        dc_success
+        dc_type {
+          desc
+          name
+          full_name
+          index
+        }
+        desc
+      }
+      desc
+      duration
+      higher_level
+      index
+      level
+      material
+      name
+      range
+      ritual
+      school {
+        name
+      }
+      subclasses {
+        name
+      }
+      updated_at
+      heal_at_slot_level {
+        level
+        value
+      }
+    }
+    starting_equipment {
+      quantity
+      equipment {
+        ... on Armor {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          armor_category
+          armor_class {
+            base
+            dex_bonus
+            max_bonus
+          }
+          str_minimum
+          stealth_disadvantage
+          equipment_category {
+            name
+          }
+        }
+        ... on Weapon {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+
+          weapon_category
+          weapon_range
+          category_range
+          damage {
+            damage_dice
+            damage_type {
+              name
+            }
+          }
+          two_handed_damage {
+            damage_dice
+            damage_type {
+              name
+            }
+          }
+          range {
+            long
+            normal
+          }
+          throw_range {
+            long
+            normal
+          }
+          equipment_category {
+            name
+          }
+        }
+        ... on Tool {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          tool_category
+          equipment_category {
+            name
+          }
+        }
+        ... on Gear {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          gear_category {
+            name
+          }
+        }
+        ... on Pack {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          #     contents {
+          # item
+          #       quantity
+          #     }
+          equipment_category {
+            name
+          }
+          gear_category {
+            name
+          }
+        }
+        ... on Ammunition {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          quantity
+        }
+        ... on Vehicle {
+          index
+          name
+          desc
+
+          cost {
+            quantity
+            unit
+          }
+          weight
+          updated_at
+          properties {
+            name
+            desc
+          }
+          vehicle_category
+          speed {
+            quantity
+            unit
+          }
+          capacity
+        }
+      }
+    }
+    subclasses {
+      name
+    }
+    updated_at
+    proficiency_choices {
+      choose
+      type
+      from {
+        option_set_type
+        options {
+          item {
+            ... on Proficiency {
+              index
+              name
+              type
+            }
+          }
+        }
+      }
+    }
+    proficiencies {
+      name
+    }
+    starting_equipment_options {
+      choose
+    }
+  }
+}

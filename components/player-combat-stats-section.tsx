@@ -1,11 +1,14 @@
-import type { Player } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PlayerCombatStatsSectionProps {
-  player: Player;
+  playableCharacter: PlayableCharacter;
 }
 
-export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSectionProps) {
+export default function PlayerCombatStatsSection({ playableCharacter }: PlayerCombatStatsSectionProps) {
+  const attackBonus = playableCharacter.profBonus ?? 0;
+  const spellAttack = playableCharacter.spellAttack ?? 0;
+
   return (
     <Card className="metal-border">
       <CardHeader>
@@ -20,23 +23,23 @@ export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSe
               CA
             </p>
             <p className="text-2xl font-bold text-primary">
-              {player.ac}
+              {playableCharacter.ac}
             </p>
           </div>
           <div className="text-center bg-card/50 p-4 rounded">
             <p className="text-xs uppercase text-muted-foreground mb-1">
               Deslocamento
             </p>
-            <p className="text-2xl font-bold">{player.speed} ft</p>
+            <p className="text-2xl font-bold">{playableCharacter.speed} ft</p>
           </div>
           <div className="text-center bg-card/50 p-4 rounded">
             <p className="text-xs uppercase text-muted-foreground mb-1">
               Iniciativa
             </p>
             <p className="text-2xl font-bold text-primary">
-              {player.initiativeBonus >= 0
-                ? `+${player.initiativeBonus}`
-                : player.initiativeBonus}
+              {playableCharacter.initiativeBonus >= 0
+                ? `+${playableCharacter.initiativeBonus}`
+                : playableCharacter.initiativeBonus}
             </p>
           </div>
           <div className="text-center bg-card/50 p-4 rounded">
@@ -44,17 +47,15 @@ export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSe
               Percepção Passiva
             </p>
             <p className="text-2xl font-bold">
-              {player.passivePerception}
+              {playableCharacter.passivePerception}
             </p>
           </div>
           <div className="text-center bg-card/50 p-4 rounded">
             <p className="text-xs uppercase text-muted-foreground mb-1">
-              Bônus de Ataque Base
+              Bônus de Proficiência
             </p>
             <p className="text-2xl font-bold">
-              {player.attackBaseBonus >= 0
-                ? `+${player.attackBaseBonus}`
-                : player.attackBaseBonus}
+              {attackBonus >= 0 ? `+${attackBonus}` : attackBonus}
             </p>
           </div>
           <div className="text-center bg-card/50 p-4 rounded">
@@ -62,9 +63,7 @@ export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSe
               Ataque de Magia
             </p>
             <p className="text-2xl font-bold text-purple-500">
-              {player.spellAttack >= 0
-                ? `+${player.spellAttack}`
-                : player.spellAttack}
+              {spellAttack >= 0 ? `+${spellAttack}` : spellAttack}
             </p>
           </div>
         </div>
@@ -72,7 +71,7 @@ export default function PlayerCombatStatsSection({ player }: PlayerCombatStatsSe
           <p className="text-xs uppercase text-muted-foreground mb-1">
             Dificuldade de Desafio (CD)
           </p>
-          <p className="text-xl font-bold">{player.spellCD}</p>
+          <p className="text-xl font-bold">{playableCharacter.spellCD}</p>
         </div>
       </CardContent>
     </Card>

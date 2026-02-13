@@ -41,7 +41,7 @@ export default function Header() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-class-accent font-body">
-                      {gameData.players.length}
+                      {gameData.playableCharacters.length}
                     </p>
                     <p className="text-xs text-text-secondary font-body">
                       Jogadores
