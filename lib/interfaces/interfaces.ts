@@ -61,6 +61,7 @@ export interface Spell {
   higherLevel?: string[];
   attackType?: string;
   material?: string;
+  healAtSlotLevel?: string[];
 }
 
 export interface PointPool {
@@ -288,6 +289,7 @@ export interface BasePlayableCharacter {
 
   spellSlots?: SpellSlots;
   spellsKnown?: string[];
+  spellList?: Spell[];
   spellAttack?: number;
   spellCD?: number;
 

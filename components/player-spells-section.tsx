@@ -13,9 +13,14 @@ interface PlayerSpellsSectionProps {
   onAddSpell: (spell: Spell) => void;
   onRemoveSpell: (index: number) => void;
   onEditSpell: (index: number, updatedSpell: Spell) => void;
+  campaignId: string;
 }
 
-export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell }: PlayerSpellsSectionProps) {
+export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEditSpellIndex, onAddSpell, onRemoveSpell, onEditSpell, campaignId }: PlayerSpellsSectionProps) {
+  // Use spellList if available, otherwise fall back to legacy spells
+  const spells = playableCharacter.spellList || playableCharacter.spells || [];
+  const editSpell = editSpellIndex !== null ? spells[editSpellIndex] : null;
+
   return (
     <>
       <Card className="metal-border">
@@ -25,17 +30,17 @@ export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEdit
               <SparklesIcon className="w-6 h-6" />
               Magias
             </CardTitle>
-            <AddSpellDialog onAdd={onAddSpell} />
+            <AddSpellDialog onAdd={onAddSpell} campaignId={campaignId} />
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {!playableCharacter.spells || playableCharacter.spells.length === 0 ? (
+            {!spells || spells.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
                 Nenhuma magia conhecida
               </p>
             ) : (
-              playableCharacter.spells.map((spell, index) => (
+              spells.map((spell, index) => (
                 <div key={index} className="bg-card/50 p-3 rounded">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -97,9 +102,9 @@ export function PlayerSpellsSection({ playableCharacter, editSpellIndex, setEdit
         </CardContent>
       </Card>
 
-      {editSpellIndex !== null && playableCharacter && playableCharacter.spells && (
+      {editSpellIndex !== null && playableCharacter && editSpell && (
         <EditSpellDialog
-          spell={playableCharacter.spells[editSpellIndex]}
+          spell={editSpell}
           index={editSpellIndex}
           open={editSpellIndex !== null}
           setOpen={(open) =>

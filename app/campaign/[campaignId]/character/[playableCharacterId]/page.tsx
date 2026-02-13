@@ -67,6 +67,7 @@ function CharacterSheetContent({
     "class-features",
     "spell-slots",
     "class-resources",
+    "spells",
     "inventory",
     "buffs",
     "debuffs",
@@ -80,6 +81,7 @@ function CharacterSheetContent({
     "class-features",
     "spell-slots",
     "class-resources",
+    "spells",
     "inventory",
     "buffs",
     "debuffs",
@@ -290,19 +292,36 @@ function CharacterSheetContent({
     });
   };
 
-  const addSpell = (spell: Spell) => {
+  const addSpell = async (spell: Spell) => {
     if (!playableCharacter) return;
-    // TODO: Implement spell management with new interface (spellsKnown: string[])
+
+    // Use spellList if available, otherwise fall back to legacy spells
+    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    await updatePlayableCharacter({
+      spellList: [...currentSpellList, spell],
+    });
   };
 
-  const removeSpell = (index: number) => {
+  const removeSpell = async (index: number) => {
     if (!playableCharacter) return;
-    // TODO: Implement spell management with new interface (spellsKnown: string[])
+
+    // Use spellList if available, otherwise fall back to legacy spells
+    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    await updatePlayableCharacter({
+      spellList: currentSpellList.filter((_, i) => i !== index),
+    });
   };
 
-  const editSpell = (index: number, updatedSpell: Spell) => {
+  const editSpell = async (index: number, updatedSpell: Spell) => {
     if (!playableCharacter) return;
-    // TODO: Implement spell management with new interface (spellsKnown: string[])
+
+    // Use spellList if available, otherwise fall back to legacy spells
+    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    const newSpellList = [...currentSpellList];
+    newSpellList[index] = updatedSpell;
+    await updatePlayableCharacter({
+      spellList: newSpellList,
+    });
   };
 
   const toggleEquip = async (index: number) => {
@@ -508,7 +527,25 @@ function CharacterSheetContent({
                 </AccordionContent>
               </AccordionItem>
 
-              {/* <PlayerSpellsSection playableCharacter={playableCharacter} editSpellIndex={editSpellIndex} setEditSpellIndex={setEditSpellIndex} onAddSpell={addSpell} onRemoveSpell={removeSpell} onEditSpell={editSpell} /> */}
+              <AccordionItem
+                value="spells"
+                className="rounded-lg px-4 bg-card"
+              >
+                <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                  Magias
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PlayerSpellsSection
+                    playableCharacter={playableCharacter}
+                    editSpellIndex={editSpellIndex}
+                    setEditSpellIndex={setEditSpellIndex}
+                    onAddSpell={addSpell}
+                    onRemoveSpell={removeSpell}
+                    onEditSpell={editSpell}
+                    campaignId={contextCampaignId || ""}
+                  />
+                </AccordionContent>
+              </AccordionItem>
 
               <AccordionItem
                 value="inventory"

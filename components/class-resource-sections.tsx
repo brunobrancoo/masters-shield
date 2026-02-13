@@ -100,10 +100,16 @@ export function SorceryPointsSection({
 interface KiPointsSectionProps {
   kiPoints?: { kiPoints?: number; kiPoints_max?: number };
   onChange: (value: { kiPoints: number; kiPoints_max: number }) => void;
-  setKiPoints: Dispatch<SetStateAction<{ kiPoints: number; kiPoints_max: number }>>;
+  setKiPoints: Dispatch<
+    SetStateAction<{ kiPoints: number; kiPoints_max: number }>
+  >;
 }
 
-export function KiPointsSection({ kiPoints, onChange, setKiPoints }: KiPointsSectionProps) {
+export function KiPointsSection({
+  kiPoints,
+  onChange,
+  setKiPoints,
+}: KiPointsSectionProps) {
   const value = kiPoints?.kiPoints ?? 0;
   const maxValue = kiPoints?.kiPoints_max ?? value;
 
@@ -186,7 +192,9 @@ export function RageSection({ rages, onChange, setRages }: RageSectionProps) {
 interface InspirationSectionProps {
   inspiration?: { inspiration?: number; inspiration_max?: number };
   onChange: (value: { inspiration: number; inspiration_max: number }) => void;
-  setInspiration: Dispatch<SetStateAction<{ inspiration: number; inspiration_max: number }>>;
+  setInspiration: Dispatch<
+    SetStateAction<{ inspiration: number; inspiration_max: number }>
+  >;
 }
 
 export function InspirationSection({

@@ -350,6 +350,7 @@ function mapApiSpellToInterface(spell: any): Spell {
     } : undefined,
     higherLevel: spell.higher_level || [],
     material: spell.material || undefined,
+    healAtSlotLevel: spell.heal_at_slot_level?.map((v: any) => `${v.level}: ${v.value}`) || [],
   };
 }
 

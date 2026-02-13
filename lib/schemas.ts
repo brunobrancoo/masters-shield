@@ -238,6 +238,53 @@ export const buffSchema = z.object({
   }),
 });
 
+export const spellSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  level: z.coerce
+    .number()
+    .min(0, "Nível deve ser positivo")
+    .max(9, "Nível máximo é 9"),
+  school: z.string().default(""),
+  castingTime: z.string().default(""),
+  duration: z.string().default(""),
+  range: z.string().default(""),
+  components: z.string().default(""),
+  concentration: z.boolean().default(false),
+  ritual: z.boolean().default(false),
+});
+
+export const spellListSchema = z.array(
+  z.object({
+    index: z.string(),
+    name: z.string(),
+    level: z.number(),
+    school: z.string(),
+    castingTime: z.string(),
+    duration: z.string(),
+    range: z.string(),
+    components: z.string(),
+    description: z.array(z.string()),
+    concentration: z.boolean(),
+    ritual: z.boolean(),
+    damage: z.object({
+      damageType: z.string().optional(),
+      damageAtSlotLevel: z.array(z.string()).optional(),
+    }).optional(),
+    dc: z.object({
+      dcType: z.string().optional(),
+      dcSuccess: z.string().optional(),
+    }).optional(),
+    areaOfEffect: z.object({
+      size: z.number().optional(),
+      type: z.string().optional(),
+    }).optional(),
+    higherLevel: z.array(z.string()).optional(),
+    attackType: z.string().optional(),
+    material: z.string().optional(),
+    healAtSlotLevel: z.array(z.string()).optional(),
+  })
+).default([]);
+
 /**
  * Base schema for all playable character types
  * Contains common fields shared across all D&D 5e classes
@@ -287,6 +334,7 @@ export const basePlayableCharacterSchema = z.object({
 
   spellSlots: spellSlotsSchema.optional(),
   spellsKnown: z.array(z.string()).default([]),
+  spellList: spellListSchema.optional(),
   spellAttack: z.coerce.number().default(0),
   spellCD: z.coerce.number().default(0),
 
@@ -427,21 +475,6 @@ export const legacyPlayableCharacterSchema = basePlayableCharacterSchema.extend(
     wildShapeForm: z.string().optional(),
   },
 );
-
-export const spellSchema = z.object({
-  name: z.string().min(1, "Nome é obrigatório"),
-  level: z.coerce
-    .number()
-    .min(0, "Nível deve ser positivo")
-    .max(9, "Nível máximo é 9"),
-  school: z.string().default(""),
-  castingTime: z.string().default(""),
-  duration: z.string().default(""),
-  range: z.string().default(""),
-  components: z.string().default(""),
-  concentration: z.boolean().default(false),
-  ritual: z.boolean().default(false),
-});
 
 export type MonsterFormData = z.infer<typeof monsterSchema>;
 export type NPCFormData = z.infer<typeof npcSchema>;
