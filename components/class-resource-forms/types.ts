@@ -1,11 +1,11 @@
 "use client";
 
 import { ClassSpecific } from "@/lib/generated/graphql";
+import type { Control } from "react-hook-form";
 
 export interface BaseResourceFormProps {
-  register: any;
+  control: Control<any>;
   setValue: any;
-  watch: any;
   classData?: any;
   level: number;
 }

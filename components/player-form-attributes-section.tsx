@@ -1,32 +1,32 @@
 "use client";
 
+import { Controller } from "react-hook-form";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Gauge, Dice1, Zap } from "lucide-react";
 import { generateAttributes } from "@/lib/dice";
 import { Attributes, attributeKeys } from "@/lib/interfaces/interfaces";
+import type { Control } from "react-hook-form";
 
 interface PlayerFormAttributesSectionProps {
-  register: any;
-  errors: any;
+  control: Control<any>;
   setValue: any;
   remainingAbilityScoreImprovements?: number;
 }
 
 export default function PlayerFormAttributesSection({
-  register,
-  errors,
+  control,
   setValue,
   remainingAbilityScoreImprovements = 0,
 }: PlayerFormAttributesSectionProps) {
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary flex items-center gap-2">
+        <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary flex items-center gap-2">
           <Gauge className="w-4 h-4 text-martial-400" />
           Atributos
-        </Label>
+        </FieldLabel>
         <Button
           type="button"
           variant="outline"
@@ -64,24 +64,29 @@ export default function PlayerFormAttributesSection({
         {(["for", "des", "con", "int", "sab", "car"] as const).map(
           (key) => (
             <div key={key}>
-              <Label className="text-xs text-text-tertiary uppercase mb-1 block">
+              <FieldLabel className="text-xs text-text-tertiary uppercase mb-1 block">
                 {key}
-              </Label>
+              </FieldLabel>
               <div className="relative">
-                <Input
-                  type="number"
-                  min="1"
-                  max="30"
-                  className="text-center bg-bg-inset border-border-default focus:border-arcane-400 h-12 font-bold text-lg"
-                  {...register(`attributes.${key}`, {
-                    valueAsNumber: true,
-                  })}
+                <Controller
+                  name={`attributes.${key}`}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <Input
+                        type="number"
+                        min="1"
+                        max="30"
+                        className="text-center bg-bg-inset border-border-default focus:border-arcane-400 h-12 font-bold text-lg"
+                        value={field.value ?? ""}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                      {error && (
+                        <FieldError>{error.message}</FieldError>
+                      )}
+                    </>
+                  )}
                 />
-                {errors.attributes?.[key] && (
-                  <p className="text-destructive text-xs mt-1">
-                    {errors.attributes[key]?.message}
-                  </p>
-                )}
               </div>
             </div>
           ),

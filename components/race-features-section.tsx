@@ -4,16 +4,10 @@ import { useRace } from "@/lib/api/hooks";
 
 interface RaceFeaturesSectionProps {
   raceIndex: string;
-  register: any;
-  watch: any;
-  errors: any;
 }
 
 export default function RaceFeaturesSection({
   raceIndex,
-  register,
-  watch,
-  errors,
 }: RaceFeaturesSectionProps) {
   const { data: raceQueryData } = useRace(raceIndex);
   const raceData = raceQueryData?.race;

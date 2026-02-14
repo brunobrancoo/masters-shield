@@ -14,6 +14,7 @@ import FighterResourceForm from "./class-resource-forms/fighter-resource-form";
 import RangerResourceForm from "./class-resource-forms/ranger-resource-form";
 import ClericResourceForm from "./class-resource-forms/cleric-resource-form";
 import WizardResourceForm from "./class-resource-forms/wizard-resource-form";
+import type { Control } from "react-hook-form";
 
 // Mapping of class indices to their resource form components
 const CLASS_FORM_MAP: Record<string, React.FC<BaseResourceFormProps>> = {
@@ -31,15 +32,18 @@ const CLASS_FORM_MAP: Record<string, React.FC<BaseResourceFormProps>> = {
   wizard: WizardResourceForm,
 };
 
-interface ClassResourceFormSectionProps extends BaseResourceFormProps {
+interface ClassResourceFormSectionProps {
   classIndex: string;
+  control: Control<any>;
+  setValue: any;
+  classData: any;
+  level: number;
 }
 
 export default function ClassResourceFormSection({
   classIndex,
-  register,
+  control,
   setValue,
-  watch,
   classData,
   level,
 }: ClassResourceFormSectionProps) {
@@ -57,9 +61,8 @@ export default function ClassResourceFormSection({
       </h3>
 
       <FormComponent
-        register={register}
+        control={control}
         setValue={setValue}
-        watch={watch}
         classData={classData}
         level={level}
       />

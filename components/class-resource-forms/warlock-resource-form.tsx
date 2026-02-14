@@ -4,7 +4,7 @@ import { BaseResourceFormProps } from "./types";
 import InvocationsKnownDisplay from "../class-display-sections/invocations-known-display";
 import MysticArcanumDisplay from "../class-display-sections/mystic-arcanum-display";
 
-export default function WarlockResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function WarlockResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
   const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);

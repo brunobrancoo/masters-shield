@@ -5,7 +5,7 @@ import ActionSurgesDisplay from "../class-display-sections/action-surges-display
 import IndomitableUsesDisplay from "../class-display-sections/indomitable-uses-display";
 import ExtraAttacksDisplay from "../class-display-sections/extra-attacks-display";
 
-export default function FighterResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function FighterResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
   const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);

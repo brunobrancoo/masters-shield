@@ -1,12 +1,13 @@
 "use client";
 
+import { Controller, useFormContext } from "react-hook-form";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Info, Feather, Fish } from "lucide-react";
+import type { Control } from "react-hook-form";
 
 interface DruidWildShapeSelectorProps {
-  register: any;
-  watch: any;
+  control: Control<any>;
   setValue: any;
   wildShapeMaxCR?: number;
   canFly?: boolean;
@@ -14,31 +15,38 @@ interface DruidWildShapeSelectorProps {
 }
 
 export default function DruidWildShapeSelector({
-  register,
-  watch,
+  control,
   setValue,
   wildShapeMaxCR,
   canFly,
   canSwim,
 }: DruidWildShapeSelectorProps) {
-  const wildShapeForm = watch("wildShapeForm") || "";
+  const form = useFormContext();
+  const wildShapeForm = form.watch("wildShapeForm") || "";
 
   return (
     <div className="space-y-3">
-      <div className="space-y-2">
-        <Label
-          htmlFor="wildShapeForm"
-          className="text-text-secondary font-medium"
-        >
-          Forma de Forma Selvagem
-        </Label>
-        <Input
-          id="wildShapeForm"
-          {...register("wildShapeForm")}
-          placeholder="Ex: Lobo, Urso, Águia..."
-          className="bg-bg-inset border-border-default focus:border-nature-400"
-        />
-      </div>
+      <Controller
+        name="wildShapeForm"
+        control={control}
+        render={({ field }) => (
+          <div className="space-y-2">
+            <FieldLabel
+              htmlFor="form-wildShapeForm"
+              className="text-text-secondary font-medium"
+            >
+              Forma de Forma Selvagem
+            </FieldLabel>
+            <Input
+              id="form-wildShapeForm"
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              placeholder="Ex: Lobo, Urso, Águia..."
+              className="bg-bg-inset border-border-default focus:border-nature-400"
+            />
+          </div>
+        )}
+      />
 
       {/* Display limits */}
       <div className="p-3 bg-bg-inset rounded border border-border-subtle">

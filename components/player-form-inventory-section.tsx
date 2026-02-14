@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { FieldLabel } from "@/components/ui/field";
 import { Package, Plus, Trash2, Edit, Check } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
@@ -246,18 +247,18 @@ export default function PlayerFormInventorySection({
 
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-      <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+      <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
         <Package className="w-4 h-4 text-nature-400" />
         Inventário
-      </Label>
+      </FieldLabel>
 
       <div className="space-y-4">
         <StartingEquipmentCards />
         <div className="bg-bg-inset rounded-lg border border-border-default p-4">
-          <Label className="text-xs text-text-tertiary uppercase tracking-wider mb-2 block flex items-center gap-2">
+          <FieldLabel className="text-xs text-text-tertiary uppercase tracking-wider mb-2 block flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-arcane-400 animate-pulse"></span>
             Buscar na API D&D 5e
-          </Label>
+          </FieldLabel>
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0 text-text-tertiary">
               {loadingEquipment ? (

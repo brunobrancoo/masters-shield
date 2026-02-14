@@ -209,7 +209,7 @@
 }
 
 .texture-parchment::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   opacity: 0.03;
@@ -220,16 +220,15 @@
 
 .texture-leather {
   background-color: hsl(var(--bg-primary));
-  background-image:
-    radial-gradient(
-      ellipse at 20% 50%,
-      hsl(30 15% 13%) 0%,
-      transparent 70%
-    );
+  background-image: radial-gradient(
+    ellipse at 20% 50%,
+    hsl(30 15% 13%) 0%,
+    transparent 70%
+  );
 }
 
 .texture-leather::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   opacity: 0.04;
@@ -244,7 +243,7 @@
 }
 
 .texture-stone::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   opacity: 0.03;
@@ -287,41 +286,82 @@
 
 /* ========== ANIMATIONS ========== */
 @keyframes pulse-danger {
-  0%, 100% { box-shadow: 0 0 4px hsl(var(--damage) / 0.3); }
-  50% { box-shadow: 0 0 16px hsl(var(--damage) / 0.6); }
+  0%,
+  100% {
+    box-shadow: 0 0 4px hsl(var(--damage) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px hsl(var(--damage) / 0.6);
+  }
 }
 
 @keyframes pulse-subtle {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes roll-in {
-  0% { transform: scale(0.5) rotate(-180deg); opacity: 0; }
-  60% { transform: scale(1.1) rotate(10deg); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(0.5) rotate(-180deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 @keyframes crit-glow {
-  0% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); }
-  50% { box-shadow: 0 0 40px hsl(var(--divine-glow) / 0.6); }
-  100% { box-shadow: 0 0 8px hsl(var(--divine-glow) / 0.2); }
+  0% {
+    box-shadow: 0 0 0 hsl(var(--divine-glow) / 0);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--divine-glow) / 0.6);
+  }
+  100% {
+    box-shadow: 0 0 8px hsl(var(--divine-glow) / 0.2);
+  }
 }
 
 @keyframes damage-flash {
-  0% { background-color: hsl(var(--damage) / 0.3); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: hsl(var(--damage) / 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 @keyframes heal-flash {
-  0% { background-color: hsl(var(--healing) / 0.3); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: hsl(var(--healing) / 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 @keyframes level-up {
-  0% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); transform: scale(1); }
-  30% { box-shadow: 0 0 30px hsl(var(--divine-glow) / 0.5); transform: scale(1.02); }
-  100% { box-shadow: 0 0 0 hsl(var(--divine-glow) / 0); transform: scale(1); }
+  0% {
+    box-shadow: 0 0 0 hsl(var(--divine-glow) / 0);
+    transform: scale(1);
+  }
+  30% {
+    box-shadow: 0 0 30px hsl(var(--divine-glow) / 0.5);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 0 hsl(var(--divine-glow) / 0);
+    transform: scale(1);
+  }
 }
 
 .pulse-danger {
@@ -332,11 +372,21 @@
   animation: pulse-subtle 3s ease-in-out infinite;
 }
 
-.animate-roll-in { animation: roll-in 0.5s ease-out; }
-.animate-crit { animation: crit-glow 0.8s ease-out; }
-.animate-damage { animation: damage-flash 0.4s ease-out; }
-.animate-heal { animation: heal-flash 0.4s ease-out; }
-.animate-level-up { animation: level-up 1.2s ease-out; }
+.animate-roll-in {
+  animation: roll-in 0.5s ease-out;
+}
+.animate-crit {
+  animation: crit-glow 0.8s ease-out;
+}
+.animate-damage {
+  animation: damage-flash 0.4s ease-out;
+}
+.animate-heal {
+  animation: heal-flash 0.4s ease-out;
+}
+.animate-level-up {
+  animation: level-up 1.2s ease-out;
+}
 
 /* ========== HP BAR STYLES ========== */
 .hp-bar-segment-temp {
@@ -383,12 +433,36 @@
          font-semibold uppercase tracking-wider border;
 }
 
-.badge-rarity-common { color: hsl(var(--rarity-common)); border-color: hsl(var(--rarity-common) / 0.3); background: hsl(var(--rarity-common) / 0.1); }
-.badge-rarity-uncommon { color: hsl(var(--rarity-uncommon)); border-color: hsl(var(--rarity-uncommon) / 0.3); background: hsl(var(--rarity-uncommon) / 0.1); }
-.badge-rarity-rare { color: hsl(var(--rarity-rare)); border-color: hsl(var(--rarity-rare) / 0.3); background: hsl(var(--rarity-rare) / 0.1); }
-.badge-rarity-very-rare { color: hsl(var(--rarity-very-rare)); border-color: hsl(var(--rarity-very-rare) / 0.3); background: hsl(var(--rarity-very-rare) / 0.1); }
-.badge-rarity-legendary { color: hsl(var(--rarity-legendary)); border-color: hsl(var(--rarity-legendary) / 0.3); background: hsl(var(--rarity-legendary) / 0.1); }
-.badge-rarity-artifact { color: hsl(var(--rarity-artifact)); border-color: hsl(var(--rarity-artifact) / 0.3); background: hsl(var(--rarity-artifact) / 0.1); }
+.badge-rarity-common {
+  color: hsl(var(--rarity-common));
+  border-color: hsl(var(--rarity-common) / 0.3);
+  background: hsl(var(--rarity-common) / 0.1);
+}
+.badge-rarity-uncommon {
+  color: hsl(var(--rarity-uncommon));
+  border-color: hsl(var(--rarity-uncommon) / 0.3);
+  background: hsl(var(--rarity-uncommon) / 0.1);
+}
+.badge-rarity-rare {
+  color: hsl(var(--rarity-rare));
+  border-color: hsl(var(--rarity-rare) / 0.3);
+  background: hsl(var(--rarity-rare) / 0.1);
+}
+.badge-rarity-very-rare {
+  color: hsl(var(--rarity-very-rare));
+  border-color: hsl(var(--rarity-very-rare) / 0.3);
+  background: hsl(var(--rarity-very-rare) / 0.1);
+}
+.badge-rarity-legendary {
+  color: hsl(var(--rarity-legendary));
+  border-color: hsl(var(--rarity-legendary) / 0.3);
+  background: hsl(var(--rarity-legendary) / 0.1);
+}
+.badge-rarity-artifact {
+  color: hsl(var(--rarity-artifact));
+  border-color: hsl(var(--rarity-artifact) / 0.3);
+  background: hsl(var(--rarity-artifact) / 0.1);
+}
 
 /* ========== COMPONENT CLASSES ========== */
 .card-primary {
@@ -439,7 +513,9 @@
 
 /* ========== ACCESSIBILITY ========== */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
@@ -595,6 +671,9 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-card: var(--radius-card);
+
+  --color-popover: hsl(var(--bg-elevated));
+  --color-popover-foreground: hsl(var(--text-primary));
 }
 
 @layer base {
@@ -606,7 +685,12 @@
     @apply bg-bg-primary text-text-primary;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
   }
 }

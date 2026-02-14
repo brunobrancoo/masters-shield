@@ -8,9 +8,8 @@ import { useEffect, useState } from "react";
 import { PointPool } from "@/lib/interfaces/interfaces";
 
 export default function SorcererResourceForm({
-  register,
+  control,
   setValue,
-  watch,
   classData,
   level,
 }: BaseResourceFormProps) {
@@ -20,9 +19,6 @@ export default function SorcererResourceForm({
     (l: any) => l.level === levelNum,
   );
   const classSpecific = levelData?.class_specific;
-
-  // Use watched form value (user edits), fall back to API value for initial load
-  const watchedSorceryPoints = watch("sorceryPoints");
 
   const [sorceryPoints, setSorceryPoints] = useState<PointPool>({
     current: classSpecific?.sorcery_points || 0,

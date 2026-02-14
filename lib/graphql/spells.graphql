@@ -1,33 +1,123 @@
-query GetSpells($name: String, $level: [Int!]) {
-  spells(name: $name, level: $level) {
+query Spells {
+  spells {
+    area_of_effect {
+      size
+      type
+    }
+    attack_type
+    casting_time
+    classes {
+      index
+      name
+    }
+    components
+    concentration
+    damage {
+      damage_at_character_level {
+        level
+        value
+      }
+      damage_at_slot_level {
+        level
+        value
+      }
+      damage_type {
+        index
+        name
+        desc
+      }
+    }
+    dc {
+      dc_success
+      dc_type {
+        desc
+        full_name
+        index
+        name
+        skills {
+          name
+        }
+      }
+    }
+    desc
+    duration
+    higher_level
     index
-    name
     level
+    material
+    name
+    range
+    ritual
     school {
       name
+      index
+      desc
+    }
+    heal_at_slot_level {
+      level
+      value
     }
   }
 }
 
-query GetSpell($index: String!) {
+query Spell($index: String!) {
   spell(index: $index) {
-    index
-    name
-    desc
-    higher_level
-    range
-    components
-    material
-    ritual
-    duration
-    concentration
+    area_of_effect {
+      size
+      type
+    }
+    attack_type
     casting_time
-    level
-    school {
+    classes {
+      index
       name
     }
-    classes {
+    components
+    concentration
+    damage {
+      damage_at_character_level {
+        level
+        value
+      }
+      damage_at_slot_level {
+        level
+        value
+      }
+      damage_type {
+        index
+        name
+        desc
+      }
+    }
+    dc {
+      dc_success
+      dc_type {
+        desc
+        full_name
+        index
+        name
+        skills {
+          name
+        }
+      }
+    }
+    desc
+    duration
+    higher_level
+    index
+    level
+    material
+    name
+    range
+    ritual
+    school {
       name
+      index
+      desc
+    }
+    heal_at_slot_level {
+      level
+      value
     }
   }
 }

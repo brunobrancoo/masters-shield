@@ -1,66 +1,80 @@
 "use client";
 
+import { Controller } from "react-hook-form";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Heart, ShieldCheck, Dices } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Control } from "react-hook-form";
 
 interface PlayerFormHealthSectionProps {
-  register: any;
-  errors: any;
+  control: Control<any>;
   onRollMaxHP?: () => void;
   showRollButton?: boolean;
 }
 
 export default function PlayerFormHealthSection({
-  register,
-  errors,
+  control,
   onRollMaxHP,
   showRollButton = false,
 }: PlayerFormHealthSectionProps) {
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-      <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+      <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
         <Heart className="w-4 h-4 text-destructive" />
         Saúde & Vida
-      </Label>
+      </FieldLabel>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label
-            htmlFor="hp"
+          <FieldLabel
+            htmlFor="form-hp"
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             Pontos de Vida Atuais
-          </Label>
+          </FieldLabel>
           <div className="flex gap-2">
             <Heart className="w-4 h-4 text-destructive mt-3 flex-shrink-0" />
-            <Input
-              id="hp"
-              type="number"
-              min="1"
-              className="bg-bg-inset border-border-default focus:border-destructive h-11"
-              {...register("hp", { valueAsNumber: true })}
-              placeholder="10"
+            <Controller
+              name="hp"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="form-hp"
+                  type="number"
+                  min="1"
+                  className="bg-bg-inset border-border-default focus:border-destructive h-11"
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  placeholder="10"
+                />
+              )}
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label
-            htmlFor="maxHp"
+          <FieldLabel
+            htmlFor="form-maxHp"
             className="text-text-secondary font-medium flex items-center gap-2"
           >
             Pontos de Vida Máximos
-          </Label>
+          </FieldLabel>
           <div className="flex gap-2 flex-1">
             <ShieldCheck className="w-4 h-4 text-divine-400 mt-3 flex-shrink-0" />
-            <Input
-              id="maxHp"
-              type="number"
-              min="1"
-              className="bg-bg-inset border-border-default focus:border-divine-400 h-11 flex-1"
-              {...register("maxHp", { valueAsNumber: true })}
-              placeholder="10"
+            <Controller
+              name="maxHp"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="form-maxHp"
+                  type="number"
+                  min="1"
+                  className="bg-bg-inset border-border-default focus:border-divine-400 h-11 flex-1"
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  placeholder="10"
+                />
+              )}
             />
             {showRollButton && onRollMaxHP && (
               <Button

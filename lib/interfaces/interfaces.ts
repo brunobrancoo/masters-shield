@@ -6,9 +6,8 @@ import type {
   Race,
   Background,
   Equipment,
-  AbilityScore,
-  Spellcasting,
-  ClassSpecific,
+  ClassQuery,
+  SpellQuery,
 } from "@/lib/generated/graphql";
 
 export interface Attributes {
@@ -43,67 +42,6 @@ export interface Monster {
   items: Item[];
 }
 
-export interface Spell {
-  area_of_effect: {
-    size: number;
-    type: string;
-  };
-  attack_type: string;
-  casting_time: string;
-  classes: Array<{
-    index: string;
-    name: string;
-  }>;
-  components: string[];
-  concentration: boolean;
-  damage: {
-    damage_at_character_level?: Array<{
-      level: string;
-      value: string;
-    }>;
-    damage_at_slot_level?: Array<{
-      level: string;
-      value: string;
-    }>;
-    damage_type: {
-      index: string;
-      name: string;
-      desc: string[];
-    };
-  };
-  dc: {
-    dc_success: string;
-
-    dc_type: {
-      desc: string[];
-      full_name: string;
-      index: string;
-      name: string;
-      skills: Array<{
-        name: string;
-      }>;
-    };
-  };
-  desc: string[];
-  duration: string;
-  higher_level: string[];
-  index: string;
-  level: number;
-  material: string;
-  name: string;
-  range: string;
-  ritual: boolean;
-  school: {
-    name: string;
-    index: string;
-    desc: string[];
-  };
-  heal_at_slot_level?: Array<{
-    level: string;
-    value: string;
-  }>;
-}
-
 export interface PointPool {
   current: number;
   max: number;
@@ -121,30 +59,31 @@ export interface SpellSlots {
   9: { current: number; max: number };
 }
 
-export interface SorcererResources {
-  sorceryPoints?: PointPool;
-}
-
-export interface MonkResources {
-  kiPoints?: PointPool;
-}
-
-export interface BarbarianResources {
-  rages?: PointPool;
-  rageDamageBonus?: number;
-}
-
-export interface BardResources {
-  inspiration?: PointPool;
-}
-
-export interface PaladinResources {
-  channelDivinityCharges?: PointPool;
-}
-
-export interface WarlockResources {
-  invocationsKnown?: number;
-}
+// export interface SorcererResources {
+//   sorceryPoints?: PointPool;
+// }
+//
+// export interface MonkResources {
+//   kiPoints?: PointPool;
+// }
+//
+// export interface BarbarianResources {
+//   rages?: PointPool;
+//   rageDamageBonus?: number;
+// }
+//
+// export interface BardResources {
+//   inspiration?: PointPool;
+// }
+//
+// export interface PaladinResources {
+//   channelDivinityCharges?: PointPool;
+// }
+//
+// export interface WarlockResources {
+//   invocationsKnown?: number;
+// }
+//
 
 export interface Skill {
   name: string;
@@ -288,7 +227,7 @@ export interface BasePlayableCharacter {
 
   classIndex: string;
   className: string;
-  classData?: Class;
+  classData: ClassQuery;
   level: number;
   levelData?: Level;
 
@@ -329,15 +268,11 @@ export interface BasePlayableCharacter {
 
   spellSlots?: SpellSlots;
   spellsKnown?: string[];
-  spellList?: Spell[];
+  spellList?: SpellQuery[];
   spellAttack?: number;
   spellCD?: number;
 
   // Legacy fields for backward compatibility
-  spells?: Spell[];
-  maxSpellSlots?: SpellSlots;
-  sorceryPointsLegacy?: number;
-  maxSorceryPoints?: number;
 
   // Buffs and debuffs are common to all characters
   buffs: Buff[];

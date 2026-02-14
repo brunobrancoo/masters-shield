@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Controller } from "react-hook-form";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { CheckboxCircle } from "@/components/ui/checkbox";
 import {
@@ -15,12 +17,11 @@ import {
 } from "@/lib/skills";
 import { useClass, useBackground } from "@/lib/api/hooks";
 import { Info, Medal } from "lucide-react";
+import type { Control } from "react-hook-form";
 
 interface PlayerFormSkillsSectionProps {
-  register: any;
+  control: Control<any>;
   setValue: any;
-  watch: any;
-  errors: any;
   classIndex: string;
   backgroundIndex: string;
   attributes: { for: number; des: number; con: number; int: number; sab: number; car: number };
@@ -43,17 +44,14 @@ const CLASS_SKILL_CHOICES: Record<string, number> = {
 };
 
 export default function PlayerFormSkillsSection({
-  register,
+  control,
   setValue,
-  watch,
-  errors,
   classIndex,
   backgroundIndex,
   attributes,
   proficiencyBonus,
 }: PlayerFormSkillsSectionProps) {
   const [selectedSkills, setSelectedSkills] = useState<SkillKey[]>([]);
-  const watchedSkills = watch("skills") || [];
 
   const { data: classData } = useClass(classIndex);
   const { data: backgroundData } = useBackground(backgroundIndex);
@@ -128,9 +126,9 @@ export default function PlayerFormSkillsSection({
 
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-      <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block">
+      <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block">
         Perícias
-      </Label>
+      </FieldLabel>
 
       <div className="mb-4 p-3 bg-arcane-400/10 rounded border border-arcane-400/20">
         <div className="flex items-center gap-3">
@@ -233,13 +231,6 @@ export default function PlayerFormSkillsSection({
           );
         })}
       </div>
-
-      {errors.skills?.message && (
-        <p className="text-destructive text-xs mt-4 flex items-center gap-1">
-          <span className="w-1 h-1 rounded-full bg-destructive" />
-          {errors.skills.message}
-        </p>
-      )}
     </div>
   );
 }

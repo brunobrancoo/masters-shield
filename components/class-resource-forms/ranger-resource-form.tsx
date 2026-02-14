@@ -5,7 +5,7 @@ import FavoredEnemiesDisplay from "../class-display-sections/favored-enemies-dis
 import FavoredTerrainDisplay from "../class-display-sections/favored-terrain-display";
 import ExtraAttacksDisplay from "../class-display-sections/extra-attacks-display";
 
-export default function RangerResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function RangerResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
   const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);

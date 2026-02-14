@@ -6,7 +6,7 @@ import AuraRangeDisplay from "../class-display-sections/aura-range-display";
 import DestroyUndeadCRDisplay from "../class-display-sections/destroy-undead-cr-display";
 import { useEffect, useState } from "react";
 
-export default function PaladinResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function PaladinResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
   const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);

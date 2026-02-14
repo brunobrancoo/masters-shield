@@ -6,18 +6,12 @@ interface ClassFeaturesSectionProps {
   classIndex: string;
   level: number;
   subclassIndex?: string;
-  register: any;
-  watch: any;
-  errors: any;
 }
 
 export default function ClassFeaturesSection({
   classIndex,
   level,
   subclassIndex,
-  register,
-  watch,
-  errors,
 }: ClassFeaturesSectionProps) {
   const { data: classQueryData } = useClass(classIndex);
   const selectedClass = classQueryData?.class;

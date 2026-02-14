@@ -1,11 +1,11 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, signUp } from "@/lib/firebase-auth";
 import { useRouter } from "next/navigation";
@@ -105,32 +105,46 @@ export function LoginForm({
                   {error}
                 </div>
               )}
-              <Field>
-                <FieldLabel htmlFor="login-email">Email</FieldLabel>
-                <Input
-                  id="login-email"
-                  type="email"
-                  placeholder="m@example.com"
-                  {...loginForm.register("email")}
-                />
-                {loginForm.formState.errors.email && (
-                  <p className="text-sm text-destructive mt-1">{loginForm.formState.errors.email.message}</p>
+              <Controller
+                name="email"
+                control={loginForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="login-email">Email</FieldLabel>
+                    <Input
+                      id="login-email"
+                      type="email"
+                      placeholder="m@example.com"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="login-password">Senha</FieldLabel>
-                </div>
-                <Input
-                  id="login-password"
-                  type="password"
-                  {...loginForm.register("password")}
-                />
-                {loginForm.formState.errors.password && (
-                  <p className="text-sm text-destructive mt-1">{loginForm.formState.errors.password.message}</p>
+              <Controller
+                name="password"
+                control={loginForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <div className="flex items-center">
+                      <FieldLabel htmlFor="login-password">Senha</FieldLabel>
+                    </div>
+                    <Input
+                      id="login-password"
+                      type="password"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
               <Button type="submit" disabled={loading}>
                 {loading ? "Entrando..." : "Login"}
@@ -146,57 +160,85 @@ export function LoginForm({
                   {error}
                 </div>
               )}
-              <Field>
-                <FieldLabel htmlFor="signup-display-name">Nome</FieldLabel>
-                <Input
-                  id="signup-display-name"
-                  type="text"
-                  placeholder="Seu nome"
-                  {...signupForm.register("displayName")}
-                />
-                {signupForm.formState.errors.displayName && (
-                  <p className="text-sm text-destructive mt-1">{signupForm.formState.errors.displayName.message}</p>
+              <Controller
+                name="displayName"
+                control={signupForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="signup-display-name">Nome</FieldLabel>
+                    <Input
+                      id="signup-display-name"
+                      type="text"
+                      placeholder="Seu nome"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
-              <Field>
-                <FieldLabel htmlFor="signup-email">Email</FieldLabel>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="m@example.com"
-                  {...signupForm.register("email")}
-                />
-                {signupForm.formState.errors.email && (
-                  <p className="text-sm text-destructive mt-1">{signupForm.formState.errors.email.message}</p>
+              <Controller
+                name="email"
+                control={signupForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="signup-email">Email</FieldLabel>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="m@example.com"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
-              <Field>
-                <FieldLabel htmlFor="signup-password">Senha</FieldLabel>
-                <Input
-                  id="signup-password"
-                  type="password"
-                  {...signupForm.register("password")}
-                />
-                {signupForm.formState.errors.password && (
-                  <p className="text-sm text-destructive mt-1">{signupForm.formState.errors.password.message}</p>
+              <Controller
+                name="password"
+                control={signupForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="signup-password">Senha</FieldLabel>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
-              <Field>
-                <FieldLabel htmlFor="signup-password-confirm">
-                  Confirmar Senha
-                </FieldLabel>
-                <Input
-                  id="signup-password-confirm"
-                  type="password"
-                  {...signupForm.register("confirmPassword")}
-                />
-                {signupForm.formState.errors.confirmPassword && (
-                  <p className="text-sm text-destructive mt-1">{signupForm.formState.errors.confirmPassword.message}</p>
+              <Controller
+                name="confirmPassword"
+                control={signupForm.control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="signup-password-confirm">
+                      Confirmar Senha
+                    </FieldLabel>
+                    <Input
+                      id="signup-password-confirm"
+                      type="password"
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                    />
+                    {error && (
+                      <FieldError>{error.message}</FieldError>
+                    )}
+                  </Field>
                 )}
-              </Field>
+              />
 
               <Button type="submit" disabled={loading}>
                 {loading ? "Criando conta..." : "Criar Conta"}
