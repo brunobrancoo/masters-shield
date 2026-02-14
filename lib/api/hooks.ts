@@ -18,6 +18,7 @@ import {
   ClassesDocument,
   SpellsDocument,
   SpellDocument,
+  GetRacesQuery,
 } from "@/lib/generated/graphql";
 import { PointPool, SpellSlots } from "@/lib/interfaces/interfaces";
 import { filterMeaningfulItems } from "./utils";
@@ -113,7 +114,6 @@ export function useRaces() {
           races: filterMeaningfulItems(response.races),
         };
       }
-      console.log("races Data: ", response.races);
       return response;
     },
   });

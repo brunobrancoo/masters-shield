@@ -362,20 +362,19 @@ export default function PlayerFormIdentitySection({
             name="raceName"
             control={control}
             render={({ field, fieldState: { error } }) => {
-              // 1. Find the full object that corresponds to the current string value
-              const selectedRace = racesData?.races?.find(
-                (r) => r.name === field.value,
-              );
-
               return (
                 <Combobox<RaceItem>
                   items={racesData?.races || []}
                   itemToStringValue={(race) => race.name}
-                  // 2. Pass the full object here, not the string
-                  value={selectedRace}
-                  // 3. Handle selection: extract the name to update the form
-                  onValueChange={(race) => {
-                    field.onChange(race?.name);
+                  onValueChange={(val) => {
+                    field.onChange(val);
+                    if (val !== null) {
+                      const index = racesData?.races.find(
+                        (race: RaceItem) => race.index === val.toLowerCase(),
+                      )?.index;
+                      if (index) setValue("raceIndex", index);
+                      console.log("here: ", index);
+                    }
                   }}
                 >
                   <ComboboxInput placeholder="Select a race" />
@@ -386,7 +385,7 @@ export default function PlayerFormIdentitySection({
                         <ComboboxItem
                           // 4. Fixed key: RaceItem has 'index', not 'value'
                           key={race.index}
-                          value={race}
+                          value={race.name}
                         >
                           {race.name}
                         </ComboboxItem>
