@@ -251,6 +251,23 @@ export const spellSchema = z.object({
   components: z.string().default(""),
   concentration: z.boolean().default(false),
   ritual: z.boolean().default(false),
+  description: z.array(z.string()).default([]),
+  attackType: z.string().optional(),
+  material: z.string().optional(),
+  areaOfEffect: z.object({
+    size: z.number().optional(),
+    type: z.string().optional(),
+  }).optional(),
+  higherLevel: z.array(z.string()).optional(),
+  damage: z.object({
+    damageType: z.string().optional(),
+    damageAtSlotLevel: z.array(z.string()).optional(),
+  }).optional(),
+  dc: z.object({
+    dcType: z.string().optional(),
+    dcSuccess: z.string().optional(),
+  }).optional(),
+  healAtSlotLevel: z.array(z.string()).optional(),
 });
 
 export const spellListSchema = z.array(

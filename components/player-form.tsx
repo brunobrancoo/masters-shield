@@ -58,6 +58,8 @@ export default function PlayerForm({
       ? {
           ...playableCharacter,
           inventory: playableCharacter.inventory || [],
+          spellList:
+            playableCharacter.spellList || playableCharacter.spells || [],
         }
       : {
           name: "",
@@ -111,6 +113,7 @@ export default function PlayerForm({
             9: { current: 0, max: 0 },
           },
           spellsKnown: [],
+          spellList: [],
           spellAttack: 0,
           spellCD: 0,
           sorceryPoints: undefined,
@@ -127,6 +130,8 @@ export default function PlayerForm({
           wildShapeForm: "",
         },
   });
+
+  console.log("whole form: ", watch());
 
   const {
     fields: customFeatureFields,
@@ -183,7 +188,10 @@ export default function PlayerForm({
   const { data: classData } = useClass(watchedClassIndex || "");
 
   console.log("classData:", JSON.stringify(classData, null, 2));
-  console.log("starting_equipment_options:", (classData?.class as any)?.starting_equipment_options);
+  console.log(
+    "starting_equipment_options:",
+    (classData?.class as any)?.starting_equipment_options,
+  );
 
   const hitDie = classData?.class?.hit_die || 8;
 
@@ -428,12 +436,12 @@ export default function PlayerForm({
           selectedEquipmentIndex={selectedEquipmentIndex}
           setSelectedEquipmentIndex={setSelectedEquipmentIndex}
           startingEquipmentOptions={
-            (classData?.class as any)?.starting_equipment_options?.[0]?.from?.options ||
-            []
+            (classData?.class as any)?.starting_equipment_options?.[0]?.from
+              ?.options || []
           }
           selectedStartingEquipmentCount={
-            (classData?.class as any)?.starting_equipment_options?.[0]?.choose ||
-            0
+            (classData?.class as any)?.starting_equipment_options?.[0]
+              ?.choose || 0
           }
           isNewCharacter={!playableCharacter}
         />

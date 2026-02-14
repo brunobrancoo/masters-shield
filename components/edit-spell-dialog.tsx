@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Edit, Save } from "lucide-react";
 import { Spell } from "@/lib/interfaces/interfaces";
 import { spellSchema, type SpellFormData } from "@/lib/schemas";
@@ -33,6 +34,8 @@ export default function EditSpellDialog({
   setOpen: (open: boolean) => void;
   onUpdate: (index: number, spell: Spell) => void;
 }) {
+  const [descriptionText, setDescriptionText] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -50,6 +53,14 @@ export default function EditSpellDialog({
       components: spell.components || "",
       concentration: spell.concentration || false,
       ritual: spell.ritual || false,
+      description: spell.description || [],
+      attackType: spell.attackType || "",
+      material: spell.material || "",
+      areaOfEffect: spell.areaOfEffect || { size: undefined, type: undefined },
+      higherLevel: spell.higherLevel || [],
+      damage: spell.damage || { damageType: undefined, damageAtSlotLevel: undefined },
+      dc: spell.dc || { dcType: undefined, dcSuccess: undefined },
+      healAtSlotLevel: spell.healAtSlotLevel || [],
     },
   });
 
@@ -64,7 +75,16 @@ export default function EditSpellDialog({
       components: spell.components,
       concentration: spell.concentration,
       ritual: spell.ritual,
+      description: spell.description,
+      attackType: spell.attackType,
+      material: spell.material,
+      areaOfEffect: spell.areaOfEffect,
+      higherLevel: spell.higherLevel,
+      damage: spell.damage,
+      dc: spell.dc,
+      healAtSlotLevel: spell.healAtSlotLevel,
     });
+    setDescriptionText(Array.isArray(spell.description) ? spell.description.join("\n") : "");
   }, [spell, reset]);
 
   const onSubmit = (data: z.infer<typeof spellSchema>) => {
@@ -80,9 +100,18 @@ export default function EditSpellDialog({
       components: data.components,
       concentration: data.concentration,
       ritual: data.ritual,
+      description: descriptionText.split("\n").filter(line => line.trim() !== "") || [],
+      attackType: data.attackType,
+      material: data.material,
+      areaOfEffect: data.areaOfEffect,
+      higherLevel: data.higherLevel,
+      damage: data.damage,
+      dc: data.dc,
+      healAtSlotLevel: data.healAtSlotLevel,
     };
     onUpdate(index, updatedSpell);
     reset();
+    setDescriptionText("");
     setOpen(false);
   };
 
@@ -230,6 +259,71 @@ export default function EditSpellDialog({
                 </Label>
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-spell-description" className="text-text-secondary font-medium">
+                Descrição
+              </Label>
+              <Textarea
+                id="edit-spell-description"
+                rows={4}
+                value={descriptionText}
+                onChange={(e) => setDescriptionText(e.target.value)}
+                className="bg-bg-inset border-border-default focus:border-arcane-400 resize-none"
+                placeholder="Descrição da magia..."
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-spell-attack-type" className="text-text-secondary font-medium">
+                  Tipo de Ataque
+                </Label>
+                <Input
+                  id="edit-spell-attack-type"
+                  {...register("attackType")}
+                  className="bg-bg-inset border-border-default focus:border-arcane-400"
+                  placeholder="Melee, Ranged, ..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-spell-material" className="text-text-secondary font-medium">
+                  Material
+                </Label>
+                <Input
+                  id="edit-spell-material"
+                  {...register("material")}
+                  className="bg-bg-inset border-border-default focus:border-arcane-400"
+                  placeholder="Ex: Ruby dust worth 50gp"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-spell-aoe-type" className="text-text-secondary font-medium">
+                  Tipo de Área de Efeito
+                </Label>
+                <Input
+                  id="edit-spell-aoe-type"
+                  {...register("areaOfEffect.type")}
+                  className="bg-bg-inset border-border-default focus:border-arcane-400"
+                  placeholder="Sphere, Cylinder, ..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-spell-aoe-size" className="text-text-secondary font-medium">
+                  Tamanho da Área (pés)
+                </Label>
+                <Input
+                  id="edit-spell-aoe-size"
+                  type="number"
+                  {...register("areaOfEffect.size", { valueAsNumber: true })}
+                  className="bg-bg-inset border-border-default focus:border-arcane-400"
+                  placeholder="Ex: 20"
+                />
+              </div>
+            </div>
           </div>
         </form>
 
@@ -239,6 +333,7 @@ export default function EditSpellDialog({
             variant="outline"
             onClick={() => {
               reset();
+              setDescriptionText("");
               setOpen(false);
             }}
           >

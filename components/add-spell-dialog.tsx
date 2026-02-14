@@ -41,6 +41,8 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
   const debouncedHomebrewSearchQuery = useDebounce(homebrewSearchQuery, 300);
   const [homebrews, setHomebrews] = useState<Homebrew[]>([]);
 
+  const [descriptionText, setDescriptionText] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -60,6 +62,14 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
       components: "",
       concentration: false,
       ritual: false,
+      description: [],
+      attackType: "",
+      material: "",
+      areaOfEffect: { size: undefined, type: undefined },
+      higherLevel: [],
+      damage: { damageType: undefined, damageAtSlotLevel: undefined },
+      dc: { dcType: undefined, dcSuccess: undefined },
+      healAtSlotLevel: [],
     },
   });
 
@@ -85,6 +95,24 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
     setValue("components", spell.components?.join(", ") || "", { shouldDirty: true });
     setValue("concentration", spell.concentration || false, { shouldDirty: true });
     setValue("ritual", spell.ritual || false, { shouldDirty: true });
+    setValue("description", spell.desc || [], { shouldDirty: true });
+    setDescriptionText(spell.desc?.join("\n") || "");
+    setValue("attackType", spell.attack_type || "", { shouldDirty: true });
+    setValue("material", spell.material || "", { shouldDirty: true });
+    setValue("higherLevel", spell.higher_level || [], { shouldDirty: true });
+    setValue("areaOfEffect", {
+      size: spell.area_of_effect?.size || undefined,
+      type: spell.area_of_effect?.type || undefined,
+    }, { shouldDirty: true });
+    setValue("damage", {
+      damageType: spell.damage?.damage_type?.name || undefined,
+      damageAtSlotLevel: spell.damage?.damage_at_slot_level?.map((lvl: any) => `${lvl.level}: ${lvl.value}`) || undefined,
+    }, { shouldDirty: true });
+    setValue("dc", {
+      dcType: spell.dc?.dc_type?.index || undefined,
+      dcSuccess: spell.dc?.dc_success || undefined,
+    }, { shouldDirty: true });
+    setValue("healAtSlotLevel", spell.heal_at_slot_level?.map((lvl: any) => `${lvl.level}: ${lvl.value}`) || [], { shouldDirty: true });
 
     setTimeout(() => {
       trigger();
@@ -103,13 +131,14 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
       components: data.components,
       concentration: data.concentration,
       ritual: data.ritual,
-      description: [],
-      damage: undefined,
-      dc: undefined,
-      areaOfEffect: undefined,
-      higherLevel: [],
-      attackType: undefined,
-      material: undefined,
+      description: descriptionText.split("\n").filter(line => line.trim() !== "") || [],
+      damage: data.damage,
+      dc: data.dc,
+      areaOfEffect: data.areaOfEffect,
+      higherLevel: data.higherLevel || [],
+      attackType: data.attackType,
+      material: data.material,
+      healAtSlotLevel: data.healAtSlotLevel,
     };
 
     const sanitizedSpell = sanitizeForFirebase(newSpell);
@@ -132,6 +161,7 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
     }
 
     reset();
+    setDescriptionText("");
     setOpen(false);
     setSearchQuery("");
     setHomebrewSearchQuery("");
@@ -162,6 +192,15 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
       setValue("components", homebrew.spell.components, { shouldDirty: true });
       setValue("concentration", homebrew.spell.concentration, { shouldDirty: true });
       setValue("ritual", homebrew.spell.ritual, { shouldDirty: true });
+      setValue("description", homebrew.spell.description, { shouldDirty: true });
+      setDescriptionText(Array.isArray(homebrew.spell.description) ? homebrew.spell.description.join("\n") : "");
+      setValue("attackType", homebrew.spell.attackType, { shouldDirty: true });
+      setValue("material", homebrew.spell.material, { shouldDirty: true });
+      setValue("higherLevel", homebrew.spell.higherLevel, { shouldDirty: true });
+      setValue("areaOfEffect", homebrew.spell.areaOfEffect, { shouldDirty: true });
+      setValue("damage", homebrew.spell.damage, { shouldDirty: true });
+      setValue("dc", homebrew.spell.dc, { shouldDirty: true });
+      setValue("healAtSlotLevel", homebrew.spell.healAtSlotLevel, { shouldDirty: true });
     }
 
     setTimeout(() => trigger(), 0);
@@ -201,6 +240,7 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
           setSearchQuery("");
           setHomebrewSearchQuery("");
           setSelectedSpellIndex(null);
+          setDescriptionText("");
         }
       }}
     >
@@ -664,9 +704,89 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
                     <span className="font-medium">Ritual</span>
                   </Label>
                 </div>
+               </div>
+
+               <div className="space-y-2">
+                  <Label
+                    htmlFor="spell-description"
+                    className="text-text-secondary font-medium flex items-center gap-2"
+                  >
+                    Descrição
+                  </Label>
+                  <Textarea
+                    id="spell-description"
+                    rows={4}
+                    value={descriptionText}
+                    onChange={(e) => setDescriptionText(e.target.value)}
+                    className="bg-bg-inset border-border-default focus:border-arcane-400 resize-none"
+                    placeholder="Descrição da magia..."
+                  />
+                </div>
+
+               <div className="grid grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <Label
+                     htmlFor="spell-attack-type"
+                     className="text-text-secondary font-medium"
+                   >
+                     Tipo de Ataque
+                   </Label>
+                   <Input
+                     id="spell-attack-type"
+                     {...register("attackType")}
+                     className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
+                     placeholder="Melee, Ranged, ..."
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label
+                     htmlFor="spell-material"
+                     className="text-text-secondary font-medium"
+                   >
+                     Material
+                   </Label>
+                   <Input
+                     id="spell-material"
+                     {...register("material")}
+                     className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
+                     placeholder="Ex: Ruby dust worth 50gp"
+                   />
+                 </div>
+               </div>
+
+               <div className="grid grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                   <Label
+                     htmlFor="spell-aoe-type"
+                     className="text-text-secondary font-medium"
+                   >
+                     Tipo de Área de Efeito
+                   </Label>
+                   <Input
+                     id="spell-aoe-type"
+                     {...register("areaOfEffect.type")}
+                     className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
+                     placeholder="Sphere, Cylinder, ..."
+                   />
+                 </div>
+                 <div className="space-y-2">
+                   <Label
+                     htmlFor="spell-aoe-size"
+                     className="text-text-secondary font-medium"
+                   >
+                     Tamanho da Área (pés)
+                   </Label>
+                   <Input
+                     id="spell-aoe-size"
+                     type="number"
+                     {...register("areaOfEffect.size", { valueAsNumber: true })}
+                     className="bg-bg-inset border-border-default focus:border-arcane-400 h-11"
+                     placeholder="Ex: 20"
+                   />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+           </div>
 
           <DialogFooter className="border-t border-border-default pt-8 gap-4">
             <Button
@@ -674,6 +794,7 @@ export default function AddSpellDialog({ onAdd, campaignId }: AddSpellDialogProp
               variant="outline"
               onClick={() => {
                 reset();
+                setDescriptionText("");
                 setOpen(false);
                 setSearchQuery("");
                 setHomebrewSearchQuery("");
