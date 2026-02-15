@@ -1,27 +1,25 @@
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PlayerCombatStatsSectionProps {
   playableCharacter: PlayableCharacter;
 }
 
-export default function PlayerCombatStatsSection({ playableCharacter }: PlayerCombatStatsSectionProps) {
+export default function PlayerCombatStatsSection({
+  playableCharacter,
+}: PlayerCombatStatsSectionProps) {
   const attackBonus = playableCharacter.profBonus ?? 0;
   const spellAttack = playableCharacter.spellAttack ?? 0;
 
   return (
     <Card className="metal-border">
       <CardHeader>
-        <CardTitle className="font-sans text-xl">
-          Status de Combate
-        </CardTitle>
+        <CardTitle className="font-sans text-xl">Status de Combate</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className="text-center bg-card/50 p-4 rounded">
-            <p className="text-xs uppercase text-muted-foreground mb-1">
-              CA
-            </p>
+            <p className="text-xs uppercase text-muted-foreground mb-1">CA</p>
             <p className="text-2xl font-bold text-primary">
               {playableCharacter.ac}
             </p>

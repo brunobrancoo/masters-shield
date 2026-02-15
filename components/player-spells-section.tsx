@@ -1,4 +1,4 @@
-import type { PlayableCharacter, Spell } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Spell } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
@@ -25,7 +25,7 @@ export function PlayerSpellsSection({
   onEditSpell,
   campaignId,
 }: PlayerSpellsSectionProps) {
-  const spells = playableCharacter.spellList || playableCharacter.spells || [];
+  const spells = playableCharacter.spellList || [];
   const editSpell = editSpellIndex !== null ? spells[editSpellIndex] : null;
 
   return (

@@ -310,6 +310,7 @@ export default function PlayerFormIdentitySection({
                         if (val !== null) {
                           const race = racesData?.races.find(
                             (race: RaceItem) =>
+                              //@ts-ignore
                               race.index === val.toLowerCase(),
                           );
                           if (race) {
@@ -354,6 +355,7 @@ export default function PlayerFormIdentitySection({
                         if (val !== null) {
                           const dndClass = classesData?.classes.find(
                             (dndClass: ClassItem) =>
+                              //@ts-ignore
                               dndClass.index === val.toLowerCase(),
                           );
                           if (dndClass) {

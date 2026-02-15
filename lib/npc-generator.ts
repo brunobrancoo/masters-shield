@@ -1,5 +1,5 @@
 import { generateAttributes, calculateHPModifier } from "./dice";
-import { Attributes, NPC } from "./interfaces/interfaces";
+import { Attributes, NPC } from "@/lib/schemas";
 import { generateId } from "./storage";
 
 const RACES = [
@@ -157,12 +157,12 @@ export function generateNPC(
   // Gera atributos usando 4d6 descartando menor
   const attributeRolls = generateAttributes();
   const attributes: Attributes = {
-    for: attributeRolls[0].result,
-    des: attributeRolls[1].result,
+    str: attributeRolls[0].result,
+    dex: attributeRolls[1].result,
     con: attributeRolls[2].result,
     int: attributeRolls[3].result,
-    sab: attributeRolls[4].result,
-    car: attributeRolls[5].result,
+    wis: attributeRolls[4].result,
+    cha: attributeRolls[5].result,
   };
 
   // Calcula HP baseado na classe e constituição
@@ -184,6 +184,6 @@ export function generateNPC(
     skills,
     personality,
     notes: `NPC gerado automaticamente. ${personality}.`,
-    items: [],
+    inventory: [],
   };
 }

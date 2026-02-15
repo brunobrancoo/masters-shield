@@ -1,4 +1,4 @@
-import type { PlayableCharacter, SpellSlots } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, SpellSlots } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
 
@@ -60,17 +60,31 @@ const spellLevelColors = {
 };
 
 // Caster classes that have spell slots
-const CASTER_CLASSES = ['bard', 'cleric', 'druid', 'paladin', 'ranger', 'sorcerer', 'warlock', 'wizard'];
+const CASTER_CLASSES = [
+  "bard",
+  "cleric",
+  "druid",
+  "paladin",
+  "ranger",
+  "sorcerer",
+  "warlock",
+  "wizard",
+];
 
 interface PlayerSpellSlotsSectionProps {
   playableCharacter: PlayableCharacter;
   onSpellSlotChange: (level: keyof SpellSlots, value: number) => void;
 }
 
-export default function PlayerSpellSlotsSection({ playableCharacter, onSpellSlotChange }: PlayerSpellSlotsSectionProps) {
+export default function PlayerSpellSlotsSection({
+  playableCharacter,
+  onSpellSlotChange,
+}: PlayerSpellSlotsSectionProps) {
   // Only render for caster classes
-  const isCaster = CASTER_CLASSES.includes(playableCharacter.classIndex?.toLowerCase());
-  
+  const isCaster = CASTER_CLASSES.includes(
+    playableCharacter.classIndex?.toLowerCase(),
+  );
+
   if (!isCaster || !playableCharacter.spellSlots) {
     return null;
   }
@@ -86,33 +100,33 @@ export default function PlayerSpellSlotsSection({ playableCharacter, onSpellSlot
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
-            const colors = spellLevelColors[level as keyof typeof spellLevelColors];
-            const maxSlots = playableCharacter.spellSlots?.[level as keyof SpellSlots]?.max ?? 0;
-            
+            const colors =
+              spellLevelColors[level as keyof typeof spellLevelColors];
+            const maxSlots =
+              playableCharacter.spellSlots?.[level as keyof SpellSlots]?.max ??
+              0;
+
             // Skip levels with 0 slots
             if (maxSlots === 0) return null;
-            
+
             return (
-              <div
-                key={level}
-                className="text-center bg-card/50 p-4 rounded"
-              >
-                <p className={`text-xs uppercase font-bold mb-3 ${colors.text}`}>
+              <div key={level} className="text-center bg-card/50 p-4 rounded">
+                <p
+                  className={`text-xs uppercase font-bold mb-3 ${colors.text}`}
+                >
                   Nível {level}
                 </p>
                 <div className="flex justify-center gap-1 flex-wrap">
                   {Array.from({ length: maxSlots }).map((_, idx) => {
                     const slotValue =
-                      playableCharacter.spellSlots?.[level as keyof SpellSlots]?.current ?? 0;
+                      playableCharacter.spellSlots?.[level as keyof SpellSlots]
+                        ?.current ?? 0;
                     const isActive = idx < slotValue;
                     return (
                       <button
                         key={idx}
                         onClick={() =>
-                          onSpellSlotChange(
-                            level as keyof SpellSlots,
-                            idx + 1,
-                          )
+                          onSpellSlotChange(level as keyof SpellSlots, idx + 1)
                         }
                         className={`w-8 h-8 rounded-full border-2 transition-all ${
                           isActive

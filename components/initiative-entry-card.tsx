@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Swords, X } from "lucide-react";
-import { InitiativeEntry } from "@/lib/interfaces/interfaces";
+import { InitiativeEntry } from "@/lib/schemas";
 import { getHPColor, getHPClass } from "@/lib/theme";
 
 interface InitiativeEntryCardProps {
@@ -74,9 +74,7 @@ export default function InitiativeEntryCard({
 
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-body text-text-secondary">
-                HP
-              </span>
+              <span className="font-body text-text-secondary">HP</span>
               <span className="font-bold font-body text-text-primary">
                 {entry.hp}/{entry.maxHp}
               </span>

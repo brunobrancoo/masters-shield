@@ -20,7 +20,7 @@ import {
   SpellDocument,
   GetRacesQuery,
 } from "@/lib/generated/graphql";
-import { PointPool, SpellSlots } from "@/lib/interfaces/interfaces";
+import { PointPool, Spell, SpellSlots } from "@/lib/schemas";
 import { filterMeaningfulItems } from "./utils";
 
 export function useMonsters(name?: string) {

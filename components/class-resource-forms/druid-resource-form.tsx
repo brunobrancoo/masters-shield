@@ -2,7 +2,6 @@
 
 import { BaseResourceFormProps } from "./types";
 import WildShapeDisplay from "../class-display-sections/wild-shape-display";
-import DruidWildShapeSelector from "../druid-wild-shape-selector";
 
 export default function DruidResourceForm({
   control,

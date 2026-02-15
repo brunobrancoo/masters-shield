@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGame } from "@/app/_contexts/game-context";
 import type {
@@ -113,7 +113,12 @@ function CharacterSheetContent({
       return false;
     }
 
-    const updatedPlayableCharacter = { ...playableCharacter, ...updates };
+    // Cast to PlayableCharacter to handle Union Type mismatches during updates
+    const updatedPlayableCharacter = {
+      ...playableCharacter,
+      ...updates,
+    } as PlayableCharacter;
+
     const sanitizedData = sanitizeForFirebase(updatedPlayableCharacter);
 
     try {
@@ -179,85 +184,43 @@ function CharacterSheetContent({
   const handleClassResourceChange = (resourceType: string, value: number) => {
     if (!playableCharacter) return;
 
-    const classIndex = playableCharacter.classIndex;
-
-    switch (resourceType) {
-      case "sorceryPoints":
-        if (classIndex !== "sorcerer") return;
-        const sorceryMax = (playableCharacter as any).sorceryPoints
-          ?.sorceryPoints?.max;
-        if (!sorceryMax) return;
-        const sorceryCurrent =
-          (playableCharacter as any).sorceryPoints?.sorceryPoints?.current ?? 0;
-        const newSorceryValue =
-          sorceryCurrent === value ? 0 : Math.min(value, sorceryMax);
-        updatePlayableCharacter({
-          sorceryPoints: {
-            sorceryPoints: { current: newSorceryValue, max: sorceryMax },
-          } as any,
-        });
-        break;
-
-      case "kiPoints":
-        if (classIndex !== "monk") return;
-        const kiMax = (playableCharacter as any).kiPoints?.kiPoints?.max;
-        if (!kiMax) return;
-        const kiCurrent =
-          (playableCharacter as any).kiPoints?.kiPoints?.current ?? 0;
-        const newKiValue = kiCurrent === value ? 0 : Math.min(value, kiMax);
-        updatePlayableCharacter({
-          kiPoints: {
-            kiPoints: { current: newKiValue, max: kiMax },
-          } as any,
-        });
-        break;
-
-      case "rages":
-        if (classIndex !== "barbarian") return;
-        const rageMax = (playableCharacter as any).rages?.rages?.max;
-        if (!rageMax) return;
-        const rageCurrent =
-          (playableCharacter as any).rages?.rages?.current ?? 0;
-        const newRageValue =
-          rageCurrent === value ? 0 : Math.min(value, rageMax);
-        updatePlayableCharacter({
-          rages: {
-            rages: { current: newRageValue, max: rageMax },
-          } as any,
-        });
-        break;
-
-      case "inspiration":
-        if (classIndex !== "bard") return;
-        const inspMax =
-          (playableCharacter as any).inspiration?.inspiration?.max ?? 1;
-        const inspCurrent =
-          (playableCharacter as any).inspiration?.inspiration?.current ?? 0;
-        const newInspValue =
-          inspCurrent === value ? 0 : Math.min(value, inspMax);
-        updatePlayableCharacter({
-          inspiration: {
-            inspiration: { current: newInspValue, max: inspMax },
-          } as any,
-        });
-        break;
-
-      case "channelDivinity":
-        if (playableCharacter.level < 2) return;
-        if (classIndex !== "paladin") return;
-        const cdMax =
-          (playableCharacter as any).channelDivinityCharges
-            ?.channelDivinityCharges?.max ?? 1;
-        const cdCurrent =
-          (playableCharacter as any).channelDivinityCharges
-            ?.channelDivinityCharges?.current ?? 0;
-        const newCdValue = cdCurrent === value ? 0 : Math.min(value, cdMax);
-        updatePlayableCharacter({
-          channelDivinityCharges: {
-            channelDivinityCharges: { current: newCdValue, max: cdMax },
-          } as any,
-        });
-        break;
+    if (playableCharacter.classIndex === "sorcerer") {
+      const sorceryMax = playableCharacter.sorceryPoints?.max || 0;
+      const sorceryCurrent = playableCharacter.sorceryPoints?.current || 0;
+      const newSorceryValue =
+        sorceryCurrent === value ? 0 : Math.min(value, sorceryMax);
+      updatePlayableCharacter({
+        sorceryPoints: { current: newSorceryValue, max: sorceryMax },
+      });
+    } else if (playableCharacter.classIndex === "monk") {
+      const kiMax = playableCharacter.kiPoints?.max || 0;
+      const kiCurrent = playableCharacter.kiPoints?.current || 0;
+      const newKiValue = kiCurrent === value ? 0 : Math.min(value, kiMax);
+      updatePlayableCharacter({
+        kiPoints: { current: newKiValue, max: kiMax },
+      });
+    } else if (playableCharacter.classIndex === "barbarian") {
+      const rageMax = playableCharacter.rages?.max || 0;
+      const rageCurrent = playableCharacter.rages?.current || 0;
+      const newRageValue = rageCurrent === value ? 0 : Math.min(value, rageMax);
+      updatePlayableCharacter({
+        rages: { current: newRageValue, max: rageMax },
+      });
+    } else if (playableCharacter.classIndex === "bard") {
+      const inspMax = playableCharacter.inspiration?.max ?? 1;
+      const inspCurrent = playableCharacter.inspiration?.current ?? 0;
+      const newInspValue = inspCurrent === value ? 0 : Math.min(value, inspMax);
+      updatePlayableCharacter({
+        inspiration: { current: newInspValue, max: inspMax },
+      });
+    } else if (playableCharacter.classIndex === "cleric") {
+      const cdMax = playableCharacter.channelDivinityCharges?.max ?? 1;
+      const cdCurrent = playableCharacter.channelDivinityCharges?.current ?? 0;
+      const newCdValue = cdCurrent === value ? 0 : Math.min(value, cdMax);
+      updatePlayableCharacter({
+        channelDivinityCharges: { current: newCdValue, max: cdMax },
+      });
+    } else if (playableCharacter.classIndex === "paladin") {
     }
   };
 
@@ -307,10 +270,8 @@ function CharacterSheetContent({
 
   const addSpell = async (spell: Spell) => {
     if (!playableCharacter) return;
-
-    // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList =
-      playableCharacter.spellList || playableCharacter.spells || [];
+    // Only use spellList, legacy 'spells' is removed
+    const currentSpellList = playableCharacter.spellList || [];
     await updatePlayableCharacter({
       spellList: [...currentSpellList, spell],
     });
@@ -318,10 +279,8 @@ function CharacterSheetContent({
 
   const removeSpell = async (index: number) => {
     if (!playableCharacter) return;
-
-    // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList =
-      playableCharacter.spellList || playableCharacter.spells || [];
+    // Only use spellList, legacy 'spells' is removed
+    const currentSpellList = playableCharacter.spellList || [];
     await updatePlayableCharacter({
       spellList: currentSpellList.filter((_, i) => i !== index),
     });
@@ -329,10 +288,8 @@ function CharacterSheetContent({
 
   const editSpell = async (index: number, updatedSpell: Spell) => {
     if (!playableCharacter) return;
-
-    // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList =
-      playableCharacter.spellList || playableCharacter.spells || [];
+    // Only use spellList
+    const currentSpellList = playableCharacter.spellList || [];
     const newSpellList = [...currentSpellList];
     newSpellList[index] = updatedSpell;
     await updatePlayableCharacter({

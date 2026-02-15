@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DragonIcon, SwordIcon } from "@/components/icons";
-import { Monster } from "@/lib/interfaces/interfaces";
+import { Monster } from "@/lib/schemas";
 import { MonsterApiImportDialog } from "./monster-api-import";
 
 interface MonsterListProps {

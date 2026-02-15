@@ -1,4 +1,4 @@
-import type { PlayableCharacter, Buff } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Buff } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
@@ -10,7 +10,11 @@ interface PlayerBuffsSectionProps {
   onRemoveBuff: (index: number) => void;
 }
 
-export default function PlayerBuffsSection({ playableCharacter, onAddBuff, onRemoveBuff }: PlayerBuffsSectionProps) {
+export default function PlayerBuffsSection({
+  playableCharacter,
+  onAddBuff,
+  onRemoveBuff,
+}: PlayerBuffsSectionProps) {
   return (
     <Card className="metal-border bg-primary/10 border-primary/30">
       <CardHeader>
@@ -29,31 +33,22 @@ export default function PlayerBuffsSection({ playableCharacter, onAddBuff, onRem
             </p>
           ) : (
             playableCharacter.buffs.map((buff, index) => (
-              <div
-                key={index}
-                className="bg-card/50 p-3 rounded text-sm"
-              >
+              <div key={index} className="bg-card/50 p-3 rounded text-sm">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="font-bold text-primary">
-                      {buff.name}
-                    </p>
+                    <p className="font-bold text-primary">{buff.name}</p>
                     {buff.description && (
                       <p className="text-muted-foreground text-xs">
                         {buff.description}
                       </p>
                     )}
                     <p className="text-xs mt-1">
-                      <span className="text-muted-foreground">
-                        Origem:
-                      </span>{" "}
+                      <span className="text-muted-foreground">Origem:</span>{" "}
                       {buff.source}
                     </p>
                     {buff.duration && (
                       <p className="text-xs">
-                        <span className="text-muted-foreground">
-                          Duração:
-                        </span>{" "}
+                        <span className="text-muted-foreground">Duração:</span>{" "}
                         {buff.duration}
                       </p>
                     )}

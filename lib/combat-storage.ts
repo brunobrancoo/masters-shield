@@ -1,4 +1,4 @@
-import { InitiativeEntry } from "./interfaces/interfaces";
+import { InitiativeEntry } from "@/lib/schemas";
 
 export interface InitiativeRoll {
   id: string;

@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ShieldIcon, UsersIcon } from "@/components/icons";
-import { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/schemas";
 import { useGame } from "@/app/_contexts/game-context";
 import {
   Dialog,

@@ -324,7 +324,7 @@ export function convertApiEquipmentToItem(
     name: equipment.name,
     cost: equipment.cost || { quantity: 0, unit: "gp" },
     desc: equipment.desc || [],
-    weight: equipment.weight,
+    weight: equipment.weight || 0,
     equipment_category: equipment.equipment_category || null,
     gear_category: equipment.gear_category || null,
     type: equipment.equipment_category?.name || "item",

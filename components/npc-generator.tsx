@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { SparklesIcon, DiceIcon } from "@/components/icons";
 import { generateNPC } from "@/lib/npc-generator";
-import { NPC } from "@/lib/interfaces/interfaces";
+import { NPC } from "@/lib/schemas";
 
 const RACES = [
   "Humano",

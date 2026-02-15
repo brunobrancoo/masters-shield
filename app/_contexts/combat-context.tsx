@@ -163,8 +163,8 @@ export function CombatProvider({
         newEntry = {
           id: monster.id,
           name: monster.name,
-          dexMod: getAttMod(monster.attributes.des),
-          initiative: getAttMod(monster.attributes.des),
+          dexMod: getAttMod(monster.attributes.dex),
+          initiative: getAttMod(monster.attributes.dex),
           hp: monster.maxHp,
           maxHp: monster.maxHp,
           type: "monster",
@@ -173,12 +173,12 @@ export function CombatProvider({
       }
     } else if (sourceType === "playableCharacter") {
       const player = players.find((p: any) => p.id === selectedSourceId);
-      if (player) {
+      if (player && player.id) {
         newEntry = {
           id: player.id,
-          dexMod: getAttMod(player.attributes.des),
+          dexMod: getAttMod(player.attributes.dex),
           name: player.name,
-          initiative: getAttMod(player.attributes.des),
+          initiative: getAttMod(player.attributes.dex),
           hp: player.maxHp,
           maxHp: player.maxHp,
           type: "playableCharacter",
@@ -190,9 +190,9 @@ export function CombatProvider({
       if (npc) {
         newEntry = {
           id: npc.id,
-          dexMod: getAttMod(npc.attributes.des),
+          dexMod: getAttMod(npc.attributes.dex),
           name: npc.name,
-          initiative: getAttMod(npc.attributes.des),
+          initiative: getAttMod(npc.attributes.dex),
           hp: npc.maxHp,
           maxHp: npc.maxHp,
           type: "npc",
@@ -300,9 +300,9 @@ export function CombatProvider({
 
   function addAllPlayers() {
     const entries: InitiativeEntry[] = gameData.playableCharacters.map(
-      (player: PlayableCharacter) => {
+      (player: PlayableCharacter, index: number) => {
         return {
-          id: player.id,
+          id: player.id || index.toString(),
           dexMod: getAttMod(player.attributes.dex),
           name: player.name,
           initiative: Math.floor((player.attributes.dex - 10) / 2),

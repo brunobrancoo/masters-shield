@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  GameData,
-  Monster,
-  NPC,
-  PlayableCharacter,
-} from "@/lib/interfaces/interfaces";
-import { MonsterFormData, NPCFormData } from "@/lib/schemas";
+import { GameData, Monster, NPC, PlayableCharacter } from "@/lib/schemas";
 import {
   createContext,
   Dispatch,
@@ -56,7 +50,7 @@ interface GameContextType {
   selectedMonster: Monster | undefined;
   setSelectedMonster: Dispatch<SetStateAction<Monster | undefined>>;
   handleSaveMonster: (monster: Monster) => void;
-  handleUpdateMonster: (monster: MonsterFormData) => void;
+  handleUpdateMonster: (monster: Monster) => void;
   handleDeleteMonster: (id: string) => void;
   handleSavePlayer: (player: PlayableCharacter) => void;
   handleGenerateNPC: (npc: NPC) => void;
@@ -145,7 +139,7 @@ export function GameProvider({
     setSelectedMonster(undefined);
   };
 
-  const handleUpdateMonster = async (data: MonsterFormData) => {
+  const handleUpdateMonster = async (data: Monster) => {
     if (!selectedMonster || !campaignId) return;
 
     const updatedMonster: Monster = {

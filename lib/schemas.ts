@@ -9,6 +9,13 @@ export const attributesSchema = z.object({
   cha: z.number().min(1).max(30),
 });
 
+//LEGACY!! REMOVE
+export interface GameData {
+  monsters: Monster[];
+  playableCharacters: PlayableCharacter[];
+  npcs: NPC[];
+}
+
 export const initiativeEntrySchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -21,25 +28,30 @@ export const initiativeEntrySchema = z.object({
 });
 
 export const monsterSchema = z.object({
+  id: z.string().min(1),
   name: z.string().min(1, "Nome é obrigatório"),
   type: z.string().min(1, "Tipo é obrigatório"),
   level: z.number().min(1).max(30),
   hp: z.number().min(1),
+  maxHp: z.number().min(1),
   attributes: attributesSchema,
   skills: z.array(z.string()),
   notes: z.string(),
 });
 
 export const npcSchema = z.object({
+  id: z.string().min(1),
   name: z.string().min(1, "Nome é obrigatório"),
   race: z.string().min(1, "Raça é obrigatória"),
   class: z.string().min(1, "Classe é obrigatória"),
   level: z.number().min(1).max(30),
   hp: z.number().min(1),
+  maxHp: z.number().min(1),
   attributes: attributesSchema,
   skills: z.array(z.string()),
   personality: z.string(),
   notes: z.string(),
+  inventory: z.array(z.string()),
 });
 
 export const classEquipmentSelectionSchema = z.object({
@@ -269,7 +281,16 @@ export const basePlayableCharacterSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
   hitDie: z.coerce.number().int().positive(),
 
+  //Spell things
+  spellSlots: spellSlotsSchema.optional(),
+  spellAttack: z.coerce.number().optional(),
+  spellCD: z.coerce.number().optional(),
+  spellsKnown: z.array(z.string()).default([]),
+  preparedSpells: z.array(z.string()).default([]),
+  spellList: spellListSchema.optional(),
+
   raceIndex: z.string().min(1, "Raça obrigatória"),
+  raceName: z.string().min(1, "Raça obrigatória"),
   classIndex: z.string().min(1, "Classe obrigatória"),
   className: z.string().min(1, "Classe obrigatória"),
   subclassIndex: z.string().optional(),
@@ -288,6 +309,7 @@ export const basePlayableCharacterSchema = z.object({
 
   inventory: z.array(itemSchema).default([]),
 
+  skills: z.array(z.string()),
   speed: z.coerce.number(),
   ac: z.coerce.number().min(1),
   initiativeBonus: z.coerce.number().default(0),
@@ -305,18 +327,10 @@ export const basePlayableCharacterSchema = z.object({
 export const sorcererCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("sorcerer"),
   sorceryPoints: pointPoolSchema.optional(),
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]), // Fixed list
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 export const paladinCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("paladin"),
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]), // Fixed list (Oath spells usually)
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 const martialArtsDieSchema = z.object({
@@ -326,11 +340,7 @@ const martialArtsDieSchema = z.object({
 export const monkCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("monk"),
   kiPoints: pointPoolSchema.optional(),
-  spellSlots: spellSlotsSchema.optional(), // Monks technically can't cast spells in 5e RAW (unless specific subclass), but kept for flexibility
-  spellsKnown: z.array(z.string()).default([]),
   martialArtsDie: martialArtsDieSchema,
-  spellAttack: z.coerce.number().optional(),
-  spellCD: z.coerce.number().optional(),
 });
 
 export const barbarianCharacterSchema = basePlayableCharacterSchema.extend({
@@ -342,25 +352,15 @@ export const bardCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("bard"),
   inspiration: pointPoolSchema.optional(),
   inspirationDie: z.coerce.number().optional(),
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]), // Fixed list
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 export const druidCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("druid"),
-  spellSlots: spellSlotsSchema.optional(),
-  preparedSpells: z.array(z.string()).default([]), // Daily prep
 });
 
 export const warlockCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("warlock"),
   invocationsKnown: z.array(z.string()).default([]),
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]), // Fixed list (Mystic Arcanum aside)
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 const sneakAttackDiceSchema = z.object({
@@ -381,28 +381,16 @@ export const fighterCharacterSchema = basePlayableCharacterSchema.extend({
 
 export const rangerCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("ranger"),
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]), // Fixed list (usually)
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 export const clericCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("cleric"),
-  spellSlots: spellSlotsSchema.optional(),
   channelDivinityCharges: pointPoolSchema.optional(),
-  preparedSpells: z.array(z.string()).default([]), // Daily prep
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 export const wizardCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("wizard"),
-  spellSlots: spellSlotsSchema.optional(),
   spellBook: z.array(z.string()).default([]), // Everything owned
-  preparedSpells: z.array(z.string()).default([]), // Daily prep
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
 });
 
 export const playableCharacterSchema = z.discriminatedUnion("classIndex", [

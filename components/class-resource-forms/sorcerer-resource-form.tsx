@@ -5,7 +5,7 @@ import { SorceryPointsSection } from "../class-resource-sections";
 import MetamagicKnownDisplay from "../class-display-sections/metamagic-known-display";
 import CreatingSpellSlotsDisplay from "../class-display-sections/creating-spell-slots-display";
 import { useEffect, useState } from "react";
-import { PointPool } from "@/lib/interfaces/interfaces";
+import { PointPool } from "@/lib/schemas";
 
 export default function SorcererResourceForm({
   control,

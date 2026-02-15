@@ -1,4 +1,4 @@
-import { PlayableCharacter, Monster, Item } from "../interfaces/interfaces";
+import { PlayableCharacter, Monster, Item } from "@/lib/schemas";
 
 // --- Placeholder Interfaces & Classes ---
 // Estas interfaces e classes são placeholders e devem ser substituídas
@@ -139,7 +139,8 @@ export class Action {
     }
 
     // 3. Coleta de modificadores situacionais do CombatState
-    const activeEffects = combatState.getActiveEffectsFor(this.actor.id);
+    //TODO: Also added this exclamation to build, check later
+    const activeEffects = combatState.getActiveEffectsFor(this.actor.id!);
     for (const effect of activeEffects) {
       if (effect.bonus) {
         const bonusRoll = DiceRoller.roll(effect.bonus);

@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { generateId } from "@/lib/storage";
-import { Monster } from "@/lib/interfaces/interfaces";
+import { Monster } from "@/lib/schemas";
 
 interface MonsterFormProps {
   monster?: Monster;
@@ -32,16 +32,15 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
     hp: monster?.hp || 10,
     maxHp: monster?.hp || 10,
     attributes: monster?.attributes || {
-      for: 10,
-      des: 10,
+      str: 10,
+      dex: 10,
       con: 10,
       int: 10,
-      sab: 10,
-      car: 10,
+      wis: 10,
+      cha: 10,
     },
     skills: monster?.skills || [],
     notes: monster?.notes || "",
-    items: [],
   });
 
   const [currentSkill, setCurrentSkill] = useState("");

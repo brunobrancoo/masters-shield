@@ -1,8 +1,5 @@
-import { GameData, PlayableCharacter } from "./interfaces/interfaces";
-import {
-  calculateProficiencyBonus,
-  defaultSpellSlots,
-} from "./utils-dnd";
+import { GameData, PlayableCharacter } from "@/lib/schemas";
+import { calculateProficiencyBonus, defaultSpellSlots } from "./utils-dnd";
 
 const STORAGE_KEY = "masters-shield";
 
@@ -25,8 +22,7 @@ export function loadGameData(): GameData {
         initiativeBonus: player.initiativeBonus ?? 0,
         passivePerception: player.passivePerception ?? 10,
         proficiencyBonus:
-          player.proficiencyBonus ??
-          calculateProficiencyBonus(player.level),
+          player.proficiencyBonus ?? calculateProficiencyBonus(player.level),
         spellSlots: player.spellSlots ?? defaultSpellSlots(),
         maxSpellSlots: player.maxSpellSlots ?? defaultSpellSlots(),
         sorceryPointsLegacy: player.sorceryPoints ?? 0,

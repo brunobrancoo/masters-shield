@@ -311,7 +311,8 @@ export function MasterView() {
                 setPlayableCharacterViewState("form");
               }}
               onDelete={() => {
-                handleDeletePlayableCharacter(selectedPlayableCharacter.id);
+                //TODO: I added this exclamation just for running build, expect later
+                handleDeletePlayableCharacter(selectedPlayableCharacter.id!);
                 setPlayableCharacterViewState("list");
                 setSelectedPlayableCharacter(undefined);
               }}
