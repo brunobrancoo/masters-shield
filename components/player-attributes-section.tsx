@@ -1,4 +1,4 @@
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollIcon } from "@/components/icons";
 import { calculateModifier } from "@/lib/utils-dnd";
@@ -7,7 +7,9 @@ interface PlayerAttributesSectionProps {
   playableCharacter: PlayableCharacter;
 }
 
-export default function PlayerAttributesSection({ playableCharacter }: PlayerAttributesSectionProps) {
+export default function PlayerAttributesSection({
+  playableCharacter,
+}: PlayerAttributesSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>

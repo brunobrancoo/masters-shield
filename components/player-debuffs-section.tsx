@@ -1,4 +1,4 @@
-import type { PlayableCharacter, Buff } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter, Buff } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
@@ -10,7 +10,11 @@ interface PlayerDebuffsSectionProps {
   onRemoveDebuff: (index: number) => void;
 }
 
-export default function PlayerDebuffsSection({ playableCharacter, onAddDebuff, onRemoveDebuff }: PlayerDebuffsSectionProps) {
+export default function PlayerDebuffsSection({
+  playableCharacter,
+  onAddDebuff,
+  onRemoveDebuff,
+}: PlayerDebuffsSectionProps) {
   return (
     <Card className="metal-border bg-destructive/10 border-destructive/30">
       <CardHeader>
@@ -23,37 +27,29 @@ export default function PlayerDebuffsSection({ playableCharacter, onAddDebuff, o
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {!playableCharacter.debuffs || playableCharacter.debuffs.length === 0 ? (
+          {!playableCharacter.debuffs ||
+          playableCharacter.debuffs.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
               Nenhum debuff ativo
             </p>
           ) : (
             playableCharacter.debuffs.map((debuff, index) => (
-              <div
-                key={index}
-                className="bg-card/50 p-3 rounded text-sm"
-              >
+              <div key={index} className="bg-card/50 p-3 rounded text-sm">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="font-bold text-destructive">
-                      {debuff.name}
-                    </p>
+                    <p className="font-bold text-destructive">{debuff.name}</p>
                     {debuff.description && (
                       <p className="text-muted-foreground text-xs">
                         {debuff.description}
                       </p>
                     )}
                     <p className="text-xs mt-1">
-                      <span className="text-muted-foreground">
-                        Origem:
-                      </span>{" "}
+                      <span className="text-muted-foreground">Origem:</span>{" "}
                       {debuff.source}
                     </p>
                     {debuff.duration && (
                       <p className="text-xs">
-                        <span className="text-muted-foreground">
-                          Duração:
-                        </span>{" "}
+                        <span className="text-muted-foreground">Duração:</span>{" "}
                         {debuff.duration}
                       </p>
                     )}

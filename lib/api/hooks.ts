@@ -1,27 +1,35 @@
-import { useQuery } from '@tanstack/react-query';
-import { graphqlClient } from '@/lib/graphql/client';
+import { useQuery } from "@tanstack/react-query";
+import { graphqlClient } from "@/lib/graphql/client";
 import {
   GetMonstersDocument,
   GetMonsterDocument,
-  GetSpellsDocument,
-  GetSpellDocument,
-  GetClassesDocument,
-  GetClassDocument,
   GetRacesDocument,
   GetRaceDocument,
   GetEquipmentDocument,
   GetBackgroundsDocument,
   GetBackgroundDocument,
-  Class, Level, Race, Background, Proficiency, Equipment,
-} from '@/lib/generated/graphql';
-import { Spell, PointPool, SpellSlots } from '@/lib/interfaces/interfaces';
-import { filterMeaningfulItems } from './utils';
+  Class,
+  Level,
+  Race,
+  Background,
+  Proficiency,
+  Equipment,
+  ClassDocument,
+  ClassesDocument,
+  SpellsDocument,
+  SpellDocument,
+  GetRacesQuery,
+} from "@/lib/generated/graphql";
+import { PointPool, Spell, SpellSlots } from "@/lib/schemas";
+import { filterMeaningfulItems } from "./utils";
 
 export function useMonsters(name?: string) {
   return useQuery({
-    queryKey: ['monsters', name],
+    queryKey: ["monsters", name],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetMonstersDocument, { name });
+      const response = await graphqlClient.request(GetMonstersDocument, {
+        name,
+      });
       if (response.monsters) {
         return {
           ...response,
@@ -35,7 +43,7 @@ export function useMonsters(name?: string) {
 
 export function useMonster(index: string) {
   return useQuery({
-    queryKey: ['monster', index],
+    queryKey: ["monster", index],
     queryFn: async () => {
       return graphqlClient.request(GetMonsterDocument, { index });
     },
@@ -43,11 +51,11 @@ export function useMonster(index: string) {
   });
 }
 
-export function useSpells(name?: string, level?: number[]) {
+export function useSpells() {
   return useQuery({
-    queryKey: ['spells', name, level],
+    queryKey: ["spells"],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetSpellsDocument, { name, level });
+      const response = await graphqlClient.request(SpellsDocument);
       if (response.spells) {
         return {
           ...response,
@@ -61,9 +69,9 @@ export function useSpells(name?: string, level?: number[]) {
 
 export function useSpell(index: string) {
   return useQuery({
-    queryKey: ['spell', index],
+    queryKey: ["spell", index],
     queryFn: async () => {
-      return graphqlClient.request(GetSpellDocument, { index });
+      return graphqlClient.request(SpellDocument, { index });
     },
     enabled: !!index,
   });
@@ -71,9 +79,9 @@ export function useSpell(index: string) {
 
 export function useClasses() {
   return useQuery({
-    queryKey: ['classes'],
+    queryKey: ["classes"],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetClassesDocument);
+      const response = await graphqlClient.request(ClassesDocument);
       if (response.classes) {
         return {
           ...response,
@@ -87,9 +95,9 @@ export function useClasses() {
 
 export function useClass(index: string) {
   return useQuery({
-    queryKey: ['class', index],
+    queryKey: ["class", index],
     queryFn: async () => {
-      return graphqlClient.request(GetClassDocument, { index });
+      return graphqlClient.request(ClassDocument, { index });
     },
     enabled: !!index,
   });
@@ -97,7 +105,7 @@ export function useClass(index: string) {
 
 export function useRaces() {
   return useQuery({
-    queryKey: ['races'],
+    queryKey: ["races"],
     queryFn: async () => {
       const response = await graphqlClient.request(GetRacesDocument);
       if (response.races) {
@@ -113,17 +121,17 @@ export function useRaces() {
 
 export function useRace(index: string) {
   return useQuery({
-    queryKey: ['race', index],
+    queryKey: ["race", index],
     queryFn: async () => {
       return graphqlClient.request(GetRaceDocument, { index });
     },
     enabled: !!index,
-  }) as { data: any; };
+  });
 }
 
 export function useBackground(index: string) {
   return useQuery({
-    queryKey: ['background', index],
+    queryKey: ["background", index],
     queryFn: async () => {
       return graphqlClient.request(GetBackgroundDocument, { index });
     },
@@ -133,9 +141,11 @@ export function useBackground(index: string) {
 
 export function useEquipment(name?: string) {
   return useQuery({
-    queryKey: ['equipment', name],
+    queryKey: ["equipment", name],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetEquipmentDocument, { name });
+      const response = await graphqlClient.request(GetEquipmentDocument, {
+        name,
+      });
       if (response.equipments) {
         return {
           ...response,
@@ -149,7 +159,7 @@ export function useEquipment(name?: string) {
 
 export function useBackgrounds() {
   return useQuery({
-    queryKey: ['backgrounds'],
+    queryKey: ["backgrounds"],
     queryFn: async () => {
       const response = await graphqlClient.request(GetBackgroundsDocument);
       if (response.backgrounds) {
@@ -163,7 +173,10 @@ export function useBackgrounds() {
   });
 }
 
-export function getClassResources(classIndex: string, levelData?: Level): {
+export function getClassResources(
+  classIndex: string,
+  levelData?: Level,
+): {
   sorceryPoints?: PointPool;
   kiPoints?: PointPool;
   rages?: PointPool;
@@ -194,7 +207,9 @@ export function getClassResources(classIndex: string, levelData?: Level): {
   }
 
   if (classSpecific.channel_divinity_charges !== undefined) {
-    resources.channelDivinityCharges = { max: classSpecific.channel_divinity_charges };
+    resources.channelDivinityCharges = {
+      max: classSpecific.channel_divinity_charges,
+    };
   }
 
   if (classSpecific.ki_points !== undefined) {
@@ -208,7 +223,17 @@ export function getClassResources(classIndex: string, levelData?: Level): {
   return resources;
 }
 
-export function convertLevelSpellcasting(spellcasting?: { spell_slots_level_1: number; spell_slots_level_2: number; spell_slots_level_3: number; spell_slots_level_4: number; spell_slots_level_5: number; spell_slots_level_6?: number; spell_slots_level_7?: number; spell_slots_level_8?: number; spell_slots_level_9?: number; }): SpellSlots {
+export function convertLevelSpellcasting(spellcasting?: {
+  spell_slots_level_1: number;
+  spell_slots_level_2: number;
+  spell_slots_level_3: number;
+  spell_slots_level_4: number;
+  spell_slots_level_5: number;
+  spell_slots_level_6?: number;
+  spell_slots_level_7?: number;
+  spell_slots_level_8?: number;
+  spell_slots_level_9?: number;
+}): SpellSlots {
   if (!spellcasting) {
     return {
       1: { current: 0, max: 0 },
@@ -224,58 +249,94 @@ export function convertLevelSpellcasting(spellcasting?: { spell_slots_level_1: n
   }
 
   return {
-    1: { current: spellcasting.spell_slots_level_1, max: spellcasting.spell_slots_level_1 },
-    2: { current: spellcasting.spell_slots_level_2, max: spellcasting.spell_slots_level_2 },
-    3: { current: spellcasting.spell_slots_level_3, max: spellcasting.spell_slots_level_3 },
-    4: { current: spellcasting.spell_slots_level_4, max: spellcasting.spell_slots_level_4 },
-    5: { current: spellcasting.spell_slots_level_5, max: spellcasting.spell_slots_level_5 },
-    6: { current: spellcasting.spell_slots_level_6 ?? 0, max: spellcasting.spell_slots_level_6 ?? 0 },
-    7: { current: spellcasting.spell_slots_level_7 ?? 0, max: spellcasting.spell_slots_level_7 ?? 0 },
-    8: { current: spellcasting.spell_slots_level_8 ?? 0, max: spellcasting.spell_slots_level_8 ?? 0 },
-    9: { current: spellcasting.spell_slots_level_9 ?? 0, max: spellcasting.spell_slots_level_9 ?? 0 },
+    1: {
+      current: spellcasting.spell_slots_level_1,
+      max: spellcasting.spell_slots_level_1,
+    },
+    2: {
+      current: spellcasting.spell_slots_level_2,
+      max: spellcasting.spell_slots_level_2,
+    },
+    3: {
+      current: spellcasting.spell_slots_level_3,
+      max: spellcasting.spell_slots_level_3,
+    },
+    4: {
+      current: spellcasting.spell_slots_level_4,
+      max: spellcasting.spell_slots_level_4,
+    },
+    5: {
+      current: spellcasting.spell_slots_level_5,
+      max: spellcasting.spell_slots_level_5,
+    },
+    6: {
+      current: spellcasting.spell_slots_level_6 ?? 0,
+      max: spellcasting.spell_slots_level_6 ?? 0,
+    },
+    7: {
+      current: spellcasting.spell_slots_level_7 ?? 0,
+      max: spellcasting.spell_slots_level_7 ?? 0,
+    },
+    8: {
+      current: spellcasting.spell_slots_level_8 ?? 0,
+      max: spellcasting.spell_slots_level_8 ?? 0,
+    },
+    9: {
+      current: spellcasting.spell_slots_level_9 ?? 0,
+      max: spellcasting.spell_slots_level_9 ?? 0,
+    },
   };
 }
 
 export function getAllProficiencies(
   raceData?: Race,
   backgroundData?: Background,
-  classData?: Class
+  classData?: Class,
 ): { proficiency: Proficiency; sources: string[] }[] {
-  const proficiencyMap = new Map<string, { proficiency: Proficiency; sources: string[] }>();
+  const proficiencyMap = new Map<
+    string,
+    { proficiency: Proficiency; sources: string[] }
+  >();
 
-  raceData?.traits?.forEach(trait => {
-    trait.proficiencies?.forEach(p => {
+  raceData?.traits?.forEach((trait) => {
+    trait.proficiencies?.forEach((p) => {
       const existing = proficiencyMap.get(p.index);
       if (existing) {
-        existing.sources.push('race trait');
+        existing.sources.push("race trait");
       } else {
-        proficiencyMap.set(p.index, { proficiency: p, sources: ['race trait'] });
+        proficiencyMap.set(p.index, {
+          proficiency: p,
+          sources: ["race trait"],
+        });
       }
     });
   });
 
-  backgroundData?.starting_proficiencies?.forEach(p => {
+  backgroundData?.starting_proficiencies?.forEach((p) => {
     const existing = proficiencyMap.get(p.index);
     if (existing) {
-      existing.sources.push('background');
+      existing.sources.push("background");
     } else {
-      proficiencyMap.set(p.index, { proficiency: p, sources: ['background'] });
+      proficiencyMap.set(p.index, { proficiency: p, sources: ["background"] });
     }
   });
 
-  classData?.proficiencies?.forEach(p => {
+  classData?.proficiencies?.forEach((p) => {
     const existing = proficiencyMap.get(p.index);
     if (existing) {
-      existing.sources.push('class');
+      existing.sources.push("class");
     } else {
-      proficiencyMap.set(p.index, { proficiency: p, sources: ['class'] });
+      proficiencyMap.set(p.index, { proficiency: p, sources: ["class"] });
     }
   });
 
   return Array.from(proficiencyMap.values());
 }
 
-export function convertApiEquipmentToItem(equipment: Equipment, source?: 'class' | 'background' | 'race') {
+export function convertApiEquipmentToItem(
+  equipment: Equipment,
+  source?: "class" | "background" | "race",
+) {
   const base: any = {
     index: equipment.index,
     name: equipment.name,
@@ -284,31 +345,33 @@ export function convertApiEquipmentToItem(equipment: Equipment, source?: 'class'
     weight: equipment.weight ?? undefined,
     equipment_category: equipment.equipment_category,
     gear_category: equipment.gear_category ?? undefined,
-    type: equipment.equipment_category?.name || 'item',
+    type: equipment.equipment_category?.name || "item",
     magic: false,
     attackbonus: 0,
     defensebonus: 0,
-    notes: equipment.desc?.join('\n') || '',
+    notes: equipment.desc?.join("\n") || "",
     equipped: false,
     source,
   };
 
-  if ('weapon_category' in equipment) {
+  if ("weapon_category" in equipment) {
     const weapon = equipment as any;
     Object.assign(base, {
       weapon_category: weapon.weapon_category,
       weapon_range: weapon.weapon_range,
       category_range: weapon.category_range,
-      damage: weapon.damage ? {
-        damage_type: weapon.damage.damage_type,
-        damage_dice: weapon.damage.damage_dice,
-      } : undefined,
+      damage: weapon.damage
+        ? {
+            damage_type: weapon.damage.damage_type,
+            damage_dice: weapon.damage.damage_dice,
+          }
+        : undefined,
       range: weapon.range,
       properties: weapon.properties,
     });
   }
 
-  if ('armor_category' in equipment) {
+  if ("armor_category" in equipment) {
     const armor = equipment as any;
     Object.assign(base, {
       armor_category: armor.armor_category,
@@ -324,33 +387,43 @@ export function convertApiEquipmentToItem(equipment: Equipment, source?: 'class'
 
 function mapApiSpellToInterface(spell: any): Spell {
   return {
-    index: spell.index || '',
-    name: spell.name || '',
+    index: spell.index || "",
+    name: spell.name || "",
     level: spell.level || 0,
-    school: spell.school?.name || '',
-    castingTime: spell.casting_time || '',
-    duration: spell.duration || '',
-    range: spell.range || '',
-    components: spell.components?.join(', ') || '',
+    school: spell.school?.name || "",
+    castingTime: spell.casting_time || "",
+    duration: spell.duration || "",
+    range: spell.range || "",
+    components: spell.components?.join(", ") || "",
     description: spell.desc || [],
     concentration: spell.concentration || false,
     ritual: spell.ritual || false,
     attackType: spell.attack_type || undefined,
-    damage: spell.damage ? {
-      damageType: spell.damage.damage_type?.name || undefined,
-      damageAtSlotLevel: spell.damage.damage_at_slot_level?.map((v: any) => `${v.level}: ${v.value}`) || [],
-    } : undefined,
-    dc: spell.dc ? {
-      dcType: spell.dc.dc_type?.index || undefined,
-      dcSuccess: spell.dc.dc_success || undefined,
-    } : undefined,
-    areaOfEffect: spell.area_of_effect ? {
-      size: spell.area_of_effect.size || undefined,
-      type: spell.area_of_effect.type || undefined,
-    } : undefined,
+    damage: spell.damage
+      ? {
+          damageType: spell.damage.damage_type?.name || undefined,
+          damageAtSlotLevel:
+            spell.damage.damage_at_slot_level?.map(
+              (v: any) => `${v.level}: ${v.value}`,
+            ) || [],
+        }
+      : undefined,
+    dc: spell.dc
+      ? {
+          dcType: spell.dc.dc_type?.index || undefined,
+          dcSuccess: spell.dc.dc_success || undefined,
+        }
+      : undefined,
+    areaOfEffect: spell.area_of_effect
+      ? {
+          size: spell.area_of_effect.size || undefined,
+          type: spell.area_of_effect.type || undefined,
+        }
+      : undefined,
     higherLevel: spell.higher_level || [],
     material: spell.material || undefined,
-    healAtSlotLevel: spell.heal_at_slot_level?.map((v: any) => `${v.level}: ${v.value}`) || [],
+    healAtSlotLevel:
+      spell.heal_at_slot_level?.map((v: any) => `${v.level}: ${v.value}`) || [],
   };
 }
 
@@ -361,4 +434,4 @@ export {
   isMeaningfulItem,
   filterMeaningfulItems,
   sanitizeApiResponse,
-} from './utils';
+} from "./utils";

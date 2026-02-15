@@ -7,18 +7,25 @@ import SongOfRestDieDisplay from "../class-display-sections/song-of-rest-die-dis
 import MagicalSecretsDisplay from "../class-display-sections/magical-secrets-display";
 import { useEffect, useState } from "react";
 
-export default function BardResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function BardResourceForm({
+  control,
+  setValue,
+  classData,
+  level,
+}: BaseResourceFormProps) {
   // Handle both string and number level types
-  const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
-  const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);
+  const levelNum = typeof level === "string" ? parseInt(level, 10) : level;
+  const levelData = classData?.class?.class_levels?.find(
+    (l: any) => l.level === levelNum,
+  );
   const classSpecific = levelData?.class_specific;
 
   const [inspiration, setInspiration] = useState<{
-    inspiration: number;
-    inspiration_max: number;
+    current: number;
+    max: number;
   }>({
-    inspiration: classSpecific?.bardic_inspiration_die ? 1 : 0,
-    inspiration_max: classSpecific?.bardic_inspiration_die ? 1 : 0,
+    current: classSpecific?.bardic_inspiration_die ? 1 : 0,
+    max: classSpecific?.bardic_inspiration_die ? 1 : 0,
   });
 
   // Reset to API values when class or level changes
@@ -26,17 +33,17 @@ export default function BardResourceForm({ register, setValue, watch, classData,
     if (classSpecific?.bardic_inspiration_die == null) {
       setValue("inspiration", null);
       setInspiration({
-        inspiration: 0,
-        inspiration_max: 0,
+        current: 0,
+        max: 0,
       });
     } else {
       setValue("inspiration", {
-        inspiration: 1,
-        inspiration_max: 1,
+        current: 1,
+        max: 1,
       });
       setInspiration({
-        inspiration: 1,
-        inspiration_max: 1,
+        current: 1,
+        max: 1,
       });
     }
   }, [classSpecific, level, setValue]);
@@ -45,7 +52,9 @@ export default function BardResourceForm({ register, setValue, watch, classData,
   if (!classSpecific) return <div className="space-y-4"></div>;
 
   // Check if bardic inspiration feature exists at this level
-  const hasBardicInspiration = classSpecific.bardic_inspiration_die !== undefined && classSpecific.bardic_inspiration_die !== null;
+  const hasBardicInspiration =
+    classSpecific.bardic_inspiration_die !== undefined &&
+    classSpecific.bardic_inspiration_die !== null;
 
   return (
     <div className="space-y-4">
@@ -56,21 +65,27 @@ export default function BardResourceForm({ register, setValue, watch, classData,
             inspiration={inspiration}
             onChange={(value) => setValue("inspiration", value)}
           />
-          <BardicInspirationDieDisplay bardicInspirationDie={classSpecific.bardic_inspiration_die} />
+          <BardicInspirationDieDisplay
+            bardicInspirationDie={classSpecific.bardic_inspiration_die}
+          />
         </>
       )}
 
-      {classSpecific.song_of_rest_die !== undefined && classSpecific.song_of_rest_die !== null && (
-        <SongOfRestDieDisplay songOfRestDie={classSpecific.song_of_rest_die} />
-      )}
+      {classSpecific.song_of_rest_die !== undefined &&
+        classSpecific.song_of_rest_die !== null && (
+          <SongOfRestDieDisplay
+            songOfRestDie={classSpecific.song_of_rest_die}
+          />
+        )}
 
-      {classSpecific.magical_secrets_max_5 !== undefined && classSpecific.magical_secrets_max_5 !== null && (
-        <MagicalSecretsDisplay
-          magicalSecretsMax5={classSpecific.magical_secrets_max_5}
-          magicalSecretsMax7={classSpecific.magical_secrets_max_7}
-          magicalSecretsMax9={classSpecific.magical_secrets_max_9}
-        />
-      )}
+      {classSpecific.magical_secrets_max_5 !== undefined &&
+        classSpecific.magical_secrets_max_5 !== null && (
+          <MagicalSecretsDisplay
+            magicalSecretsMax5={classSpecific.magical_secrets_max_5}
+            magicalSecretsMax7={classSpecific.magical_secrets_max_7}
+            magicalSecretsMax9={classSpecific.magical_secrets_max_9}
+          />
+        )}
     </div>
   );
 }

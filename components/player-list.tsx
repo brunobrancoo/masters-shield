@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { UsersIcon, ShieldIcon, SwordIcon } from "@/components/icons";
 import { CrossIcon, ForkKnifeIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/schemas";
 
 interface PlayerListProps {
   players: PlayableCharacter[];

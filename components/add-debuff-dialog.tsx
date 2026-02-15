@@ -15,8 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Buff } from "@/lib/interfaces/interfaces";
-import { BuffFormData, buffSchema } from "@/lib/schemas";
+import { Buff } from "@/lib/schemas";
+import { buffSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
 
 interface AddDebuffDialogProps {
@@ -30,7 +30,7 @@ export default function AddDebuffDialog({ onAdd }: AddDebuffDialogProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<BuffFormData>({
+  } = useForm<Buff>({
     resolver: zodResolver(buffSchema),
     defaultValues: {
       name: "",
@@ -41,7 +41,7 @@ export default function AddDebuffDialog({ onAdd }: AddDebuffDialogProps) {
     },
   });
 
-  const onSubmit = (data: BuffFormData) => {
+  const onSubmit = (data: Buff) => {
     onAdd(data);
     reset();
     setOpen(false);

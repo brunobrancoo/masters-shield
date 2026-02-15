@@ -1,7 +1,7 @@
 "use client";
 
 import { useRace } from "@/lib/api/hooks";
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklesIcon } from "@/components/icons";
 
@@ -9,7 +9,9 @@ interface PlayerRaceFeaturesSectionProps {
   playableCharacter: PlayableCharacter;
 }
 
-export default function PlayerRaceFeaturesSection({ playableCharacter }: PlayerRaceFeaturesSectionProps) {
+export default function PlayerRaceFeaturesSection({
+  playableCharacter,
+}: PlayerRaceFeaturesSectionProps) {
   const { data: raceData } = useRace(playableCharacter.raceIndex);
   const race = raceData?.race;
 
@@ -33,7 +35,9 @@ export default function PlayerRaceFeaturesSection({ playableCharacter }: PlayerR
               <div className="text-sm text-muted-foreground">
                 {Array.isArray(trait.desc) ? (
                   trait.desc.map((paragraph: string, idx: number) => (
-                    <p key={idx} className="mb-2">{paragraph}</p>
+                    <p key={idx} className="mb-2">
+                      {paragraph}
+                    </p>
                   ))
                 ) : (
                   <p>{trait.desc}</p>
@@ -48,7 +52,7 @@ export default function PlayerRaceFeaturesSection({ playableCharacter }: PlayerR
             </div>
           ))}
         </div>
-        
+
         {/* Race Details */}
         <div className="mt-4 pt-4 border-t border-border grid grid-cols-2 gap-4 text-sm">
           <div>
@@ -62,9 +66,9 @@ export default function PlayerRaceFeaturesSection({ playableCharacter }: PlayerR
           {race.ability_bonuses && race.ability_bonuses.length > 0 && (
             <div className="col-span-2">
               <span className="font-medium">Bônus de Atributo: </span>
-              {race.ability_bonuses.map((ab: any) => 
-                `${ab.ability_score?.name} +${ab.bonus}`
-              ).join(", ")}
+              {race.ability_bonuses
+                .map((ab: any) => `${ab.ability_score?.name} +${ab.bonus}`)
+                .join(", ")}
             </div>
           )}
           {race.languages && race.languages.length > 0 && (

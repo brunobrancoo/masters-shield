@@ -1,4 +1,4 @@
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,14 @@ interface PlayerNotesSectionProps {
   onSaveNotes: () => void;
 }
 
-export default function PlayerNotesSection({ playableCharacter, editNotes, notesValue, setEditNotes, setNotesValue, onSaveNotes }: PlayerNotesSectionProps) {
+export default function PlayerNotesSection({
+  playableCharacter,
+  editNotes,
+  notesValue,
+  setEditNotes,
+  setNotesValue,
+  onSaveNotes,
+}: PlayerNotesSectionProps) {
   return (
     <Card className="metal-border">
       <CardHeader>
@@ -58,11 +65,11 @@ export default function PlayerNotesSection({ playableCharacter, editNotes, notes
               </Button>
             </div>
           </div>
-         ) : (
-           <p className="font-serif leading-relaxed text-pretty text-sm whitespace-pre-wrap">
-             {playableCharacter.notes || "Nenhuma anotação."}
-           </p>
-         )}
+        ) : (
+          <p className="font-serif leading-relaxed text-pretty text-sm whitespace-pre-wrap">
+            {playableCharacter.notes || "Nenhuma anotação."}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

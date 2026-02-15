@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { FieldLabel } from "@/components/ui/field";
 import { Package, Plus, Trash2, Edit, Check } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
 import { isMeaningfulItem } from "@/lib/api/utils";
 import EditItemDialog from "./edit-item-dialog";
-import { convertApiEquipmentToItem } from "@/lib/interfaces/interfaces";
+import { convertApiEquipmentToItem } from "@/lib/character-utils";
 
 interface PlayerFormInventorySectionProps {
   fields: any[];
@@ -42,12 +43,15 @@ export default function PlayerFormInventorySection({
   isNewCharacter = false,
 }: PlayerFormInventorySectionProps) {
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
-  const [selectedStartingEquipmentIndices, setSelectedStartingEquipmentIndices] = useState<
-    Set<number>
-  >(new Set());
+  const [
+    selectedStartingEquipmentIndices,
+    setSelectedStartingEquipmentIndices,
+  ] = useState<Set<number>>(new Set());
   // Track which items in inventory are from starting equipment options
-  const [startingEquipmentToInventoryIndex, setStartingEquipmentToInventoryIndex] =
-    useState<Map<number, number>>(new Map());
+  const [
+    startingEquipmentToInventoryIndex,
+    setStartingEquipmentToInventoryIndex,
+  ] = useState<Map<number, number>>(new Map());
   const debouncedItemSearch = useDebounce(itemSearchQuery, 300);
   const { data: equipmentData, isLoading: loadingEquipment } =
     useEquipment(debouncedItemSearch);
@@ -87,11 +91,11 @@ export default function PlayerFormInventorySection({
   };
 
   const StartingEquipmentCards = () => {
-    console.log("StartingEquipmentCards render:", {
-      isNewCharacter,
-      startingEquipmentOptions,
-      length: startingEquipmentOptions?.length,
-    });
+    // console.log("StartingEquipmentCards render:", {
+    //   isNewCharacter,
+    //   startingEquipmentOptions,
+    //   length: startingEquipmentOptions?.length,
+    // });
 
     if (
       !isNewCharacter ||
@@ -115,7 +119,8 @@ export default function PlayerFormInventorySection({
                 : "bg-arcane-400/20 text-arcane-400"
             }`}
           >
-            {selectedStartingEquipmentIndices.size}/{selectedStartingEquipmentCount}
+            {selectedStartingEquipmentIndices.size}/
+            {selectedStartingEquipmentCount}
           </Badge>
         </div>
 
@@ -246,18 +251,18 @@ export default function PlayerFormInventorySection({
 
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-      <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+      <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
         <Package className="w-4 h-4 text-nature-400" />
         Inventário
-      </Label>
+      </FieldLabel>
 
       <div className="space-y-4">
         <StartingEquipmentCards />
         <div className="bg-bg-inset rounded-lg border border-border-default p-4">
-          <Label className="text-xs text-text-tertiary uppercase tracking-wider mb-2 block flex items-center gap-2">
+          <FieldLabel className="text-xs text-text-tertiary uppercase tracking-wider mb-2 block flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-arcane-400 animate-pulse"></span>
             Buscar na API D&D 5e
-          </Label>
+          </FieldLabel>
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0 text-text-tertiary">
               {loadingEquipment ? (

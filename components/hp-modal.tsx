@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/schemas";
 
 interface HPModalProps {
   playableCharacter: PlayableCharacter;

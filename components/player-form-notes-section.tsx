@@ -1,28 +1,37 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
+import { Controller } from "react-hook-form";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { BookOpen } from "lucide-react";
+import type { Control } from "react-hook-form";
 
 interface PlayerFormNotesSectionProps {
-  register: any;
+  control: Control<any>;
 }
 
 export default function PlayerFormNotesSection({
-  register,
+  control,
 }: PlayerFormNotesSectionProps) {
   return (
     <div className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg">
-      <Label className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
+      <FieldLabel className="font-heading text-sm uppercase tracking-wider text-text-secondary mb-4 block flex items-center gap-2">
         <BookOpen className="w-4 h-4 text-nature-400" />
         Anotações
-      </Label>
-      <Textarea
-        id="notes"
-        rows={4}
-        className="bg-bg-inset border-border-default focus:border-nature-400 resize-none"
-        {...register("notes")}
-        placeholder="Observações, histórico do personagem..."
+      </FieldLabel>
+      <Controller
+        name="notes"
+        control={control}
+        render={({ field }) => (
+          <Textarea
+            id="form-notes"
+            rows={4}
+            className="bg-bg-inset border-border-default focus:border-nature-400 resize-none"
+            value={field.value ?? ""}
+            onChange={field.onChange}
+            placeholder="Observações, histórico do personagem..."
+          />
+        )}
       />
     </div>
   );

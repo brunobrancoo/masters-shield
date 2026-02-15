@@ -3,7 +3,7 @@
 import { BaseResourceFormProps } from "./types";
 import SneakAttackDisplay from "../class-display-sections/sneak-attack-display";
 
-export default function RogueResourceForm({ register, setValue, watch, classData, level }: BaseResourceFormProps) {
+export default function RogueResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
   const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);

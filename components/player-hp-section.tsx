@@ -1,4 +1,4 @@
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldIcon } from "@/components/icons";
@@ -12,7 +12,11 @@ interface PlayerHPSectionProps {
   onHPModal: (amount: number) => void;
 }
 
-export default function PlayerHPSection({ playableCharacter, onHPChange, onHPModal }: PlayerHPSectionProps) {
+export default function PlayerHPSection({
+  playableCharacter,
+  onHPChange,
+  onHPModal,
+}: PlayerHPSectionProps) {
   return (
     <Card
       className={`metal-border ${getHPBackgroundColor(
@@ -28,11 +32,7 @@ export default function PlayerHPSection({ playableCharacter, onHPChange, onHPMod
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-center gap-4">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onHPChange(-5)}
-          >
+          <Button variant="outline" size="lg" onClick={() => onHPChange(-5)}>
             <Minus className="w-5 h-5" />
           </Button>
           <div className="text-center">
@@ -48,11 +48,7 @@ export default function PlayerHPSection({ playableCharacter, onHPChange, onHPMod
               / {playableCharacter.maxHp}
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onHPChange(5)}
-          >
+          <Button variant="outline" size="lg" onClick={() => onHPChange(5)}>
             <Plus className="w-5 h-5" />
           </Button>
         </div>

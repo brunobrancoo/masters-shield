@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { SparklesIcon } from "@/components/icons";
-import { NPC } from "@/lib/interfaces/interfaces";
+import { NPC } from "@/lib/schemas";
 
 interface NPCListProps {
   npcs: NPC[];

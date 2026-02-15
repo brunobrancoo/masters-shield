@@ -1,4 +1,4 @@
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DiceIcon } from "@/components/icons";
 import { Flame } from "lucide-react";
@@ -8,7 +8,10 @@ interface PlayerSorceryPointsSectionProps {
   onSorceryPointChange: (value: number) => void;
 }
 
-export default function PlayerSorceryPointsSection({ playableCharacter, onSorceryPointChange }: PlayerSorceryPointsSectionProps) {
+export default function PlayerSorceryPointsSection({
+  playableCharacter,
+  onSorceryPointChange,
+}: PlayerSorceryPointsSectionProps) {
   const sorceryPoints = (playableCharacter as any).sorceryPoints?.sorceryPoints;
   const sorceryPointsLegacy = (playableCharacter as any).sorceryPointsLegacy;
   const maxSorceryPoints = (playableCharacter as any).maxSorceryPoints;

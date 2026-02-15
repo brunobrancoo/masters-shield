@@ -1,6 +1,6 @@
 "use client";
 
-import type { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain } from "lucide-react";
 import {
@@ -20,12 +20,13 @@ export default function PlayerSkillsCompactSection({
   playableCharacter,
 }: PlayerSkillsCompactSectionProps) {
   const selectedSkills = playableCharacter.skills || [];
-  const proficiencyBonus = playableCharacter.proficiencyBonus || 2;
+  const proficiencyBonus = playableCharacter.profBonus || 2;
   const attributes = playableCharacter.attributes;
 
   const getSkillBonus = (skillKey: SkillKey): string => {
     const skill = SKILLS[skillKey];
-    const attrValue = attributes[skill.attribute as keyof typeof attributes] || 10;
+    const attrValue =
+      attributes[skill.attribute as keyof typeof attributes] || 10;
     const modifier = calculateModifier(attrValue);
     const isProficient = selectedSkills.includes(skillKey);
     const bonus = modifier + (isProficient ? proficiencyBonus : 0);
@@ -46,7 +47,7 @@ export default function PlayerSkillsCompactSection({
             const skill = SKILLS[skillKey];
             const isProficient = selectedSkills.includes(skillKey);
             const bonus = getSkillBonus(skillKey);
-            
+
             return (
               <div
                 key={skillKey}
@@ -54,17 +55,23 @@ export default function PlayerSkillsCompactSection({
                   isProficient ? "bg-arcane-500/10" : ""
                 }`}
               >
-                <span className={isProficient ? "font-medium" : "text-muted-foreground"}>
+                <span
+                  className={
+                    isProficient ? "font-medium" : "text-muted-foreground"
+                  }
+                >
                   {skill.name}
                 </span>
-                <span className={`font-bold ${isProficient ? "text-arcane-500" : ""}`}>
+                <span
+                  className={`font-bold ${isProficient ? "text-arcane-500" : ""}`}
+                >
                   {bonus}
                 </span>
               </div>
             );
           })}
         </div>
-        
+
         <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-arcane-500"></span>

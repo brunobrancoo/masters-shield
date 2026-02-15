@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PointPool } from "@/lib/interfaces/interfaces";
+import { PointPool } from "@/lib/schemas";
 import { Dispatch, SetStateAction } from "react";
 
 interface PointPoolResourceProps {
@@ -98,11 +98,9 @@ export function SorceryPointsSection({
 }
 
 interface KiPointsSectionProps {
-  kiPoints?: { kiPoints?: number; kiPoints_max?: number };
-  onChange: (value: { kiPoints: number; kiPoints_max: number }) => void;
-  setKiPoints: Dispatch<
-    SetStateAction<{ kiPoints: number; kiPoints_max: number }>
-  >;
+  kiPoints?: PointPool;
+  onChange: (value: PointPool) => void;
+  setKiPoints: Dispatch<SetStateAction<PointPool>>;
 }
 
 export function KiPointsSection({
@@ -110,8 +108,8 @@ export function KiPointsSection({
   onChange,
   setKiPoints,
 }: KiPointsSectionProps) {
-  const value = kiPoints?.kiPoints ?? 0;
-  const maxValue = kiPoints?.kiPoints_max ?? value;
+  const value = kiPoints?.current ?? 0;
+  const maxValue = kiPoints?.max ?? value;
 
   return (
     <PointPoolResource
@@ -119,12 +117,12 @@ export function KiPointsSection({
       value={value}
       maxValue={maxValue}
       onChange={(v) => {
-        onChange({ kiPoints: v, kiPoints_max: maxValue });
-        setKiPoints({ kiPoints: v, kiPoints_max: maxValue });
+        onChange({ current: v, max: maxValue });
+        setKiPoints({ current: v, max: maxValue });
       }}
       onChangeMax={(m) => {
-        onChange({ kiPoints: value, kiPoints_max: m });
-        setKiPoints({ kiPoints: value, kiPoints_max: m });
+        onChange({ current: value, max: m });
+        setKiPoints({ current: value, max: m });
       }}
       icon={
         <svg
@@ -147,14 +145,14 @@ export function KiPointsSection({
 }
 
 interface RageSectionProps {
-  rages?: { rages?: number; rages_max?: number };
-  onChange: (value: { rages: number; rages_max: number }) => void;
-  setRages: Dispatch<SetStateAction<{ rages: number; rages_max: number }>>;
+  rages?: PointPool;
+  onChange: (value: PointPool) => void;
+  setRages: Dispatch<SetStateAction<PointPool>>;
 }
 
 export function RageSection({ rages, onChange, setRages }: RageSectionProps) {
-  const value = rages?.rages ?? 0;
-  const maxValue = rages?.rages_max ?? value;
+  const value = rages?.current ?? 0;
+  const maxValue = rages?.max ?? value;
 
   return (
     <PointPoolResource
@@ -162,12 +160,12 @@ export function RageSection({ rages, onChange, setRages }: RageSectionProps) {
       value={value}
       maxValue={maxValue}
       onChange={(v) => {
-        onChange({ rages: v, rages_max: maxValue });
-        setRages({ rages: v, rages_max: maxValue });
+        onChange({ current: v, max: maxValue });
+        setRages({ current: v, max: maxValue });
       }}
       onChangeMax={(m) => {
-        onChange({ rages: value, rages_max: m });
-        setRages({ rages: value, rages_max: m });
+        onChange({ current: value, max: m });
+        setRages({ current: value, max: m });
       }}
       icon={
         <svg
@@ -190,11 +188,9 @@ export function RageSection({ rages, onChange, setRages }: RageSectionProps) {
 }
 
 interface InspirationSectionProps {
-  inspiration?: { inspiration?: number; inspiration_max?: number };
-  onChange: (value: { inspiration: number; inspiration_max: number }) => void;
-  setInspiration: Dispatch<
-    SetStateAction<{ inspiration: number; inspiration_max: number }>
-  >;
+  inspiration?: { current?: number; max?: number };
+  onChange: (value: { current: number; max: number }) => void;
+  setInspiration: Dispatch<SetStateAction<{ current: number; max: number }>>;
 }
 
 export function InspirationSection({
@@ -202,8 +198,8 @@ export function InspirationSection({
   onChange,
   setInspiration,
 }: InspirationSectionProps) {
-  const value = inspiration?.inspiration ?? 0;
-  const maxValue = inspiration?.inspiration_max ?? (value > 0 ? value : 1);
+  const value = inspiration?.current ?? 0;
+  const maxValue = inspiration?.max ?? (value > 0 ? value : 1);
 
   return (
     <PointPoolResource
@@ -211,12 +207,12 @@ export function InspirationSection({
       value={value}
       maxValue={maxValue}
       onChange={(v) => {
-        onChange({ inspiration: v, inspiration_max: maxValue });
-        setInspiration({ inspiration: v, inspiration_max: maxValue });
+        onChange({ current: v, max: maxValue });
+        setInspiration({ current: v, max: maxValue });
       }}
       onChangeMax={(m) => {
-        onChange({ inspiration: value, inspiration_max: m });
-        setInspiration({ inspiration: value, inspiration_max: m });
+        onChange({ current: value, max: m });
+        setInspiration({ current: value, max: m });
       }}
       icon={
         <svg
@@ -239,20 +235,9 @@ export function InspirationSection({
 }
 
 interface ChannelDivinitySectionProps {
-  channelDivinityCharges?: {
-    channelDivinityCharges?: number;
-    channelDivinityCharges_max?: number;
-  };
-  onChange: (value: {
-    channelDivinityCharges: number;
-    channelDivinityCharges_max: number;
-  }) => void;
-  setChannelDivinityCharges: Dispatch<
-    SetStateAction<{
-      channelDivinityCharges: number;
-      channelDivinityCharges_max: number;
-    }>
-  >;
+  channelDivinityCharges?: PointPool;
+  onChange: (value: PointPool) => void;
+  setChannelDivinityCharges: Dispatch<SetStateAction<PointPool>>;
 }
 
 export function ChannelDivinitySection({
@@ -260,8 +245,8 @@ export function ChannelDivinitySection({
   onChange,
   setChannelDivinityCharges,
 }: ChannelDivinitySectionProps) {
-  const value = channelDivinityCharges?.channelDivinityCharges ?? 0;
-  const maxValue = channelDivinityCharges?.channelDivinityCharges_max ?? value;
+  const value = channelDivinityCharges?.current ?? 0;
+  const maxValue = channelDivinityCharges?.max ?? value;
 
   return (
     <PointPoolResource
@@ -270,22 +255,22 @@ export function ChannelDivinitySection({
       maxValue={maxValue}
       onChange={(v) => {
         onChange({
-          channelDivinityCharges: v,
-          channelDivinityCharges_max: maxValue,
+          current: v,
+          max: maxValue,
         });
         setChannelDivinityCharges({
-          channelDivinityCharges: v,
-          channelDivinityCharges_max: maxValue,
+          current: v,
+          max: maxValue,
         });
       }}
       onChangeMax={(m) => {
         onChange({
-          channelDivinityCharges: value,
-          channelDivinityCharges_max: m,
+          current: value,
+          max: m,
         });
         setChannelDivinityCharges({
-          channelDivinityCharges: value,
-          channelDivinityCharges_max: m,
+          current: value,
+          max: m,
         });
       }}
       icon={

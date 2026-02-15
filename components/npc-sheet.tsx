@@ -21,7 +21,7 @@ import {
   ShieldIcon,
 } from "@/components/icons";
 import { calculateModifier, recalculateHP } from "@/lib/utils-dnd";
-import { NPC } from "@/lib/interfaces/interfaces";
+import { NPC } from "@/lib/schemas";
 import { getArchetype, getHPColor, getHPClass } from "@/lib/theme";
 
 interface NPCSheetProps {
@@ -96,7 +96,10 @@ export function NPCSheet({
 
   if (!isEditing) {
     return (
-      <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-archetype={archetype}>
+      <div
+        className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        data-archetype={archetype}
+      >
         <Card className="w-full max-w-3xl max-h-[90vh] overflow-y-auto texture-parchment">
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -121,11 +124,15 @@ export function NPCSheet({
             <Card className={`card-inset ${hpClass}`}>
               <CardContent className="pt-6">
                 <div className="text-center">
-                  <ShieldIcon className="w-8 h-8 mx-auto mb-2" style={{ color: hpColor }} />
-                  <p className="section-label mb-2">
-                    Pontos de Vida
-                  </p>
-                  <p className="text-4xl font-bold font-body" style={{ color: hpColor }}>
+                  <ShieldIcon
+                    className="w-8 h-8 mx-auto mb-2"
+                    style={{ color: hpColor }}
+                  />
+                  <p className="section-label mb-2">Pontos de Vida</p>
+                  <p
+                    className="text-4xl font-bold font-body"
+                    style={{ color: hpColor }}
+                  >
                     {npc.hp}
                     {npc.maxHp && npc.maxHp !== npc.hp && (
                       <span className="text-lg text-text-tertiary ml-2">
@@ -146,10 +153,10 @@ export function NPCSheet({
                 {Object.entries(npc.attributes).map(([key, value]) => (
                   <Card key={key} className="card-inset">
                     <CardContent className="pt-4 pb-3 text-center">
-                      <p className="section-label mb-1">
-                        {key}
+                      <p className="section-label mb-1">{key}</p>
+                      <p className="text-2xl font-bold font-body text-text-primary">
+                        {value}
                       </p>
-                      <p className="text-2xl font-bold font-body text-text-primary">{value}</p>
                       <p className="text-sm text-class-accent font-mono font-medium">
                         {calculateModifier(value)}
                       </p>
@@ -169,7 +176,9 @@ export function NPCSheet({
                   {npc.skills.map((skill, index) => (
                     <Card key={index} className="card-inset">
                       <CardContent className="p-4">
-                        <p className="font-body leading-relaxed text-text-primary">{skill}</p>
+                        <p className="font-body leading-relaxed text-text-primary">
+                          {skill}
+                        </p>
                       </CardContent>
                     </Card>
                   ))}
@@ -178,7 +187,9 @@ export function NPCSheet({
             )}
 
             <div>
-              <h3 className="font-heading text-xl mb-3 text-text-primary">Personalidade</h3>
+              <h3 className="font-heading text-xl mb-3 text-text-primary">
+                Personalidade
+              </h3>
               <Card className="card-inset">
                 <CardContent className="p-4">
                   <p className="font-handwritten leading-relaxed text-pretty text-text-primary">
@@ -190,7 +201,9 @@ export function NPCSheet({
 
             {npc.notes && (
               <div>
-                <h3 className="font-heading text-xl mb-3 text-text-primary">Notas</h3>
+                <h3 className="font-heading text-xl mb-3 text-text-primary">
+                  Notas
+                </h3>
                 <Card className="card-inset">
                   <CardContent className="p-4">
                     <p className="font-body leading-relaxed text-pretty text-text-primary">
@@ -216,11 +229,16 @@ export function NPCSheet({
   }
 
   return (
-    <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-archetype={archetype}>
+    <div
+      className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      data-archetype={archetype}
+    >
       <Card className="w-full max-w-3xl max-h-[90vh] overflow-y-auto texture-parchment">
         <CardHeader>
           <div className="flex items-start justify-between">
-            <CardTitle className="font-heading text-2xl text-text-primary">Editar NPC</CardTitle>
+            <CardTitle className="font-heading text-2xl text-text-primary">
+              Editar NPC
+            </CardTitle>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <span className="sr-only">Fechar</span>×
             </Button>
@@ -317,9 +335,11 @@ export function NPCSheet({
             </div>
 
             <div>
-              <h3 className="font-heading text-lg mb-3 text-text-primary">Atributos</h3>
+              <h3 className="font-heading text-lg mb-3 text-text-primary">
+                Atributos
+              </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {(["for", "des", "con", "int", "sab", "car"] as const).map(
+                {(["str", "dex", "con", "int", "wis", "cha"] as const).map(
                   (attr) => (
                     <div key={attr} className="space-y-2">
                       <Label htmlFor={attr} className="section-label">
