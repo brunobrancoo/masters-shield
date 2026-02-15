@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const attributesSchema = z.object({
-  for: z.number().min(1).max(30),
-  des: z.number().min(1).max(30),
+  str: z.number().min(1).max(30),
+  dex: z.number().min(1).max(30),
   con: z.number().min(1).max(30),
   int: z.number().min(1).max(30),
-  sab: z.number().min(1).max(30),
-  car: z.number().min(1).max(30),
+  wis: z.number().min(1).max(30),
+  cha: z.number().min(1).max(30),
 });
 
 export const monsterSchema = z.object({
@@ -29,94 +29,6 @@ export const npcSchema = z.object({
   skills: z.array(z.string()),
   personality: z.string(),
   notes: z.string(),
-});
-
-export const spellSlotsSchema = z.object({
-  1: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  2: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  3: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  4: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  5: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  6: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  7: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  8: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-  9: z.object({
-    current: z.coerce.number().min(0),
-    max: z.coerce.number().min(0),
-  }),
-});
-
-export const pointPoolSchema = z.object({
-  current: z.coerce.number().min(0),
-  max: z.coerce.number().min(0),
-});
-
-export const sorcererResourcesSchema = z.object({
-  sorceryPoints: pointPoolSchema.optional(),
-});
-
-export const monkResourcesSchema = z.object({
-  kiPoints: pointPoolSchema.optional(),
-});
-
-export const barbarianResourcesSchema = z.object({
-  rages: pointPoolSchema.optional(),
-  rageDamageBonus: z.number().optional(),
-});
-
-export const bardResourcesSchema = z.object({
-  inspiration: pointPoolSchema.optional(),
-});
-
-export const paladinResourcesSchema = z.object({
-  channelDivinityCharges: pointPoolSchema.optional(),
-});
-
-export const warlockResourcesSchema = z.object({
-  invocationsKnown: z.coerce.number().optional(),
-});
-
-export const sorcererFeatResourcesSchema = z.object({
-  sorceryPoints: pointPoolSchema.optional(),
-});
-
-export const monkFeatResourcesSchema = z.object({
-  kiPoints: pointPoolSchema.optional(),
-});
-
-export const barbarianFeatResourcesSchema = z.object({
-  rages: pointPoolSchema.optional(),
-});
-
-export const featResourcesSchema = z.object({
-  sorceryPoints: sorcererFeatResourcesSchema.optional(),
-  spellSlots: spellSlotsSchema.optional(),
-  kiPoints: monkFeatResourcesSchema.optional(),
-  rages: barbarianFeatResourcesSchema.optional(),
 });
 
 export const classEquipmentSelectionSchema = z.object({
@@ -239,6 +151,7 @@ export const buffSchema = z.object({
 });
 
 export const spellSchema = z.object({
+  index: z.string().min(1),
   name: z.string().min(1, "Nome é obrigatório"),
   level: z.coerce
     .number()
@@ -254,217 +167,236 @@ export const spellSchema = z.object({
   description: z.array(z.string()).default([]),
   attackType: z.string().optional(),
   material: z.string().optional(),
-  areaOfEffect: z.object({
-    size: z.number().optional(),
-    type: z.string().optional(),
-  }).optional(),
+  areaOfEffect: z
+    .object({
+      size: z.number().optional(),
+      type: z.string().optional(),
+    })
+    .optional(),
   higherLevel: z.array(z.string()).optional(),
-  damage: z.object({
-    damageType: z.string().optional(),
-    damageAtSlotLevel: z.array(z.string()).optional(),
-  }).optional(),
-  dc: z.object({
-    dcType: z.string().optional(),
-    dcSuccess: z.string().optional(),
-  }).optional(),
+  damage: z
+    .object({
+      damageType: z.string().optional(),
+      damageAtSlotLevel: z.array(z.string()).optional(),
+    })
+    .optional(),
+  dc: z
+    .object({
+      dcType: z.string().optional(),
+      dcSuccess: z.string().optional(),
+    })
+    .optional(),
   healAtSlotLevel: z.array(z.string()).optional(),
 });
 
-export const spellListSchema = z.array(
-  z.object({
-    index: z.string(),
-    name: z.string(),
-    level: z.number(),
-    school: z.string(),
-    castingTime: z.string(),
-    duration: z.string(),
-    range: z.string(),
-    components: z.string(),
-    description: z.array(z.string()),
-    concentration: z.boolean(),
-    ritual: z.boolean(),
-    damage: z.object({
-      damageType: z.string().optional(),
-      damageAtSlotLevel: z.array(z.string()).optional(),
-    }).optional(),
-    dc: z.object({
-      dcType: z.string().optional(),
-      dcSuccess: z.string().optional(),
-    }).optional(),
-    areaOfEffect: z.object({
-      size: z.number().optional(),
-      type: z.string().optional(),
-    }).optional(),
-    higherLevel: z.array(z.string()).optional(),
-    attackType: z.string().optional(),
-    material: z.string().optional(),
-    healAtSlotLevel: z.array(z.string()).optional(),
-  })
-).default([]);
+export const spellListSchema = z
+  .array(
+    z.object({
+      index: z.string(),
+      name: z.string(),
+      level: z.number(),
+      school: z.string(),
+      castingTime: z.string(),
+      duration: z.string(),
+      range: z.string(),
+      components: z.string(),
+      description: z.array(z.string()),
+      concentration: z.boolean(),
+      ritual: z.boolean(),
+      damage: z
+        .object({
+          damageType: z.string().optional(),
+          damageAtSlotLevel: z.array(z.string()).optional(),
+        })
+        .optional(),
+      dc: z
+        .object({
+          dcType: z.string().optional(),
+          dcSuccess: z.string().optional(),
+        })
+        .optional(),
+      areaOfEffect: z
+        .object({
+          size: z.number().optional(),
+          type: z.string().optional(),
+        })
+        .optional(),
+      higherLevel: z.array(z.string()).optional(),
+      attackType: z.string().optional(),
+      material: z.string().optional(),
+      healAtSlotLevel: z.array(z.string()).optional(),
+    }),
+  )
+  .default([]);
 
-/**
- * Base schema for all playable character types
- * Contains common fields shared across all D&D 5e classes
- */
+// Define the shape of ONE level (e.g., Level 1 slots)
+
+const spellSlotLevelSchema = z.object({
+  current: z.coerce.number().min(0),
+  max: z.coerce.number().min(0),
+});
+
+export const spellSlotsSchema = z.object({
+  1: spellSlotLevelSchema,
+  2: spellSlotLevelSchema,
+  3: spellSlotLevelSchema,
+  4: spellSlotLevelSchema,
+  5: spellSlotLevelSchema,
+  6: spellSlotLevelSchema,
+  7: spellSlotLevelSchema,
+  8: spellSlotLevelSchema,
+  9: spellSlotLevelSchema,
+});
+
+export const pointPoolSchema = z.object({
+  current: z.coerce.number().min(0),
+  max: z.coerce.number().min(0),
+});
+
 export const basePlayableCharacterSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Nome obrigatório"),
+  hitDie: z.coerce.number().int().positive(),
 
   raceIndex: z.string().min(1, "Raça obrigatória"),
-  raceName: z.string().min(1),
-
   classIndex: z.string().min(1, "Classe obrigatória"),
-  className: z.string().min(1),
-  level: z.coerce.number().min(1).max(20),
-
+  className: z.string().min(1, "Classe obrigatória"),
   subclassIndex: z.string().optional(),
-  subclassName: z.string().optional(),
-
   backgroundIndex: z.string().optional(),
-  backgroundName: z.string().optional(),
+  languages: z.array(z.string()).default([]),
 
-  raceTraits: z.array(z.string()).default([]),
-  backgroundFeature: z.string().optional(),
-  classFeatures: z.array(z.string()).default([]),
-  customFeatures: z.array(featureSchema).default([]),
-  featFeatures: z.array(featureSchema).default([]),
+  profBonus: z.coerce.number().min(2).max(6).default(2),
 
-  selectedProficiencies: z.array(z.string()).default([]),
-  raceProficiencies: z.array(z.string()).default([]),
-  backgroundProficiencies: z.array(z.string()).default([]),
-  classProficiencies: z.array(z.string()).default([]),
-
-  classEquipment: z.array(classEquipmentSelectionSchema).default([]),
-  backgroundEquipment: z.array(equipmentSelectionSchema).default([]),
-
+  level: z.coerce.number().min(1).max(20),
   hp: z.coerce.number().min(1),
   maxHp: z.coerce.number().min(1),
   attributes: attributesSchema,
+
+  selectedProficiencies: z.array(z.string()).default([]),
+  chosenRaceFeatures: z.array(z.string()).default([]),
+
   inventory: z.array(itemSchema).default([]),
-  notes: z.string().default(""),
+
+  speed: z.coerce.number(),
   ac: z.coerce.number().min(1),
-  speed: z.coerce.number().min(0),
   initiativeBonus: z.coerce.number().default(0),
-  passivePerception: z.coerce.number().default(10),
-  proficiencyBonus: z.coerce.number().min(2).max(6),
-  abilityScoreImprovementsUsed: z.coerce.number().min(0).default(0),
 
-  spellSlots: spellSlotsSchema.optional(),
-  spellsKnown: z.array(z.string()).default([]),
-  spellList: spellListSchema.optional(),
-  spellAttack: z.coerce.number().default(0),
-  spellCD: z.coerce.number().default(0),
-
-  // Legacy fields for backward compatibility
-  spells: z.array(z.any()).default([]),
-  maxSpellSlots: spellSlotsSchema.optional(),
-  profBonus: z.coerce.number().default(0),
-
-  // Buffs and debuffs are common to all characters
+  notes: z.string().default(""),
   buffs: z.array(buffSchema).default([]),
   debuffs: z.array(buffSchema).default([]),
 });
 
-/**
- * Sorcerer-specific schema with sorcery points
- */
+// --- CLASSES ---
+
 export const sorcererCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("sorcerer"),
-  sorceryPoints: sorcererResourcesSchema.optional(),
+  sorceryPoints: pointPoolSchema.optional(),
+  spellSlots: spellSlotsSchema.optional(),
+  spellsKnown: z.array(z.string()).default([]), // Fixed list
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Paladin-specific schema with channel divinity charges
- */
 export const paladinCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("paladin"),
-  channelDivinityCharges: paladinResourcesSchema.optional(),
+  channelDivinityCharges: pointPoolSchema.optional(),
+  spellSlots: spellSlotsSchema.optional(),
+  spellsKnown: z.array(z.string()).default([]), // Fixed list (Oath spells usually)
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Monk-specific schema with ki points
- */
+const martialArtsDieSchema = z.object({
+  count: z.number(), // 3 (as in 3d6)
+  die: z.number(), // 6 (as in 3d6)
+});
 export const monkCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("monk"),
-  kiPoints: monkResourcesSchema.optional(),
+  kiPoints: pointPoolSchema.optional(),
+  spellSlots: spellSlotsSchema.optional(), // Monks technically can't cast spells in 5e RAW (unless specific subclass), but kept for flexibility
+  spellsKnown: z.array(z.string()).default([]),
+  martialArtsDie: martialArtsDieSchema,
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Barbarian-specific schema with rages
- */
 export const barbarianCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("barbarian"),
-  rages: barbarianResourcesSchema.optional(),
+  rages: pointPoolSchema.optional(),
 });
 
-/**
- * Bard-specific schema with inspiration
- */
 export const bardCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("bard"),
-  inspiration: bardResourcesSchema.optional(),
+  inspiration: pointPoolSchema.optional(),
+  inspirationDie: z.coerce.number().optional(),
+  spellSlots: spellSlotsSchema.optional(),
+  spellsKnown: z.array(z.string()).default([]), // Fixed list
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Druid-specific schema with wild shape
- */
 export const druidCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("druid"),
-  wildShapeForm: z.string().optional(),
+  spellSlots: spellSlotsSchema.optional(),
+  preparedSpells: z.array(z.string()).default([]), // Daily prep
 });
 
-/**
- * Warlock-specific schema with invocations
- */
 export const warlockCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("warlock"),
-  invocationsKnown: warlockResourcesSchema.optional(),
+  invocationsKnown: z.array(z.string()).default([]),
+  spellSlots: spellSlotsSchema.optional(),
+  spellsKnown: z.array(z.string()).default([]), // Fixed list (Mystic Arcanum aside)
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Rogue character schema - no class-specific resources
- */
+const sneakAttackDiceSchema = z.object({
+  count: z.number(), // 3 (as in 3d6)
+  die: z.number(), // 6 (as in 3d6)
+});
+
 export const rogueCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("rogue"),
+  sneakAttack: sneakAttackDiceSchema,
 });
 
-/**
- * Fighter character schema - no class-specific resources
- */
 export const fighterCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("fighter"),
+  actionSurges: pointPoolSchema.optional(),
+  intomitables: pointPoolSchema.optional(),
 });
 
-/**
- * Ranger character schema - no class-specific resources
- */
 export const rangerCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("ranger"),
+  spellSlots: spellSlotsSchema.optional(),
+  spellsKnown: z.array(z.string()).default([]), // Fixed list (usually)
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Cleric character schema - no class-specific resources
- */
 export const clericCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("cleric"),
+  spellSlots: spellSlotsSchema.optional(),
+  channelDivinityCharges: pointPoolSchema.optional(),
+  preparedSpells: z.array(z.string()).default([]), // Daily prep
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Wizard character schema - no class-specific resources
- */
 export const wizardCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("wizard"),
+  spellSlots: spellSlotsSchema.optional(),
+  spellBook: z.array(z.string()).default([]), // Everything owned
+  preparedSpells: z.array(z.string()).default([]), // Daily prep
+  spellAttack: z.coerce.number(),
+  spellCD: z.coerce.number(),
 });
 
-/**
- * Union schema of all playable character types
- * Discriminated by classIndex field
- */
 export const playableCharacterSchema = z.discriminatedUnion("classIndex", [
+  barbarianCharacterSchema,
   sorcererCharacterSchema,
   paladinCharacterSchema,
   monkCharacterSchema,
-  barbarianCharacterSchema,
   bardCharacterSchema,
   druidCharacterSchema,
   warlockCharacterSchema,
@@ -475,29 +407,50 @@ export const playableCharacterSchema = z.discriminatedUnion("classIndex", [
   wizardCharacterSchema,
 ]);
 
-/**
- * Legacy schema for backward compatibility
- * @deprecated Use playableCharacterSchema (discriminated union) instead
- */
-export const legacyPlayableCharacterSchema = basePlayableCharacterSchema.extend(
-  {
-    classIndex: z.string(),
-    sorceryPoints: sorcererResourcesSchema.optional(),
-    kiPoints: monkResourcesSchema.optional(),
-    rages: barbarianResourcesSchema.optional(),
-    inspiration: bardResourcesSchema.optional(),
-    channelDivinityCharges: paladinResourcesSchema.optional(),
-    invocationsKnown: warlockResourcesSchema.optional(),
-    featResources: featResourcesSchema.optional(),
-    wildShapeForm: z.string().optional(),
-  },
-);
+// Helper schema for Homebrew Feats
+const homebrewFeatSchema = z.object({
+  index: z.string(),
+  name: z.string(),
+  desc: z.array(z.string()),
+  prerequisites: z.array(z.string()),
+});
 
-export type MonsterFormData = z.infer<typeof monsterSchema>;
-export type NPCFormData = z.infer<typeof npcSchema>;
-export type ItemFormData = z.infer<typeof itemSchema>;
-export type ItemFormFormData = z.infer<typeof itemFormSchema>;
-export type BuffFormData = z.infer<typeof buffSchema>;
-export type FeatureFormData = z.infer<typeof featureSchema>;
-export type PlayerFormData = z.infer<typeof playableCharacterSchema>;
-export type SpellFormData = z.infer<typeof spellSchema>;
+// Helper schema for Homebrew Features
+const homebrewFeatureSchema = z.object({
+  index: z.string(),
+  name: z.string(),
+  desc: z.array(z.string()),
+  level: z.number(),
+  source: z.string(),
+  class: z.string().optional(),
+  subclass: z.string().optional(),
+});
+
+export const homebrewSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, "Nome é obrigatório"),
+  itemType: z.enum(["item", "spell", "feat", "feature"]),
+
+  // Reusing existing schemas where possible
+  item: itemSchema.optional(),
+  spell: spellSchema.optional(),
+
+  // Using specific helper schemas
+  feat: homebrewFeatSchema.optional(),
+  feature: homebrewFeatureSchema.optional(),
+
+  createdAt: z.any().optional(),
+  updatedAt: z.any().optional(),
+});
+
+export type Monster = z.infer<typeof monsterSchema>;
+export type NPC = z.infer<typeof npcSchema>;
+export type Item = z.infer<typeof itemSchema>; // Matches interfaces.ts
+export type Buff = z.infer<typeof buffSchema>;
+export type Feature = z.infer<typeof featureSchema>;
+export type PlayableCharacter = z.infer<typeof playableCharacterSchema>; // Matches interfaces.ts
+export type Spell = z.infer<typeof spellSchema>;
+export type PointPool = z.infer<typeof pointPoolSchema>;
+export type SpellSlots = z.infer<typeof spellSlotsSchema>;
+export type Attributes = z.infer<typeof attributesSchema>;
+export type Homebrew = z.infer<typeof homebrewSchema>;

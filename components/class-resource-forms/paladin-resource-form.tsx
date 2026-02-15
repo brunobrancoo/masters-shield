@@ -5,37 +5,43 @@ import { ChannelDivinitySection } from "../class-resource-sections";
 import AuraRangeDisplay from "../class-display-sections/aura-range-display";
 import DestroyUndeadCRDisplay from "../class-display-sections/destroy-undead-cr-display";
 import { useEffect, useState } from "react";
+import { PointPool } from "@/lib/schemas";
 
-export default function PaladinResourceForm({ control, setValue, classData, level }: BaseResourceFormProps) {
+export default function PaladinResourceForm({
+  control,
+  setValue,
+  classData,
+  level,
+}: BaseResourceFormProps) {
   // Handle both string and number level types
-  const levelNum = typeof level === 'string' ? parseInt(level, 10) : level;
-  const levelData = classData?.class?.class_levels?.find((l: any) => l.level === levelNum);
+  const levelNum = typeof level === "string" ? parseInt(level, 10) : level;
+  const levelData = classData?.class?.class_levels?.find(
+    (l: any) => l.level === levelNum,
+  );
   const classSpecific = levelData?.class_specific;
 
-  const [channelDivinityCharges, setChannelDivinityCharges] = useState<{
-    channelDivinityCharges: number;
-    channelDivinityCharges_max: number;
-  }>({
-    channelDivinityCharges: classSpecific?.channel_divinity_charges || 0,
-    channelDivinityCharges_max: classSpecific?.channel_divinity_charges || 0,
-  });
+  const [channelDivinityCharges, setChannelDivinityCharges] =
+    useState<PointPool>({
+      current: classSpecific?.channel_divinity_charges || 0,
+      max: classSpecific?.channel_divinity_charges || 0,
+    });
 
   // Reset to API values when class or level changes
   useEffect(() => {
     if (classSpecific?.channel_divinity_charges == null) {
       setValue("channelDivinityCharges", null);
       setChannelDivinityCharges({
-        channelDivinityCharges: 0,
-        channelDivinityCharges_max: 0,
+        current: 0,
+        max: 0,
       });
     } else {
       setValue("channelDivinityCharges", {
-        channelDivinityCharges: classSpecific?.channel_divinity_charges || 0,
-        channelDivinityCharges_max: classSpecific?.channel_divinity_charges || 0,
+        current: classSpecific?.channel_divinity_charges || 0,
+        max: classSpecific?.channel_divinity_charges || 0,
       });
       setChannelDivinityCharges({
-        channelDivinityCharges: classSpecific?.channel_divinity_charges || 0,
-        channelDivinityCharges_max: classSpecific?.channel_divinity_charges || 0,
+        current: classSpecific?.channel_divinity_charges || 0,
+        max: classSpecific?.channel_divinity_charges || 0,
       });
     }
   }, [classSpecific, level, setValue]);
@@ -44,7 +50,9 @@ export default function PaladinResourceForm({ control, setValue, classData, leve
   if (!classSpecific) return <div className="space-y-4"></div>;
 
   // Check if channel divinity feature exists at this level
-  const hasChannelDivinity = classSpecific.channel_divinity_charges !== undefined && classSpecific.channel_divinity_charges !== null;
+  const hasChannelDivinity =
+    classSpecific.channel_divinity_charges !== undefined &&
+    classSpecific.channel_divinity_charges !== null;
 
   return (
     <div className="space-y-4">
@@ -56,12 +64,15 @@ export default function PaladinResourceForm({ control, setValue, classData, leve
         />
       )}
 
-      {classSpecific.aura_range !== undefined && classSpecific.aura_range !== null && (
-        <AuraRangeDisplay auraRange={classSpecific.aura_range} />
-      )}
+      {classSpecific.aura_range !== undefined &&
+        classSpecific.aura_range !== null && (
+          <AuraRangeDisplay auraRange={classSpecific.aura_range} />
+        )}
 
       {classSpecific.destroy_undead_cr && (
-        <DestroyUndeadCRDisplay destroyUndeadCR={classSpecific.destroy_undead_cr} />
+        <DestroyUndeadCRDisplay
+          destroyUndeadCR={classSpecific.destroy_undead_cr}
+        />
       )}
     </div>
   );

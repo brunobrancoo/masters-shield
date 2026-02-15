@@ -11,7 +11,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
 import { isMeaningfulItem } from "@/lib/api/utils";
 import EditItemDialog from "./edit-item-dialog";
-import { convertApiEquipmentToItem } from "@/lib/interfaces/interfaces";
+import { convertApiEquipmentToItem } from "@/lib/character-utils";
 
 interface PlayerFormInventorySectionProps {
   fields: any[];
@@ -43,12 +43,15 @@ export default function PlayerFormInventorySection({
   isNewCharacter = false,
 }: PlayerFormInventorySectionProps) {
   const [editItemIndex, setEditItemIndex] = useState<number | null>(null);
-  const [selectedStartingEquipmentIndices, setSelectedStartingEquipmentIndices] = useState<
-    Set<number>
-  >(new Set());
+  const [
+    selectedStartingEquipmentIndices,
+    setSelectedStartingEquipmentIndices,
+  ] = useState<Set<number>>(new Set());
   // Track which items in inventory are from starting equipment options
-  const [startingEquipmentToInventoryIndex, setStartingEquipmentToInventoryIndex] =
-    useState<Map<number, number>>(new Map());
+  const [
+    startingEquipmentToInventoryIndex,
+    setStartingEquipmentToInventoryIndex,
+  ] = useState<Map<number, number>>(new Map());
   const debouncedItemSearch = useDebounce(itemSearchQuery, 300);
   const { data: equipmentData, isLoading: loadingEquipment } =
     useEquipment(debouncedItemSearch);
@@ -88,11 +91,11 @@ export default function PlayerFormInventorySection({
   };
 
   const StartingEquipmentCards = () => {
-    console.log("StartingEquipmentCards render:", {
-      isNewCharacter,
-      startingEquipmentOptions,
-      length: startingEquipmentOptions?.length,
-    });
+    // console.log("StartingEquipmentCards render:", {
+    //   isNewCharacter,
+    //   startingEquipmentOptions,
+    //   length: startingEquipmentOptions?.length,
+    // });
 
     if (
       !isNewCharacter ||
@@ -116,7 +119,8 @@ export default function PlayerFormInventorySection({
                 : "bg-arcane-400/20 text-arcane-400"
             }`}
           >
-            {selectedStartingEquipmentIndices.size}/{selectedStartingEquipmentCount}
+            {selectedStartingEquipmentIndices.size}/
+            {selectedStartingEquipmentCount}
           </Badge>
         </div>
 

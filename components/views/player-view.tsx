@@ -44,7 +44,9 @@ export function PlayerView({ campaignId }: { campaignId: string }) {
   );
 
   const playerClasses = Array.from(
-    new Set(gameData.playableCharacters.map((p: PlayableCharacter) => p.className)),
+    new Set(
+      gameData.playableCharacters.map((p: PlayableCharacter) => p.className),
+    ),
   );
 
   return (
@@ -167,7 +169,7 @@ export function PlayerView({ campaignId }: { campaignId: string }) {
 
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <ScrollArea className="flex-1 min-h-0">
-            <DialogContent className="max-w-5xl max-h-[90vh] bg-bg-elevated border-border-strong p-0 flex flex-col overflow-auto">
+            <DialogContent className="max-w-5xl max-h-[90vh] bg-black border-border-strong p-0 flex flex-col overflow-auto">
               <DialogHeader className="shrink-0 border-b border-border-default p-8 pb-6">
                 <DialogTitle className="font-heading text-2xl flex items-center gap-3">
                   <span className="w-10 h-10 rounded-full bg-arcane-500/20 flex items-center justify-center">
@@ -181,6 +183,7 @@ export function PlayerView({ campaignId }: { campaignId: string }) {
                 <PlayerForm
                   playableCharacter={undefined}
                   onSaveAction={(player) => {
+                    console.log("Saving player...", player);
                     handleSavePlayer(player);
                     setIsCreateModalOpen(false);
                   }}

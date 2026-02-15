@@ -1,6 +1,11 @@
 "use client";
 
-import { GameData, Monster, NPC, PlayableCharacter } from "@/lib/interfaces/interfaces";
+import {
+  GameData,
+  Monster,
+  NPC,
+  PlayableCharacter,
+} from "@/lib/interfaces/interfaces";
 import { MonsterFormData, NPCFormData } from "@/lib/schemas";
 import {
   createContext,
@@ -59,7 +64,9 @@ interface GameContextType {
   handleDeleteNPC: (id: string) => void;
   selectedPlayableCharacter: PlayableCharacter | undefined;
   handleDeletePlayableCharacter: (id: string) => void;
-  setSelectedPlayableCharacter: Dispatch<SetStateAction<PlayableCharacter | undefined>>;
+  setSelectedPlayableCharacter: Dispatch<
+    SetStateAction<PlayableCharacter | undefined>
+  >;
   loading: boolean;
 }
 
@@ -84,8 +91,11 @@ export function GameProvider({
   const [monsterView, setMonsterViewState] = useState<ViewMode>("list");
   const [selectedMonster, setSelectedMonster] = useState<Monster | undefined>();
 
-  const [playableCharacterView, setPlayableCharacterViewState] = useState<ViewMode>("list");
-  const [selectedPlayableCharacter, setSelectedPlayableCharacter] = useState<PlayableCharacter | undefined>();
+  const [playableCharacterView, setPlayableCharacterViewState] =
+    useState<ViewMode>("list");
+  const [selectedPlayableCharacter, setSelectedPlayableCharacter] = useState<
+    PlayableCharacter | undefined
+  >();
 
   const [npcView, setNPCViewState] = useState<"generator" | "list" | "sheet">(
     "generator",
@@ -99,9 +109,12 @@ export function GameProvider({
     const unsubscribeMonsters = onMonstersChange(campaignId, (monsters) => {
       setGameData((prev) => ({ ...prev, monsters }));
     });
-    const unsubscribePlayableCharacters = onPlayableCharactersChange(campaignId, (playableCharacters) => {
-      setGameData((prev) => ({ ...prev, playableCharacters }));
-    });
+    const unsubscribePlayableCharacters = onPlayableCharactersChange(
+      campaignId,
+      (playableCharacters) => {
+        setGameData((prev) => ({ ...prev, playableCharacters }));
+      },
+    );
     const unsubscribeNPCs = onNPCsChange(campaignId, (npcs) => {
       setGameData((prev) => ({ ...prev, npcs }));
     });

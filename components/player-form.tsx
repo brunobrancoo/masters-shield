@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlayableCharacter } from "@/lib/interfaces/interfaces";
+import { PlayableCharacter } from "@/lib/schemas"; // <--- CHANGED: Import from schemas
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { useClass } from "@/lib/api/hooks";
 import { playableCharacterSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
-import { convertApiEquipmentToItem } from "@/lib/interfaces/interfaces";
+import { convertApiEquipmentToItem } from "@/lib/character-utils"; // <--- CHANGED: Import from utils
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getProficiencyBonus, calculateModifier } from "@/lib/skills";
 
@@ -17,7 +17,6 @@ import PlayerFormCombatStatsSection from "./player-form-combat-stats-section";
 import PlayerFormSpellcastingSection from "./player-form-spellcasting-section";
 import ClassResourceFormSection from "./class-resource-form-section";
 import PlayerFormAttributesSection from "./player-form-attributes-section";
-import PlayerFormInventorySection from "./player-form-inventory-section";
 import PlayerFormNotesSection from "./player-form-notes-section";
 import PlayerFormSkillsSection from "./player-form-dnd-skills-section";
 import RaceFeaturesSection from "./race-features-section";
@@ -29,6 +28,53 @@ interface PlayerFormProps {
   onCancelAction?: () => void;
   hideActions?: boolean;
 }
+
+// Maps classes to their specific resource fields
+const CLASS_RESOURCES: Record<string, string[]> = {
+  sorcerer: [
+    "sorceryPoints",
+    "spellSlots",
+    "spellsKnown",
+    "spellCD",
+    "spellAttack",
+  ],
+  wizard: [
+    "spellSlots",
+    "spellBook",
+    "preparedSpells",
+    "spellCD",
+    "spellAttack",
+  ],
+  cleric: ["spellSlots", "preparedSpells", "spellCD", "spellAttack"],
+  druid: [
+    "spellSlots",
+    "availableSpells",
+    "preparedSpells",
+    "wildShapeForm",
+    "spellCD",
+    "spellAttack",
+  ],
+  bard: ["spellSlots", "spellsKnown", "inspiration", "spellCD", "spellAttack"],
+  paladin: [
+    "spellSlots",
+    "spellsKnown",
+    "channelDivinityCharges",
+    "spellCD",
+    "spellAttack",
+  ],
+  ranger: ["spellSlots", "spellsKnown", "spellCD", "spellAttack"],
+  warlock: [
+    "spellSlots",
+    "spellsKnown",
+    "invocationsKnown",
+    "spellCD",
+    "spellAttack",
+  ],
+  barbarian: ["rages"],
+  monk: ["spellSlots", "spellsKnown", "kiPoints", "spellCD", "spellAttack"],
+  rogue: ["sneakAttack"],
+  fighter: ["actionSurges"],
+};
 
 export default function PlayerForm({
   playableCharacter,
@@ -44,81 +90,57 @@ export default function PlayerForm({
     null,
   );
 
-  const form = useForm<any>({
+  const form = useForm<Partial<PlayableCharacter>>({
     resolver: zodResolver(playableCharacterSchema),
     defaultValues: playableCharacter
       ? {
           ...playableCharacter,
           inventory: playableCharacter.inventory || [],
-          spellList: playableCharacter.spellList || [],
         }
       : {
+          // Base Defaults
+          id: undefined,
           name: "",
           raceIndex: "",
-          raceName: "",
-          classIndex: "",
+          // Defaulting to 'fighter' to satisfy the Discriminated Union requirement on mount
+          // This will be overwritten when the user selects a class
+          classIndex: "fighter",
           className: "",
+          hitDie: 10,
           level: 1,
-          subclassIndex: "",
-          subclassName: "",
-          backgroundIndex: "",
-          backgroundName: "",
-          raceTraits: [],
-          backgroundFeature: "",
-          classFeatures: [],
-          customFeatures: [],
-          featFeatures: [],
-          selectedProficiencies: [],
-          raceProficiencies: [],
-          backgroundProficiencies: [],
-          classProficiencies: [],
-          classEquipment: [],
-          backgroundEquipment: [],
-          hp: 10,
-          maxHp: 10,
+          languages: [],
+          // subclassIndex: "",
+          // subclassName: "",
+          // backgroundIndex: "",
+          // backgroundName: "",
+
+          // Attributes
           attributes: {
-            for: 10,
-            des: 10,
+            str: 10,
+            dex: 10,
             con: 10,
             int: 10,
-            sab: 10,
-            car: 10,
+            wis: 10,
+            cha: 10,
           },
-          inventory: [],
-          notes: "",
+
+          // Stats
+          hp: 10,
+          maxHp: 10,
           ac: 10,
           speed: 30,
           initiativeBonus: 0,
-          passivePerception: 10,
-          proficiencyBonus: 2,
-          skills: [],
-          spellSlots: {
-            1: { current: 0, max: 0 },
-            2: { current: 0, max: 0 },
-            3: { current: 0, max: 0 },
-            4: { current: 0, max: 0 },
-            5: { current: 0, max: 0 },
-            6: { current: 0, max: 0 },
-            7: { current: 0, max: 0 },
-            8: { current: 0, max: 0 },
-            9: { current: 0, max: 0 },
-          },
-          spellsKnown: [],
-          spellList: [],
-          spellAttack: 0,
-          spellCD: 0,
-          sorceryPoints: undefined,
-          kiPoints: undefined,
-          rages: undefined,
-          inspiration: undefined,
-          channelDivinityCharges: undefined,
-          invocationsKnown: undefined,
-          featResources: undefined,
+          profBonus: 2, // Matches new schema field name
+
+          // Choices
+          selectedProficiencies: [],
+          chosenRaceFeatures: [],
+
+          // Dynamic State
+          inventory: [],
           buffs: [],
           debuffs: [],
-          profBonus: 0,
-          abilityScoreImprovementsUsed: 0,
-          wildShapeForm: "",
+          notes: "",
         },
   });
 
@@ -133,18 +155,14 @@ export default function PlayerForm({
 
   const proficiencyBonus = getProficiencyBonus(watchedLevel);
 
-  useEffect(() => {
-    form.setValue("proficiencyBonus", proficiencyBonus);
-  }, [watchedLevel, proficiencyBonus, form]);
-
   const { data: classData } = useClass(watchedClassIndex || "");
 
   const hitDie = classData?.class?.hit_die || 8;
 
   useEffect(() => {
-    const dexModifier = calculateModifier(watchedAttributes?.des || 10);
+    const dexModifier = calculateModifier(watchedAttributes?.dex || 10);
     form.setValue("ac", 10 + dexModifier);
-  }, [watchedAttributes?.des, form]);
+  }, [watchedAttributes?.dex, form]);
 
   useEffect(() => {
     if (playableCharacter) return;
@@ -168,7 +186,7 @@ export default function PlayerForm({
           }
         });
 
-        form.setValue("inventory", convertedItems);
+        form.setValue("inventory", []);
       }
 
       setPreviousClassIndex(watchedClassIndex);
@@ -183,6 +201,7 @@ export default function PlayerForm({
 
   const handleRollMaxHP = () => {
     const conModifier = calculateModifier(watchedAttributes?.con || 10);
+    console.log("CON MODIFIER: ", conModifier);
 
     let maxHP = 0;
 
@@ -193,6 +212,7 @@ export default function PlayerForm({
 
       for (let i = 2; i <= watchedLevel; i++) {
         maxHP += Math.floor(Math.random() * hitDie) + 1;
+        console.log("loop: ", maxHP, i, watchedLevel);
       }
 
       maxHP += watchedLevel * conModifier;
@@ -203,8 +223,53 @@ export default function PlayerForm({
   };
 
   const onSubmit = (data: any) => {
+    console.log("state: ", form.formState);
     onSaveAction(data);
   };
+
+  console.log("full form: ", form.watch());
+
+  // CLEANUP EFFECT: Clears old class fields when switching classes
+  useEffect(() => {
+    const newClassIndex = watchedClassIndex;
+
+    // Only run if we have a valid old class and it's different from the new one
+    if (
+      previousClassIndex &&
+      newClassIndex &&
+      previousClassIndex !== newClassIndex
+    ) {
+      // 1. Get the fields that belonged to the OLD class
+      const oldFields = CLASS_RESOURCES[previousClassIndex];
+      const newFields = CLASS_RESOURCES[newClassIndex];
+
+      // 2. UNREGISTER those fields (Removes them entirely from the form state)
+      const oldFieldsToDrop = oldFields.filter(
+        (oldField) => !newFields.includes(oldField),
+      );
+      if (oldFieldsToDrop) {
+        oldFieldsToDrop.forEach((fieldName) => {
+          form.unregister(fieldName as any, { keepDefaultValue: false });
+        });
+      }
+
+      // Clear spells for non-casters explicitly
+      // if (!CLASS_RESOURCES[newClassIndex]?.includes("spellSlots")) {
+      //   form.unregister("spellSlots");
+      //   form.unregister("spellAttack");
+      //   form.unregister("spellCD");
+      // }
+    }
+
+    // Update the tracker
+    setPreviousClassIndex(newClassIndex!);
+  }, [watchedClassIndex, form, previousClassIndex]);
+
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error("VALIDATION ERROR:", form.formState.errors);
+    }
+  }, [form.formState.errors]);
 
   return (
     <form id="player-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -213,38 +278,36 @@ export default function PlayerForm({
           <PlayerFormIdentitySection
             control={form.control}
             setValue={form.setValue}
+            unregister={form.unregister}
+          />
+          <PlayerFormAttributesSection
+            control={form.control}
+            setValue={form.setValue}
           />
 
-          <PlayerFormHealthSection
-            control={form.control}
-            onRollMaxHP={handleRollMaxHP}
-            showRollButton={!!watchedClassIndex}
-          />
+          {form && (
+            <PlayerFormHealthSection
+              form={form}
+              showRollButton={!!watchedClassIndex}
+            />
+          )}
 
           <PlayerFormCombatStatsSection
             control={form.control}
             attributes={watchedAttributes}
           />
 
-          <PlayerFormAttributesSection
-            control={form.control}
-            setValue={form.setValue}
-            remainingAbilityScoreImprovements={0}
-          />
-
           <PlayerFormSkillsSection
-            control={form.control}
             setValue={form.setValue}
-            classIndex={form.watch("classIndex")}
-            backgroundIndex={form.watch("backgroundIndex")}
-            attributes={form.watch("attributes")}
-            proficiencyBonus={form.watch("proficiencyBonus") || 2}
+            classIndex={form.watch("classIndex")!}
+            attributes={form.watch("attributes")!}
+            proficiencyBonus={form.watch("profBonus") || 2}
           />
 
-          <RaceFeaturesSection raceIndex={form.watch("raceIndex")} />
+          <RaceFeaturesSection raceIndex={form.watch("raceIndex")!} />
 
           <ClassFeaturesSection
-            classIndex={form.watch("classIndex")}
+            classIndex={form.watch("classIndex")!}
             level={form.watch("level") || 1}
             subclassIndex={form.watch("subclassIndex")}
           />
@@ -252,30 +315,32 @@ export default function PlayerForm({
           <PlayerFormSpellcastingSection
             control={form.control}
             setValue={form.setValue}
-            classIndex={form.watch("classIndex")}
+            classIndex={form.watch("classIndex")!}
             level={form.watch("level") || 1}
-            attributes={form.watch("attributes")}
-            proficiencyBonus={form.watch("proficiencyBonus") || 2}
+            attributes={form.watch("attributes")!}
+            proficiencyBonus={form.watch("profBonus") || 2}
           />
 
           <ClassResourceFormSection
-            classIndex={form.watch("classIndex")}
+            classIndex={form.watch("classIndex")!}
             classData={classData}
             level={form.watch("level") || 1}
             control={form.control}
             setValue={form.setValue}
           />
 
-          <PlayerFormInventorySection
-            fields={fields}
-            onAddItem={append}
-            onRemoveItem={remove}
-            itemSearchQuery={itemSearchQuery}
-            setItemSearchQuery={setItemSearchQuery}
-            selectedEquipmentIndex={selectedEquipmentIndex}
-            setSelectedEquipmentIndex={setSelectedEquipmentIndex}
-            isNewCharacter={!playableCharacter}
-          />
+          {
+            // <PlayerFormInventorySection
+            //   fields={fields}
+            //   onAddItem={append}
+            //   onRemoveItem={remove}
+            //   itemSearchQuery={itemSearchQuery}
+            //   setItemSearchQuery={setItemSearchQuery}
+            //   selectedEquipmentIndex={selectedEquipmentIndex}
+            //   setSelectedEquipmentIndex={setSelectedEquipmentIndex}
+            //   isNewCharacter={!playableCharacter}
+            // />
+          }
 
           <PlayerFormNotesSection control={form.control} />
 

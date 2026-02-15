@@ -19,26 +19,29 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useEquipment } from "@/lib/api/hooks";
-import { Item, Homebrew } from "@/lib/interfaces/interfaces";
-import { ItemFormData, ItemFormFormData, itemSchema, itemFormSchema } from "@/lib/schemas";
+import { Item, Homebrew } from "@/lib/schemas";
+import { itemSchema, itemFormSchema } from "@/lib/schemas";
 import { Plus } from "lucide-react";
 import { isMeaningfulItem } from "@/lib/api/utils";
 import { createHomebrew, onHomebrewsChange } from "@/lib/firebase-storage";
-import { sanitizeForFirebase } from "@/lib/interfaces/interfaces";
+import { sanitizeForFirebase } from "@/lib/character-utils";
 
 interface AddItemDialogProps {
   onAdd: (item: Item) => void;
   campaignId: string;
 }
 
-export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps) {
+export default function AddItemDialog({
+  onAdd,
+  campaignId,
+}: AddItemDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const { data: equipmentData, isLoading } = useEquipment(
-    debouncedSearchQuery,
+  const { data: equipmentData, isLoading } = useEquipment(debouncedSearchQuery);
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
+    null,
   );
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"api" | "homebrew">("api");
   const [homebrewSearchQuery, setHomebrewSearchQuery] = useState("");
   const debouncedHomebrewSearchQuery = useDebounce(homebrewSearchQuery, 300);
@@ -51,14 +54,12 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     setValue,
     trigger,
     formState: { errors },
-  } = useForm<ItemFormFormData>({
+  } = useForm<Item>({
     resolver: zodResolver(itemFormSchema),
     defaultValues: {
       name: "",
-      price: 0,
       type: "weapon",
-      distance: "melee",
-      damage: { dice:1, number:4, type: "" },
+      damage: { damage_dice: "1d4" },
       magic: false,
       attackbonus: 0,
       defensebonus: 0,
@@ -70,7 +71,10 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
   useEffect(() => {
     if (equipmentData) {
       console.log("D&D 5e API Equipment Response:", equipmentData);
-      console.log("Filtered equipment:", equipmentData.equipments?.filter(isMeaningfulItem));
+      console.log(
+        "Filtered equipment:",
+        equipmentData.equipments?.filter(isMeaningfulItem),
+      );
     }
   }, [equipmentData]);
 
@@ -245,11 +249,11 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
 
   const onSubmit = async (data: ItemFormFormData) => {
     const item: Item = {
-      index: data.name.toLowerCase().replace(/\s+/g, '-'),
+      index: data.name.toLowerCase().replace(/\s+/g, "-"),
       name: data.name,
       cost: {
         quantity: data.price,
-        unit: 'gp',
+        unit: "gp",
       },
       type: data.type,
       equipment_category: { index: data.type.toLowerCase(), name: data.type },
@@ -260,22 +264,29 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
       defensebonus: data.defensebonus,
       notes: data.notes,
       equipped: false,
-      source: 'custom',
-      weapon_category: data.type === 'weapon' ? 'simple' : undefined,
-      weapon_range: data.type === 'weapon' ? data.distance : undefined,
-      category_range: data.type === 'weapon' ? data.distance : undefined,
-      damage: data.damage ? {
-        damage_dice: `${data.damage.dice}d${data.damage.number}`,
-        damage_type: data.damage.type ? { index: data.damage.type.toLowerCase(), name: data.damage.type } : undefined,
-      } : undefined,
-      range: data.type === 'weapon' ? { normal: 5 } : undefined,
+      source: "custom",
+      weapon_category: data.type === "weapon" ? "simple" : undefined,
+      weapon_range: data.type === "weapon" ? data.distance : undefined,
+      category_range: data.type === "weapon" ? data.distance : undefined,
+      damage: data.damage
+        ? {
+            damage_dice: `${data.damage.dice}d${data.damage.number}`,
+            damage_type: data.damage.type
+              ? {
+                  index: data.damage.type.toLowerCase(),
+                  name: data.damage.type,
+                }
+              : undefined,
+          }
+        : undefined,
+      range: data.type === "weapon" ? { normal: 5 } : undefined,
     };
 
     const sanitizedItem = sanitizeForFirebase(item);
     await onAdd(sanitizedItem);
 
     const selectedHomebrew = filteredHomebrews.find(
-      (hb) => hb.name === data.name
+      (hb) => hb.name === data.name,
     );
 
     if (!selectedHomebrew && campaignId) {
@@ -308,7 +319,9 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     return homebrews.filter((hb) => {
       return (
         hb.itemType === "item" &&
-        hb.name.toLowerCase().includes(debouncedHomebrewSearchQuery.toLowerCase())
+        hb.name
+          .toLowerCase()
+          .includes(debouncedHomebrewSearchQuery.toLowerCase())
       );
     });
   }, [homebrews, debouncedHomebrewSearchQuery]);
@@ -319,17 +332,32 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
     if (homebrew.item) {
       setValue("name", homebrew.item.name, { shouldDirty: true });
       setValue("type", homebrew.item.type, { shouldDirty: true });
-      setValue("price", homebrew.item.cost?.quantity || 0, { shouldDirty: true });
-      setValue("distance", homebrew.item.weapon_range || homebrew.item.category_range || "melee", { shouldDirty: true });
-      const damageDiceMatch = homebrew.item.damage?.damage_dice?.match(/^(\d+)d(\d+)$/i);
+      setValue("price", homebrew.item.cost?.quantity || 0, {
+        shouldDirty: true,
+      });
+      setValue(
+        "distance",
+        homebrew.item.weapon_range || homebrew.item.category_range || "melee",
+        { shouldDirty: true },
+      );
+      const damageDiceMatch =
+        homebrew.item.damage?.damage_dice?.match(/^(\d+)d(\d+)$/i);
       if (damageDiceMatch) {
-        setValue("damage.dice", parseInt(damageDiceMatch[1], 10), { shouldDirty: true });
-        setValue("damage.number", parseInt(damageDiceMatch[2], 10), { shouldDirty: true });
+        setValue("damage.dice", parseInt(damageDiceMatch[1], 10), {
+          shouldDirty: true,
+        });
+        setValue("damage.number", parseInt(damageDiceMatch[2], 10), {
+          shouldDirty: true,
+        });
       }
-      setValue("damage.type", homebrew.item.damage?.damage_type?.name || "", { shouldDirty: true });
+      setValue("damage.type", homebrew.item.damage?.damage_type?.name || "", {
+        shouldDirty: true,
+      });
       setValue("magic", homebrew.item.magic, { shouldDirty: true });
       setValue("attackbonus", homebrew.item.attackbonus, { shouldDirty: true });
-      setValue("defensebonus", homebrew.item.defensebonus, { shouldDirty: true });
+      setValue("defensebonus", homebrew.item.defensebonus, {
+        shouldDirty: true,
+      });
       setValue("notes", homebrew.item.notes, { shouldDirty: true });
       setValue("equipped", homebrew.item.equipped, { shouldDirty: true });
     }
@@ -389,7 +417,11 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 py-4">
-          <Tabs defaultValue="api" value={activeTab} onValueChange={(v) => setActiveTab(v as "api" | "homebrew")}>
+          <Tabs
+            defaultValue="api"
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "api" | "homebrew")}
+          >
             <TabsList className="w-full">
               <TabsTrigger value="api">API D&D 5e</TabsTrigger>
               <TabsTrigger value="homebrew">Homebrew</TabsTrigger>
@@ -453,10 +485,11 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
                                 key={item?.index || idx}
                                 type="button"
                                 onClick={() => handleSelectApiItem(item, idx)}
-                                className={`w-full text-left px-5 py-4 transition-all flex justify-between items-center group ${selectedItemIndex === idx
+                                className={`w-full text-left px-5 py-4 transition-all flex justify-between items-center group ${
+                                  selectedItemIndex === idx
                                     ? "bg-arcane-400/10 border-l-4 border-l-arcane-400"
                                     : "hover:bg-bg-surface border-l-4 border-l-transparent"
-                                  }`}
+                                }`}
                               >
                                 <div className="flex-1">
                                   <div className="flex items-center gap-3 mb-1">
@@ -526,8 +559,7 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
                             Nenhum item encontrado para "{debouncedSearchQuery}"
                           </p>
                           <p className="text-xs text-text-tertiary mt-1">
-                            Tente termos como "sword", "armor",
-                            "shield"...
+                            Tente termos como "sword", "armor", "shield"...
                           </p>
                         </div>
                       )}
@@ -603,7 +635,9 @@ export default function AddItemDialog({ onAdd, campaignId }: AddItemDialogProps)
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-semibold text-sm">{homebrew.name}</span>
+                              <span className="font-semibold text-sm">
+                                {homebrew.name}
+                              </span>
                               <Badge className="text-[10px] bg-nature-400/20 text-nature-400">
                                 Custom
                               </Badge>

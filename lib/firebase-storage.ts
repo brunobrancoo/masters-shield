@@ -14,9 +14,9 @@ import {
   queryEqual,
 } from "firebase/firestore";
 import { db } from "./firebase-config";
-import type { Monster, PlayableCharacter, NPC, Homebrew } from "@/lib/interfaces/interfaces";
+import type { Monster, PlayableCharacter, NPC, Homebrew } from "@/lib/schemas";
 import { generateInviteCode } from "./utils/invite-code";
-import { sanitizeForFirebase } from "@/lib/interfaces/interfaces";
+import { sanitizeForFirebase } from "./character-utils";
 
 export interface Campaign {
   id: string;
@@ -74,7 +74,9 @@ export async function joinCampaign(
   });
 }
 
-export async function getCampaign(campaignId: string): Promise<Campaign | null> {
+export async function getCampaign(
+  campaignId: string,
+): Promise<Campaign | null> {
   const campaignRef = doc(db, "campaigns", campaignId);
   const snapshot = await getDoc(campaignRef);
   if (!snapshot.exists()) return null;
@@ -101,10 +103,16 @@ export async function getPlayableCharacter(
   campaignId: string,
   playableCharacterId: string,
 ): Promise<PlayableCharacter | null> {
-  const playableCharacterRef = doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId);
+  const playableCharacterRef = doc(
+    db,
+    "campaigns",
+    campaignId,
+    "playableCharacters",
+    playableCharacterId,
+  );
   const snapshot = await getDoc(playableCharacterRef);
   return snapshot.exists()
-    ? ({ id: snapshot.id, ...snapshot.data() }) as PlayableCharacter
+    ? ({ id: snapshot.id, ...snapshot.data() } as PlayableCharacter)
     : null;
 }
 
@@ -149,7 +157,9 @@ export async function deletePlayableCharacter(
   campaignId: string,
   playableCharacterId: string,
 ): Promise<void> {
-  await deleteDoc(doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId));
+  await deleteDoc(
+    doc(db, "campaigns", campaignId, "playableCharacters", playableCharacterId),
+  );
 }
 
 export function getMonsters(campaignId: string) {
@@ -227,7 +237,10 @@ export async function updateNPC(
   npcId: string,
   updates: Partial<NPC>,
 ): Promise<void> {
-  await updateDoc(doc(db, "campaigns", campaignId, "npcs", npcId), sanitizeForFirebase(updates));
+  await updateDoc(
+    doc(db, "campaigns", campaignId, "npcs", npcId),
+    sanitizeForFirebase(updates),
+  );
 }
 
 export async function deleteNPC(

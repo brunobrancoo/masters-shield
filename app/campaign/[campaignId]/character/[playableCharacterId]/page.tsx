@@ -9,7 +9,7 @@ import type {
   Item,
   Buff,
   Spell,
-} from "@/lib/interfaces/interfaces";
+} from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import {
@@ -35,7 +35,7 @@ import PlayerDebuffsSection from "@/components/player-debuffs-section";
 import PlayerNotesSection from "@/components/player-notes-section";
 import { updatePlayableCharacterOrSet } from "@/lib/firebase-storage";
 import { PlayerProviders } from "@/app/campaign/[campaignId]/player-providers";
-import { sanitizeForFirebase } from "@/lib/interfaces/interfaces";
+import { sanitizeForFirebase } from "@/lib/character-utils";
 
 function CharacterSheetContent({
   campaignId,
@@ -93,7 +93,7 @@ function CharacterSheetContent({
 
   useEffect(() => {
     const foundPlayableCharacter = gameData.playableCharacters.find(
-      (p) => p.id === playableCharacterId,
+      (p: any) => p.id === playableCharacterId,
     );
     setPlayableCharacter(foundPlayableCharacter);
     if (foundPlayableCharacter) {
@@ -101,7 +101,9 @@ function CharacterSheetContent({
     }
   }, [playableCharacterId, gameData]);
 
-  const updatePlayableCharacter = async (updates: Partial<PlayableCharacter>) => {
+  const updatePlayableCharacter = async (
+    updates: Partial<PlayableCharacter>,
+  ) => {
     if (!playableCharacter || !contextCampaignId || !playableCharacter.id) {
       console.error("Cannot update playableCharacter: missing data", {
         playableCharacter: !!playableCharacter,
@@ -137,9 +139,7 @@ function CharacterSheetContent({
           "Erro: Personagem não encontrado no banco de dados. Por favor, recarregue a página.",
         );
       } else {
-        alert(
-          "Erro ao atualizar personagem. A operação foi cancelada.",
-        );
+        alert("Erro ao atualizar personagem. A operação foi cancelada.");
       }
       return false;
     }
@@ -184,10 +184,13 @@ function CharacterSheetContent({
     switch (resourceType) {
       case "sorceryPoints":
         if (classIndex !== "sorcerer") return;
-        const sorceryMax = (playableCharacter as any).sorceryPoints?.sorceryPoints?.max;
+        const sorceryMax = (playableCharacter as any).sorceryPoints
+          ?.sorceryPoints?.max;
         if (!sorceryMax) return;
-        const sorceryCurrent = (playableCharacter as any).sorceryPoints?.sorceryPoints?.current ?? 0;
-        const newSorceryValue = sorceryCurrent === value ? 0 : Math.min(value, sorceryMax);
+        const sorceryCurrent =
+          (playableCharacter as any).sorceryPoints?.sorceryPoints?.current ?? 0;
+        const newSorceryValue =
+          sorceryCurrent === value ? 0 : Math.min(value, sorceryMax);
         updatePlayableCharacter({
           sorceryPoints: {
             sorceryPoints: { current: newSorceryValue, max: sorceryMax },
@@ -199,7 +202,8 @@ function CharacterSheetContent({
         if (classIndex !== "monk") return;
         const kiMax = (playableCharacter as any).kiPoints?.kiPoints?.max;
         if (!kiMax) return;
-        const kiCurrent = (playableCharacter as any).kiPoints?.kiPoints?.current ?? 0;
+        const kiCurrent =
+          (playableCharacter as any).kiPoints?.kiPoints?.current ?? 0;
         const newKiValue = kiCurrent === value ? 0 : Math.min(value, kiMax);
         updatePlayableCharacter({
           kiPoints: {
@@ -212,8 +216,10 @@ function CharacterSheetContent({
         if (classIndex !== "barbarian") return;
         const rageMax = (playableCharacter as any).rages?.rages?.max;
         if (!rageMax) return;
-        const rageCurrent = (playableCharacter as any).rages?.rages?.current ?? 0;
-        const newRageValue = rageCurrent === value ? 0 : Math.min(value, rageMax);
+        const rageCurrent =
+          (playableCharacter as any).rages?.rages?.current ?? 0;
+        const newRageValue =
+          rageCurrent === value ? 0 : Math.min(value, rageMax);
         updatePlayableCharacter({
           rages: {
             rages: { current: newRageValue, max: rageMax },
@@ -223,9 +229,12 @@ function CharacterSheetContent({
 
       case "inspiration":
         if (classIndex !== "bard") return;
-        const inspMax = (playableCharacter as any).inspiration?.inspiration?.max ?? 1;
-        const inspCurrent = (playableCharacter as any).inspiration?.inspiration?.current ?? 0;
-        const newInspValue = inspCurrent === value ? 0 : Math.min(value, inspMax);
+        const inspMax =
+          (playableCharacter as any).inspiration?.inspiration?.max ?? 1;
+        const inspCurrent =
+          (playableCharacter as any).inspiration?.inspiration?.current ?? 0;
+        const newInspValue =
+          inspCurrent === value ? 0 : Math.min(value, inspMax);
         updatePlayableCharacter({
           inspiration: {
             inspiration: { current: newInspValue, max: inspMax },
@@ -236,8 +245,12 @@ function CharacterSheetContent({
       case "channelDivinity":
         if (playableCharacter.level < 2) return;
         if (classIndex !== "paladin") return;
-        const cdMax = (playableCharacter as any).channelDivinityCharges?.channelDivinityCharges?.max ?? 1;
-        const cdCurrent = (playableCharacter as any).channelDivinityCharges?.channelDivinityCharges?.current ?? 0;
+        const cdMax =
+          (playableCharacter as any).channelDivinityCharges
+            ?.channelDivinityCharges?.max ?? 1;
+        const cdCurrent =
+          (playableCharacter as any).channelDivinityCharges
+            ?.channelDivinityCharges?.current ?? 0;
         const newCdValue = cdCurrent === value ? 0 : Math.min(value, cdMax);
         updatePlayableCharacter({
           channelDivinityCharges: {
@@ -296,7 +309,8 @@ function CharacterSheetContent({
     if (!playableCharacter) return;
 
     // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    const currentSpellList =
+      playableCharacter.spellList || playableCharacter.spells || [];
     await updatePlayableCharacter({
       spellList: [...currentSpellList, spell],
     });
@@ -306,7 +320,8 @@ function CharacterSheetContent({
     if (!playableCharacter) return;
 
     // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    const currentSpellList =
+      playableCharacter.spellList || playableCharacter.spells || [];
     await updatePlayableCharacter({
       spellList: currentSpellList.filter((_, i) => i !== index),
     });
@@ -316,7 +331,8 @@ function CharacterSheetContent({
     if (!playableCharacter) return;
 
     // Use spellList if available, otherwise fall back to legacy spells
-    const currentSpellList = playableCharacter.spellList || playableCharacter.spells || [];
+    const currentSpellList =
+      playableCharacter.spellList || playableCharacter.spells || [];
     const newSpellList = [...currentSpellList];
     newSpellList[index] = updatedSpell;
     await updatePlayableCharacter({
@@ -527,10 +543,7 @@ function CharacterSheetContent({
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem
-                value="spells"
-                className="rounded-lg px-4 bg-card"
-              >
+              <AccordionItem value="spells" className="rounded-lg px-4 bg-card">
                 <AccordionTrigger className="text-lg font-semibold hover:no-underline">
                   Magias
                 </AccordionTrigger>

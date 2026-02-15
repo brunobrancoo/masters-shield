@@ -126,7 +126,7 @@ export function useRace(index: string) {
       return graphqlClient.request(GetRaceDocument, { index });
     },
     enabled: !!index,
-  }) as { data: any };
+  });
 }
 
 export function useBackground(index: string) {

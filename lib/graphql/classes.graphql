@@ -3,20 +3,6 @@ query Classes {
     index
     name
     hit_die
-    proficiency_choices {
-      choose
-      type
-      from {
-        options {
-          item {
-            ... on Proficiency {
-              index
-              name
-            }
-          }
-        }
-      }
-    }
   }
 }
 

@@ -54,7 +54,7 @@ export class ActionResult {
   constructor(
     public readonly rawRoll: { total: number; rolls: number[] },
     public readonly modifiers: { value: number; source: string }[],
-    public readonly finalResult: number
+    public readonly finalResult: number,
   ) {}
 
   /**
@@ -80,7 +80,7 @@ export class Action {
 
   constructor(
     private readonly actor: PlayableCharacter | Monster,
-    private readonly type: ActionType
+    private readonly type: ActionType,
   ) {}
 
   public setWeapon(weapon: Item): this {
@@ -93,7 +93,9 @@ export class Action {
 
   public setSkill(skill: string): this {
     if (this.type !== "skill_check") {
-      throw new Error("setSkill só pode ser usado em ações do tipo 'skill_check'.");
+      throw new Error(
+        "setSkill só pode ser usado em ações do tipo 'skill_check'.",
+      );
     }
     this.skill = skill;
     return this;
@@ -101,7 +103,9 @@ export class Action {
 
   public setAbility(ability: string): this {
     if (this.type !== "saving_throw") {
-      throw new Error("setAbility só pode ser usado em ações do tipo 'saving_throw'.");
+      throw new Error(
+        "setAbility só pode ser usado em ações do tipo 'saving_throw'.",
+      );
     }
     this.ability = ability;
     return this;
@@ -123,7 +127,7 @@ export class Action {
     if (this.type === "attack") {
       if (!this.weapon) throw new Error("Arma não definida para o ataque.");
       if (!target) throw new Error("Alvo não definido para o ataque.");
-      
+
       // Lógica para modificador de atributo (ex: Força ou Destreza)
       // TODO: Implementar um método em Player/Monster para buscar o modificador do atributo
       // const attributeMod = this.actor.getAttributeModifier(this.weapon.attribute);
@@ -147,7 +151,8 @@ export class Action {
     }
 
     // 4. Cálculo do resultado final
-    const finalResult = roll.total + modifiers.reduce((sum, mod) => sum + mod.value, 0);
+    const finalResult =
+      roll.total + modifiers.reduce((sum, mod) => sum + mod.value, 0);
 
     // 5. Retorna o objeto de resultado
     return new ActionResult(roll, modifiers, finalResult);

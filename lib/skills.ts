@@ -1,3 +1,5 @@
+import { Attributes } from "./schemas";
+
 // D&D 5e Skills mapped to their ability scores
 export const SKILLS = {
   acrobatics: { name: "Acrobatics", attribute: "dex" },
@@ -182,12 +184,12 @@ export const calculateSpellDC = (
   level: number,
   spellcastingAbility: keyof typeof ATTRIBUTE_NAMES,
   attributes: {
-    for: number;
-    des: number;
+    str: number;
+    dex: number;
     con: number;
     int: number;
-    sab: number;
-    car: number;
+    wis: number;
+    cha: number;
   },
 ): number => {
   const proficiency = getProficiencyBonus(level);
@@ -201,14 +203,7 @@ export const calculateSpellDC = (
 export const calculateSpellAttack = (
   level: number,
   spellcastingAbility: keyof typeof ATTRIBUTE_NAMES,
-  attributes: {
-    for: number;
-    des: number;
-    con: number;
-    int: number;
-    sab: number;
-    car: number;
-  },
+  attributes: Attributes,
 ): number => {
   const proficiency = getProficiencyBonus(level);
   const abilityMod = calculateModifier(
