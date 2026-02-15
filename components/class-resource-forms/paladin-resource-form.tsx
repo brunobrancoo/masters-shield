@@ -36,12 +36,12 @@ export default function PaladinResourceForm({
       });
     } else {
       setValue("channelDivinityCharges", {
-        current: classSpecific?.channel_divinity_charges || 0,
-        max: classSpecific?.channel_divinity_charges || 0,
+        current: 1,
+        max: 1,
       });
       setChannelDivinityCharges({
-        current: classSpecific?.channel_divinity_charges || 0,
-        max: classSpecific?.channel_divinity_charges || 0,
+        current: 1,
+        max: 1,
       });
     }
   }, [classSpecific, level, setValue]);
@@ -53,6 +53,8 @@ export default function PaladinResourceForm({
   const hasChannelDivinity =
     classSpecific.channel_divinity_charges !== undefined &&
     classSpecific.channel_divinity_charges !== null;
+
+  console.log("class specific: ", classSpecific);
 
   return (
     <div className="space-y-4">

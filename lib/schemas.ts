@@ -281,6 +281,9 @@ export const basePlayableCharacterSchema = z.object({
   ac: z.coerce.number().min(1),
   initiativeBonus: z.coerce.number().default(0),
 
+  classProficiencies: z.array(z.string()),
+  passivePerception: z.coerce.number(),
+
   notes: z.string().default(""),
   buffs: z.array(buffSchema).default([]),
   debuffs: z.array(buffSchema).default([]),
@@ -299,7 +302,6 @@ export const sorcererCharacterSchema = basePlayableCharacterSchema.extend({
 
 export const paladinCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("paladin"),
-  channelDivinityCharges: pointPoolSchema.optional(),
   spellSlots: spellSlotsSchema.optional(),
   spellsKnown: z.array(z.string()).default([]), // Fixed list (Oath spells usually)
   spellAttack: z.coerce.number(),
@@ -316,8 +318,8 @@ export const monkCharacterSchema = basePlayableCharacterSchema.extend({
   spellSlots: spellSlotsSchema.optional(), // Monks technically can't cast spells in 5e RAW (unless specific subclass), but kept for flexibility
   spellsKnown: z.array(z.string()).default([]),
   martialArtsDie: martialArtsDieSchema,
-  spellAttack: z.coerce.number(),
-  spellCD: z.coerce.number(),
+  spellAttack: z.coerce.number().optional(),
+  spellCD: z.coerce.number().optional(),
 });
 
 export const barbarianCharacterSchema = basePlayableCharacterSchema.extend({
@@ -363,7 +365,7 @@ export const rogueCharacterSchema = basePlayableCharacterSchema.extend({
 export const fighterCharacterSchema = basePlayableCharacterSchema.extend({
   classIndex: z.literal("fighter"),
   actionSurges: pointPoolSchema.optional(),
-  intomitables: pointPoolSchema.optional(),
+  indomitables: pointPoolSchema.optional(),
 });
 
 export const rangerCharacterSchema = basePlayableCharacterSchema.extend({

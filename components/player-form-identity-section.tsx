@@ -32,6 +32,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { SpellSlots } from "@/lib/schemas";
 
 interface PlayerFormIdentitySectionProps {
   control: Control<any>;
@@ -170,6 +171,20 @@ export default function PlayerFormIdentitySection({
 
     if (levelData) {
       // 3. Handle Spell Slots (Using your utility!)
+      if (watchedClassIndex === "monk") {
+        const monkSpellSlots: SpellSlots = {
+          1: { current: 0, max: 0 },
+          2: { current: 0, max: 0 },
+          3: { current: 0, max: 0 },
+          4: { current: 0, max: 0 },
+          5: { current: 0, max: 0 },
+          6: { current: 0, max: 0 },
+          7: { current: 0, max: 0 },
+          8: { current: 0, max: 0 },
+          9: { current: 0, max: 0 },
+        };
+        setValue("spellSlots", monkSpellSlots);
+      }
       if (levelData.spellcasting) {
         const slots = convertLevelSpellcasting(levelData.spellcasting);
         setValue("spellSlots", slots);

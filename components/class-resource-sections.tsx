@@ -98,11 +98,9 @@ export function SorceryPointsSection({
 }
 
 interface KiPointsSectionProps {
-  kiPoints?: { kiPoints?: number; kiPoints_max?: number };
-  onChange: (value: { kiPoints: number; kiPoints_max: number }) => void;
-  setKiPoints: Dispatch<
-    SetStateAction<{ kiPoints: number; kiPoints_max: number }>
-  >;
+  kiPoints?: PointPool;
+  onChange: (value: PointPool) => void;
+  setKiPoints: Dispatch<SetStateAction<PointPool>>;
 }
 
 export function KiPointsSection({
@@ -110,8 +108,8 @@ export function KiPointsSection({
   onChange,
   setKiPoints,
 }: KiPointsSectionProps) {
-  const value = kiPoints?.kiPoints ?? 0;
-  const maxValue = kiPoints?.kiPoints_max ?? value;
+  const value = kiPoints?.current ?? 0;
+  const maxValue = kiPoints?.max ?? value;
 
   return (
     <PointPoolResource
@@ -119,12 +117,12 @@ export function KiPointsSection({
       value={value}
       maxValue={maxValue}
       onChange={(v) => {
-        onChange({ kiPoints: v, kiPoints_max: maxValue });
-        setKiPoints({ kiPoints: v, kiPoints_max: maxValue });
+        onChange({ current: v, max: maxValue });
+        setKiPoints({ current: v, max: maxValue });
       }}
       onChangeMax={(m) => {
-        onChange({ kiPoints: value, kiPoints_max: m });
-        setKiPoints({ kiPoints: value, kiPoints_max: m });
+        onChange({ current: value, max: m });
+        setKiPoints({ current: value, max: m });
       }}
       icon={
         <svg

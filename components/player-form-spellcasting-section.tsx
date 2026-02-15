@@ -41,6 +41,7 @@ export default function PlayerFormSpellcastingSection({
 }: PlayerFormSpellcastingSectionProps) {
   const getCasterClasses = () => [
     "bard",
+    "monk",
     "cleric",
     "druid",
     "sorcerer",
@@ -63,10 +64,12 @@ export default function PlayerFormSpellcastingSection({
     if (
       !isCaster ||
       !spellcastingAbility ||
-      !classData?.class?.class_levels[level].spellcasting ||
+      !classData?.class?.class_levels[level - 1].spellcasting ||
       loadingClass
     )
       return;
+
+    console.log("level: ", level);
     const spellDC = calculateSpellDC(
       level,
       spellcastingAbility as any,
@@ -84,6 +87,7 @@ export default function PlayerFormSpellcastingSection({
     level,
     JSON.stringify(attributes),
     proficiencyBonus,
+    classIndex,
     isCaster,
     loadingClass,
   ]);
@@ -94,7 +98,7 @@ export default function PlayerFormSpellcastingSection({
     setValue("spellSlots", newSpellSlots);
   };
 
-  if (!isCaster) {
+  if (!isCaster && classIndex !== "monk") {
     return null;
   }
 
