@@ -1,12 +1,18 @@
 "use client";
-import { createContext, SetStateAction, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  SetStateAction,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 import { useGame } from "./game-context";
 import {
   InitiativeEntry,
   Monster,
   NPC,
   PlayableCharacter,
-} from "@/lib/interfaces/interfaces";
+} from "@/lib/schemas";
 import { DiceRoller } from "@/lib/classes/dices";
 import { getAttMod } from "@/lib/utils";
 import { InitiativeRoll } from "@/lib/combat-storage";
@@ -47,7 +53,9 @@ export interface CombatContextType {
   addExistingEntry: () => void;
   getSourceList: () => Monster[] | PlayableCharacter[] | NPC[];
   sourceType: "monster" | "playableCharacter" | "npc";
-  setSourceType: (value: SetStateAction<"monster" | "playableCharacter" | "npc">) => void;
+  setSourceType: (
+    value: SetStateAction<"monster" | "playableCharacter" | "npc">,
+  ) => void;
   addAllPlayers: () => void;
   addAllNPCs: () => void;
   addAllMonsters: () => void;
@@ -56,7 +64,13 @@ export interface CombatContextType {
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
 
-export function CombatProvider({ children, campaignId }: { children: React.ReactNode; campaignId?: string }) {
+export function CombatProvider({
+  children,
+  campaignId,
+}: {
+  children: React.ReactNode;
+  campaignId?: string;
+}) {
   const [round, setRound] = useState(1);
   const [onCombat, setOnCombat] = useState(false);
   const [currentTurn, setCurrentTurn] = useState(0);
@@ -69,9 +83,9 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   const [customMaxHp, setCustomMaxHp] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState("");
-  const [sourceType, setSourceType] = useState<"monster" | "playableCharacter" | "npc">(
-    "monster",
-  );
+  const [sourceType, setSourceType] = useState<
+    "monster" | "playableCharacter" | "npc"
+  >("monster");
   const [initiativeRolls, setInitiativeRolls] = useState<InitiativeRoll[]>([]);
 
   const { handleSavePlayer, handleSaveMonster, handleUpdateNPC, gameData } =
@@ -105,7 +119,14 @@ export function CombatProvider({ children, campaignId }: { children: React.React
     }).catch((error) => {
       console.error("Error saving combat data:", error);
     });
-  }, [campaignId, round, onCombat, currentTurn, initiativeEntries, initiativeRolls]);
+  }, [
+    campaignId,
+    round,
+    onCombat,
+    currentTurn,
+    initiativeEntries,
+    initiativeRolls,
+  ]);
 
   const resetAddForm = () => {
     setShowAddForm(false);
@@ -137,7 +158,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
     let newEntry: InitiativeEntry | null = null;
 
     if (sourceType === "monster") {
-      const monster = monsters.find((m) => m.id === selectedSourceId);
+      const monster = monsters.find((m: any) => m.id === selectedSourceId);
       if (monster) {
         newEntry = {
           id: monster.id,
@@ -151,7 +172,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
         };
       }
     } else if (sourceType === "playableCharacter") {
-      const player = players.find((p) => p.id === selectedSourceId);
+      const player = players.find((p: any) => p.id === selectedSourceId);
       if (player) {
         newEntry = {
           id: player.id,
@@ -165,7 +186,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
         };
       }
     } else if (sourceType === "npc") {
-      const npc = npcs.find((n) => n.id === selectedSourceId);
+      const npc = npcs.find((n: any) => n.id === selectedSourceId);
       if (npc) {
         newEntry = {
           id: npc.id,
@@ -278,21 +299,23 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   }
 
   function addAllPlayers() {
-    const entries: InitiativeEntry[] = gameData.playableCharacters.map((player) => {
-      return {
-        id: player.id,
-        dexMod: getAttMod(player.attributes.des),
-        name: player.name,
-        initiative: Math.floor((player.attributes.des - 10) / 2),
-        hp: player.maxHp || 0,
-        maxHp: player.maxHp || 0,
-        type: "playableCharacter",
-      };
-    });
+    const entries: InitiativeEntry[] = gameData.playableCharacters.map(
+      (player: PlayableCharacter) => {
+        return {
+          id: player.id,
+          dexMod: getAttMod(player.attributes.dex),
+          name: player.name,
+          initiative: Math.floor((player.attributes.dex - 10) / 2),
+          hp: player.maxHp || 0,
+          maxHp: player.maxHp || 0,
+          type: "playableCharacter",
+        };
+      },
+    );
     setInitiativeEntries((prev) => [...prev, ...entries]);
   }
   function addAllNPCs() {
-    const entries: InitiativeEntry[] = gameData.npcs.map((npc) => {
+    const entries: InitiativeEntry[] = gameData.npcs.map((npc: any) => {
       return {
         id: npc.id,
         dexMod: getAttMod(npc.attributes.des),
@@ -307,7 +330,7 @@ export function CombatProvider({ children, campaignId }: { children: React.React
   }
 
   function addAllMonsters() {
-    const entries: InitiativeEntry[] = gameData.monsters.map((monster) => {
+    const entries: InitiativeEntry[] = gameData.monsters.map((monster: any) => {
       return {
         id: monster.id,
         dexMod: getAttMod(monster.attributes.des),

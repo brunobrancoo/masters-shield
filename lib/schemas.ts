@@ -9,6 +9,17 @@ export const attributesSchema = z.object({
   cha: z.number().min(1).max(30),
 });
 
+export const initiativeEntrySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  initiative: z.coerce.number(),
+  dexMod: z.coerce.number(),
+  hp: z.coerce.number(),
+  maxHp: z.coerce.number(),
+  type: z.enum(["monster", "playableCharacter", "npc", "custom"]),
+  sourceId: z.string().optional(),
+});
+
 export const monsterSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   type: z.string().min(1, "Tipo é obrigatório"),
@@ -456,3 +467,4 @@ export type PointPool = z.infer<typeof pointPoolSchema>;
 export type SpellSlots = z.infer<typeof spellSlotsSchema>;
 export type Attributes = z.infer<typeof attributesSchema>;
 export type Homebrew = z.infer<typeof homebrewSchema>;
+export type InitiativeEntry = z.infer<typeof initiativeEntrySchema>;
