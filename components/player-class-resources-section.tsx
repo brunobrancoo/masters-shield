@@ -1,7 +1,7 @@
 import type { PlayableCharacter } from "@/lib/schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DiceIcon } from "@/components/icons";
-import { Flame, Wind, Sword, Music, Sun } from "lucide-react";
+import { DiceIcon, SwordIcon } from "@/components/icons";
+import { Flame, Wind, Sword, Music, Sun, Shield } from "lucide-react";
 
 interface PlayerClassResourcesSectionProps {
   playableCharacter: PlayableCharacter;
@@ -9,14 +9,28 @@ interface PlayerClassResourcesSectionProps {
 }
 
 // Class resource configurations
-const CLASS_RESOURCES: Record<
+export const CLASS_RESOURCES: Record<
   string,
   { type: string; name: string; icon: React.ReactNode; color: string }[]
 > = {
+  fighter: [
+    {
+      type: "actionSurges",
+      name: "Action Surges",
+      icon: <SwordIcon className="w-6 h-6" />,
+      color: "martial",
+    },
+    {
+      type: "indomitables",
+      name: "Indomitables",
+      icon: <Shield className="w-6 h-6" />,
+      color: "martial",
+    },
+  ],
   sorcerer: [
     {
       type: "sorceryPoints",
-      name: "Pontos de Feitiçaria",
+      name: "Sorcery Points",
       icon: <Flame className="w-6 h-6" />,
       color: "purple",
     },
@@ -59,6 +73,14 @@ const CLASS_RESOURCES: Record<
       name: "Canalizar Divindade",
       icon: <Sun className="w-6 h-6" />,
       color: "divine",
+    },
+  ],
+  rogue: [
+    {
+      type: "sneakAttackDice",
+      name: "Dado de ataque furtivo",
+      icon: <Sun className="w-6 h-6" />,
+      color: "black",
     },
   ],
 };
@@ -115,55 +137,89 @@ export default function PlayerClassResourcesSection({
     return null;
   }
 
-  // Get current/max values based on resource type
+  // Get all current/max values for the class as a record
   const getResourceValues = (
-    type: string,
-  ): { current: number; max: number } => {
-    switch (type) {
-      case "sorceryPoints":
+    classIndex: string,
+  ): Record<string, { current: number; max: number }> => {
+    const char = playableCharacter as any;
+
+    switch (classIndex) {
+      case "fighter":
         return {
-          current:
-            (playableCharacter as any).sorceryPoints?.sorceryPoints?.current ??
-            0,
-          max:
-            (playableCharacter as any).sorceryPoints?.sorceryPoints?.max ?? 0,
+          actionSurges: {
+            current: char.actionSurges?.current ?? 0,
+            max: char.actionSurges?.max ?? 0,
+          },
+          indomitables: {
+            current: char.indomitables?.current ?? 0,
+            max: char.indomitables?.max ?? 0,
+          },
         };
-      case "kiPoints":
+      case "sorcerer":
         return {
-          current: (playableCharacter as any).kiPoints?.kiPoints?.current ?? 0,
-          max: (playableCharacter as any).kiPoints?.kiPoints?.max ?? 0,
+          sorceryPoints: {
+            current: char.sorceryPoints?.current ?? 0,
+            max: char.sorceryPoints?.max ?? 0,
+          },
         };
-      case "rages":
+      case "monk":
         return {
-          current: (playableCharacter as any).rages?.rages?.current ?? 0,
-          max: (playableCharacter as any).rages?.rages?.max ?? 0,
+          kiPoints: {
+            current: char.kiPoints?.current ?? 0,
+            max: char.kiPoints?.max ?? 0,
+          },
         };
-      case "inspiration":
+      case "barbarian":
         return {
-          current:
-            (playableCharacter as any).inspiration?.inspiration?.current ?? 0,
-          max: (playableCharacter as any).inspiration?.inspiration?.max ?? 1,
+          rages: {
+            current: char.rages?.current ?? 0,
+            max: char.rages?.max ?? 0,
+          },
         };
-      case "channelDivinity":
+      case "bard":
+        return {
+          inspiration: {
+            current: char.inspiration?.current ?? 0,
+            max: char.inspiration?.max ?? 1,
+          },
+        };
+      case "cleric":
         // Only show for level 2+ clerics/paladins
-        if (playableCharacter.level < 2) return { current: 0, max: 0 };
+        if (playableCharacter.level < 2) {
+          return { channelDivinity: { current: 0, max: 0 } };
+        }
         return {
-          current:
-            (playableCharacter as any).channelDivinityCharges
-              ?.channelDivinityCharges?.current ?? 0,
-          max:
-            (playableCharacter as any).channelDivinityCharges
-              ?.channelDivinityCharges?.max ?? 1,
+          channelDivinity: {
+            current: char.channelDivinityCharges?.current ?? 0,
+            max: char.channelDivinityCharges?.max ?? 1,
+          },
+        };
+      case "paladin":
+        // Paladin logic added for consistency (assuming similar structure to cleric)
+        if (playableCharacter.level < 2) {
+          return { channelDivinity: { current: 0, max: 0 } };
+        }
+        return {
+          channelDivinity: {
+            current: char.channelDivinityCharges?.current ?? 0,
+            max: char.channelDivinityCharges?.max ?? 1,
+          },
         };
       default:
-        return { current: 0, max: 0 };
+        return {};
     }
   };
+
+  const allResourceValues = getResourceValues(classKey);
 
   return (
     <>
       {resources.map((resource) => {
-        const { current, max } = getResourceValues(resource.type);
+        // Look up the specific resource values using the resource type
+        const { current, max } = allResourceValues[resource.type] || {
+          current: 0,
+          max: 0,
+        };
 
         // Skip if max is 0 (e.g., channel divinity at level 1)
         if (max === 0) return null;
@@ -173,7 +229,7 @@ export default function PlayerClassResourcesSection({
         return (
           <Card
             key={resource.type}
-            className={`metal-border ${styles.bg} ${styles.border}`}
+            className={`metal-border ${styles.bg} ${styles.border} my-4`}
           >
             <CardHeader>
               <CardTitle
@@ -190,7 +246,11 @@ export default function PlayerClassResourcesSection({
                   return (
                     <button
                       key={idx}
-                      onClick={() => onResourceChange(resource.type, idx + 1)}
+                      onClick={() => {
+                        console.log("CLICKING", resource.type);
+
+                        onResourceChange(resource.type, idx + 1);
+                      }}
                       className={`w-12 h-12 rounded-full border-2 transition-all flex items-center justify-center ${
                         isActive
                           ? styles.button

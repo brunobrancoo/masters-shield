@@ -11,16 +11,15 @@ import { ReactQueryProvider } from "@/components/react-query-provider";
 
 export function MasterProviders({
   children,
-  params,
+  campaignId,
 }: {
   children: ReactNode;
-  params: Promise<{ campaignId: string }>;
+  campaignId: string;
 }) {
-  const resolvedParams = use(params);
   return (
     <ReactQueryProvider>
-      <GameProvider campaignId={resolvedParams.campaignId}>
-        <CombatProvider campaignId={resolvedParams.campaignId}>
+      <GameProvider campaignId={campaignId}>
+        <CombatProvider campaignId={campaignId}>
           <SidebarProvider>
             <div className="min-h-screen lg:flex lg:items-stretch lg:flex-row-reverse">
               <AppSidebar />

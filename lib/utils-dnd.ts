@@ -1,6 +1,6 @@
 export function calculateModifier(value: number): string {
   const mod = Math.floor((value - 10) / 2);
-  return mod >= 0 ? `+${mod}` : mod.toString();
+  return mod > 0 ? `+${mod}` : mod === 0 ? mod.toString() : mod.toString();
 }
 
 export function calculateHPModifierValue(constitution: number): number {
@@ -59,4 +59,3 @@ export function defaultSpellSlots() {
     9: 0,
   };
 }
-

@@ -63,7 +63,7 @@ export default function PlayerFormHealthSection({
     <Accordion
       type="single"
       collapsible
-      className="border border-border-default rounded-lg p-6"
+      className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg"
     >
       <AccordionItem value="health-section">
         <AccordionTrigger>
