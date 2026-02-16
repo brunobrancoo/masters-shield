@@ -24,7 +24,7 @@ export default function PlayerRaceFeaturesSection({
       <CardHeader>
         <CardTitle className="font-sans text-xl flex items-center gap-2">
           <SparklesIcon className="w-6 h-6 text-arcane-500" />
-          Traços de {race.name}
+          {race.name}
         </CardTitle>
       </CardHeader>
       <CardContent>

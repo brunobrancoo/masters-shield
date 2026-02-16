@@ -8,15 +8,14 @@ import { ReactQueryProvider } from "@/components/react-query-provider";
 
 export function PlayerProviders({
   children,
-  params,
+  campaignId,
 }: {
   children: ReactNode;
-  params: Promise<{ campaignId: string }>;
+  campaignId: string;
 }) {
-  const resolvedParams = use(params);
   return (
     <ReactQueryProvider>
-      <GameProvider campaignId={resolvedParams.campaignId}>
+      <GameProvider campaignId={campaignId}>
         <main className="min-h-screen">
           {<PlayerHeader />}
           <div className="p-4 lg:p-6">{children}</div>

@@ -25,7 +25,9 @@ import PlayerAttributesSection from "@/components/player-attributes-section";
 import PlayerSkillsCompactSection from "@/components/player-skills-compact-section";
 import PlayerCombatStatsSection from "@/components/player-combat-stats-section";
 import PlayerSpellSlotsSection from "@/components/player-spell-slots-section";
-import PlayerClassResourcesSection from "@/components/player-class-resources-section";
+import PlayerClassResourcesSection, {
+  CLASS_RESOURCES,
+} from "@/components/player-class-resources-section";
 import PlayerRaceFeaturesSection from "@/components/player-race-features-section";
 import PlayerClassFeaturesSection from "@/components/player-class-features-section";
 import { PlayerSpellsSection } from "@/components/player-spells-section";
@@ -183,45 +185,24 @@ function CharacterSheetContent({
 
   const handleClassResourceChange = (resourceType: string, value: number) => {
     if (!playableCharacter) return;
-
-    if (playableCharacter.classIndex === "sorcerer") {
-      const sorceryMax = playableCharacter.sorceryPoints?.max || 0;
-      const sorceryCurrent = playableCharacter.sorceryPoints?.current || 0;
-      const newSorceryValue =
-        sorceryCurrent === value ? 0 : Math.min(value, sorceryMax);
-      updatePlayableCharacter({
-        sorceryPoints: { current: newSorceryValue, max: sorceryMax },
-      });
-    } else if (playableCharacter.classIndex === "monk") {
-      const kiMax = playableCharacter.kiPoints?.max || 0;
-      const kiCurrent = playableCharacter.kiPoints?.current || 0;
-      const newKiValue = kiCurrent === value ? 0 : Math.min(value, kiMax);
-      updatePlayableCharacter({
-        kiPoints: { current: newKiValue, max: kiMax },
-      });
-    } else if (playableCharacter.classIndex === "barbarian") {
-      const rageMax = playableCharacter.rages?.max || 0;
-      const rageCurrent = playableCharacter.rages?.current || 0;
-      const newRageValue = rageCurrent === value ? 0 : Math.min(value, rageMax);
-      updatePlayableCharacter({
-        rages: { current: newRageValue, max: rageMax },
-      });
-    } else if (playableCharacter.classIndex === "bard") {
-      const inspMax = playableCharacter.inspiration?.max ?? 1;
-      const inspCurrent = playableCharacter.inspiration?.current ?? 0;
-      const newInspValue = inspCurrent === value ? 0 : Math.min(value, inspMax);
-      updatePlayableCharacter({
-        inspiration: { current: newInspValue, max: inspMax },
-      });
-    } else if (playableCharacter.classIndex === "cleric") {
-      const cdMax = playableCharacter.channelDivinityCharges?.max ?? 1;
-      const cdCurrent = playableCharacter.channelDivinityCharges?.current ?? 0;
-      const newCdValue = cdCurrent === value ? 0 : Math.min(value, cdMax);
-      updatePlayableCharacter({
-        channelDivinityCharges: { current: newCdValue, max: cdMax },
-      });
-    } else if (playableCharacter.classIndex === "paladin") {
-    }
+    const resourceFieldMap: Record<string, string> = {
+      sorceryPoints: "sorceryPoints",
+      kiPoints: "kiPoints",
+      rages: "rages",
+      inspiration: "inspiration",
+      channelDivinity: "channelDivinityCharges",
+      actionSurges: "actionSurges",
+      indomitables: "indomitables",
+    };
+    const fieldName = resourceFieldMap[resourceType];
+    if (!fieldName) return;
+    const resource = playableCharacter[fieldName as keyof PlayableCharacter];
+    if (!resource || typeof resource !== "object") return;
+    const current = (resource as any).current ?? 0;
+    const max =
+      (resource as any).max ?? (resourceType === "inspiration" ? 1 : 0);
+    const newValue = current === value ? 0 : Math.min(value, max);
+    updatePlayableCharacter({ [fieldName]: { current: newValue, max } });
   };
 
   const addItem = async (item: Item) => {
@@ -470,35 +451,41 @@ function CharacterSheetContent({
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem
-                value="spell-slots"
-                className="rounded-lg px-4 bg-card"
-              >
-                <AccordionTrigger className="text-lg font-semibold hover:no-underline">
-                  Slots de Magia
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PlayerSpellSlotsSection
-                    playableCharacter={playableCharacter}
-                    onSpellSlotChange={handleSpellSlotChange}
-                  />
-                </AccordionContent>
-              </AccordionItem>
+              {/*CONDITIONAL FROM HERE*/}
 
-              <AccordionItem
-                value="class-resources"
-                className="rounded-lg px-4 bg-card"
-              >
-                <AccordionTrigger className="text-lg font-semibold hover:no-underline">
-                  Recursos de Classe
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PlayerClassResourcesSection
-                    playableCharacter={playableCharacter}
-                    onResourceChange={handleClassResourceChange}
-                  />
-                </AccordionContent>
-              </AccordionItem>
+              {playableCharacter?.spellSlots && (
+                <AccordionItem
+                  value="spell-slots"
+                  className="rounded-lg px-4 bg-card"
+                >
+                  <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                    Slots de Magia
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <PlayerSpellSlotsSection
+                      playableCharacter={playableCharacter}
+                      onSpellSlotChange={handleSpellSlotChange}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {CLASS_RESOURCES[playableCharacter.classIndex] && (
+                <AccordionItem
+                  value="class-resources"
+                  className="rounded-lg px-4 bg-card"
+                >
+                  <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                    Recursos de Classe
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <PlayerClassResourcesSection
+                      playableCharacter={playableCharacter}
+                      onResourceChange={handleClassResourceChange}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
               <AccordionItem value="spells" className="rounded-lg px-4 bg-card">
                 <AccordionTrigger className="text-lg font-semibold hover:no-underline">
@@ -608,9 +595,7 @@ export default function CharacterSheetPage({
   const resolvedParams = use(params);
 
   return (
-    <PlayerProviders
-      params={Promise.resolve({ campaignId: resolvedParams.campaignId })}
-    >
+    <PlayerProviders campaignId={resolvedParams.campaignId}>
       <CharacterSheetContent
         campaignId={resolvedParams.campaignId}
         playableCharacterId={resolvedParams.playableCharacterId}

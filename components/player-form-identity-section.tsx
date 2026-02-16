@@ -249,7 +249,7 @@ export default function PlayerFormIdentitySection({
     <Accordion
       type="single"
       collapsible
-      className=" rounded-lg border border-border-default p-6 shadow-lg"
+      className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg"
     >
       <AccordionItem value="identity-section">
         <AccordionTrigger>
@@ -329,6 +329,9 @@ export default function PlayerFormIdentitySection({
                               // 4. Fixed key: RaceItem has 'index', not 'value'
                               key={race.index}
                               value={race.name}
+                              className={
+                                "hover:bg-black focus:bg-black data-highlighted:bg-black"
+                              }
                             >
                               {race.name}
                             </ComboboxItem>
@@ -373,6 +376,9 @@ export default function PlayerFormIdentitySection({
                               // 4. Fixed key: RaceItem has 'index', not 'value'
                               key={dndClass.index}
                               value={dndClass.name}
+                              className={
+                                "hover:bg-black focus:bg-black data-highlighted:bg-black"
+                              }
                             >
                               {dndClass.name}
                             </ComboboxItem>

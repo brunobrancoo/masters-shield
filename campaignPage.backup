@@ -15,7 +15,6 @@ export default function CampaignPage({
 }) {
   const { campaign, loading, isMaster } = useCampaign();
   const resolvedParams = use(params);
-  const campaignId = resolvedParams.campaignId;
 
   if (loading) {
     return <Loading />;
@@ -27,15 +26,15 @@ export default function CampaignPage({
 
   if (isMaster) {
     return (
-      <MasterProviders campaignId={campaignId}>
+      <MasterProviders params={params}>
         <MasterView />
       </MasterProviders>
     );
   }
 
   return (
-    <PlayerProviders campaignId={campaignId}>
-      <PlayerView campaignId={campaignId} />
+    <PlayerProviders params={params}>
+      <PlayerView campaignId={resolvedParams.campaignId} />
     </PlayerProviders>
   );
 }

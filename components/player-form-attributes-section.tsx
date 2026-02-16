@@ -30,7 +30,7 @@ export default function PlayerFormAttributesSection({
     <Accordion
       type="single"
       collapsible
-      className=" rounded-lg border border-border-default p-6 shadow-lg"
+      className="bg-bg-surface rounded-lg border border-border-default p-6 shadow-lg"
     >
       <AccordionItem value="identity-section">
         <AccordionTrigger>

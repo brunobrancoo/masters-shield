@@ -1,4 +1,3 @@
-
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -71,6 +70,205 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  :root {
+    /* ========== BASE PALETTE ========== */
+    --bg-primary: 30 15% 10%;
+    --bg-secondary: 30 12% 14%;
+    --bg-surface: 30 10% 18%;
+    --bg-elevated: 30 8% 22%;
+    --bg-inset: 30 15% 8%;
+
+    --text-primary: 40 30% 88%;
+    --text-secondary: 35 15% 60%;
+    --text-tertiary: 30 10% 42%;
+
+    --border-default: 30 12% 25%;
+    --border-strong: 35 15% 35%;
+    --border-subtle: 30 10% 18%;
+
+    /* ========== ARCHETYPE PALETTES ========== */
+
+    /* Arcane / Magic — purples and blues */
+    --arcane-50: 270 60% 95%;
+    --arcane-100: 270 55% 85%;
+    --arcane-200: 270 50% 72%;
+    --arcane-300: 270 55% 60%;
+    --arcane-400: 270 60% 50%;
+    --arcane-500: 270 65% 42%;
+    --arcane-600: 270 65% 32%;
+    --arcane-700: 270 55% 22%;
+    --arcane-glow: 270 80% 65%;
+
+    /* Divine / Healing — golds and warm whites */
+    --divine-50: 45 80% 95%;
+    --divine-100: 45 75% 85%;
+    --divine-200: 45 70% 72%;
+    --divine-300: 45 70% 60%;
+    --divine-400: 45 75% 50%;
+    --divine-500: 45 80% 42%;
+    --divine-600: 45 70% 32%;
+    --divine-700: 45 60% 22%;
+    --divine-glow: 45 90% 60%;
+
+    /* Martial / Fighter — steel, iron, blood reds */
+    --martial-50: 0 20% 95%;
+    --martial-100: 0 25% 82%;
+    --martial-200: 0 35% 65%;
+    --martial-300: 0 45% 52%;
+    --martial-400: 0 55% 45%;
+    --martial-500: 0 60% 38%;
+    --martial-600: 0 50% 28%;
+    --martial-700: 0 40% 18%;
+    --martial-steel: 220 8% 55%;
+    --martial-iron: 220 5% 40%;
+    --martial-glow: 0 70% 55%;
+
+    /* Dexterity / Rogue — teals, dark greens, shadow */
+    --dex-50: 170 40% 92%;
+    --dex-100: 170 35% 78%;
+    --dex-200: 170 40% 60%;
+    --dex-300: 170 50% 45%;
+    --dex-400: 170 55% 35%;
+    --dex-500: 170 50% 28%;
+    --dex-600: 170 40% 20%;
+    --dex-700: 170 35% 14%;
+    --dex-shadow: 200 20% 12%;
+    --dex-glow: 170 70% 50%;
+
+    /* Nature / Druid — earthy greens, bark browns */
+    --nature-50: 100 35% 92%;
+    --nature-100: 100 35% 78%;
+    --nature-200: 105 40% 60%;
+    --nature-300: 110 45% 45%;
+    --nature-400: 115 50% 35%;
+    --nature-500: 120 40% 28%;
+    --nature-600: 120 35% 20%;
+    --nature-700: 120 30% 14%;
+    --nature-bark: 30 40% 25%;
+    --nature-moss: 90 30% 30%;
+    --nature-glow: 100 60% 50%;
+
+    /* Monster / Enemy — sickly greens, dark reds, charcoal */
+    --monster-50: 0 30% 90%;
+    --monster-100: 355 40% 70%;
+    --monster-200: 350 50% 55%;
+    --monster-300: 345 55% 42%;
+    --monster-400: 340 50% 32%;
+    --monster-500: 0 60% 25%;
+    --monster-accent: 80 50% 45%;
+    --monster-glow: 0 80% 45%;
+
+    /* ========== SEMANTIC / GAME MECHANIC COLORS ========== */
+
+    /* Buff — warm gold-green, empowering */
+    --buff: 85 55% 55%;
+    --buff-subtle: 85 30% 20%;
+    --buff-text: 85 60% 75%;
+
+    /* Debuff — sickly purple-red, oppressive */
+    --debuff: 310 45% 45%;
+    --debuff-subtle: 310 25% 18%;
+    --debuff-text: 310 50% 70%;
+
+    /* Healing */
+    --healing: 140 50% 50%;
+    --healing-subtle: 140 30% 18%;
+    --healing-text: 140 55% 72%;
+
+    /* Damage — bright red-orange */
+    --damage: 10 80% 55%;
+    --damage-subtle: 10 40% 18%;
+    --damage-text: 10 80% 72%;
+
+    /* Temporary / Shield — cool blue */
+    --temp: 210 60% 55%;
+    --temp-subtle: 210 30% 18%;
+    --temp-text: 210 55% 72%;
+
+    /* ========== DAMAGE TYPE COLORS ========== */
+    --dmg-fire: 15 85% 50%;
+    --dmg-cold: 200 70% 60%;
+    --dmg-lightning: 55 90% 55%;
+    --dmg-thunder: 250 40% 55%;
+    --dmg-acid: 80 70% 45%;
+    --dmg-poison: 100 50% 35%;
+    --dmg-necrotic: 280 40% 30%;
+    --dmg-radiant: 45 90% 65%;
+    --dmg-psychic: 290 60% 60%;
+    --dmg-force: 220 60% 55%;
+    --dmg-bludgeoning: 30 10% 50%;
+    --dmg-piercing: 220 8% 60%;
+    --dmg-slashing: 0 15% 55%;
+
+    /* ========== RARITY COLORS ========== */
+    --rarity-common: 30 10% 60%;
+    --rarity-uncommon: 120 45% 45%;
+    --rarity-rare: 220 65% 55%;
+    --rarity-very-rare: 270 60% 55%;
+    --rarity-legendary: 40 85% 55%;
+    --rarity-artifact: 350 70% 50%;
+
+    /* ========== CONDITION COLORS ========== */
+    --condition-blinded: 30 5% 35%;
+    --condition-charmed: 330 60% 55%;
+    --condition-frightened: 45 70% 45%;
+    --condition-paralyzed: 55 60% 45%;
+    --condition-poisoned: 100 50% 35%;
+    --condition-stunned: 55 70% 55%;
+    --condition-unconscious: 0 0% 25%;
+    --condition-restrained: 25 50% 35%;
+    --condition-invisible: 200 30% 65%;
+    --condition-exhaustion: 20 40% 30%;
+
+    /* ========== SPACING / SIZING ========== */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-card: 6px;
+
+    /* ========== TRANSITIONS ========== */
+    --transition-fast: 100ms;
+    --transition-base: 150ms;
+    --transition-slow: 300ms;
+  }
+
+  /* ========== ARCHETYPE OVERRIDES ========== */
+  [data-archetype="arcane"] {
+    --class-accent: hsl(var(--arcane-400));
+    --class-glow: hsl(var(--arcane-glow));
+    --class-surface: hsl(var(--arcane-700));
+  }
+
+  [data-archetype="divine"] {
+    --class-accent: hsl(var(--divine-400));
+    --class-glow: hsl(var(--divine-glow));
+    --class-surface: hsl(var(--divine-700));
+  }
+
+  [data-archetype="martial"] {
+    --class-accent: hsl(var(--martial-400));
+    --class-glow: hsl(var(--martial-glow));
+    --class-surface: hsl(var(--martial-700));
+  }
+
+  [data-archetype="dex"] {
+    --class-accent: hsl(var(--dex-400));
+    --class-glow: hsl(var(--dex-glow));
+    --class-surface: hsl(var(--dex-700));
+  }
+
+  [data-archetype="nature"] {
+    --class-accent: hsl(var(--nature-400));
+    --class-glow: hsl(var(--nature-glow));
+    --class-surface: hsl(var(--nature-700));
+  }
+
+  [data-archetype="bard"] {
+    --class-accent: hsl(var(--arcane-300));
+    --class-glow: hsl(var(--arcane-glow));
+    --class-surface: hsl(var(--divine-700));
+  }
 }
 
 .dark {

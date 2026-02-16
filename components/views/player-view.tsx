@@ -48,7 +48,6 @@ export function PlayerView({ campaignId }: { campaignId: string }) {
       gameData.playableCharacters.map((p: PlayableCharacter) => p.className),
     ),
   );
-
   return (
     <div className="min-h-screen bg-background parchment-texture">
       <main className="container mx-auto px-4 py-8">
