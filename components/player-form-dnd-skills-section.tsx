@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { FieldLabel } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { CheckboxCircle } from "@/components/ui/checkbox";
 import {
@@ -10,12 +10,11 @@ import {
   SKILLS_BY_ATTRIBUTE,
   ATTRIBUTE_NAMES,
   CLASS_SKILL_PROFICIENCIES,
-  BACKGROUND_SKILL_PROFICIENCIES,
   calculateModifier,
   formatModifier,
   type SkillKey,
 } from "@/lib/skills";
-import { useClass, useBackground } from "@/lib/api/hooks";
+import { useClass } from "@/lib/api/hooks";
 import { Info, Medal } from "lucide-react";
 import {
   Accordion,
@@ -23,7 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { D10, DiceIcon } from "./icons";
+import { DiceIcon } from "./icons";
 import { Attributes } from "@/lib/schemas";
 
 interface PlayerFormSkillsSectionProps {
@@ -54,10 +53,7 @@ export default function PlayerFormSkillsSection({
   attributes,
   proficiencyBonus,
 }: PlayerFormSkillsSectionProps) {
-  const form = useFormContext();
   const [selectedSkills, setSelectedSkills] = useState<SkillKey[]>([]);
-
-  const { data: classData } = useClass(classIndex);
 
   const numClassSkillsToChoose = CLASS_SKILL_CHOICES[classIndex] || 0;
   const availableClassSkillIndices =

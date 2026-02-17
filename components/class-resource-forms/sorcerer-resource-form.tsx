@@ -6,12 +6,14 @@ import MetamagicKnownDisplay from "../class-display-sections/metamagic-known-dis
 import CreatingSpellSlotsDisplay from "../class-display-sections/creating-spell-slots-display";
 import { useEffect, useState } from "react";
 import { PointPool } from "@/lib/schemas";
+import { useFormContext } from "react-hook-form";
 
 export default function SorcererResourceForm({
   control,
   setValue,
   classData,
   level,
+  isEditing,
 }: BaseResourceFormProps) {
   // Handle both string and number level types
   const levelNum = typeof level === "string" ? parseInt(level, 10) : level;
@@ -19,6 +21,7 @@ export default function SorcererResourceForm({
     (l: any) => l.level === levelNum,
   );
   const classSpecific = levelData?.class_specific;
+  const form = useFormContext();
 
   const [sorceryPoints, setSorceryPoints] = useState<PointPool>({
     current: classSpecific?.sorcery_points || 0,
@@ -27,21 +30,35 @@ export default function SorcererResourceForm({
 
   // Reset to API values when class or level changes
   useEffect(() => {
-    if (classSpecific?.sorcery_points == null) {
-      setValue("sorceryPoints", null);
-      setSorceryPoints({
-        current: 0,
-        max: 0,
-      });
+    //TODO: Replicate it for other resources that might get changed by feats / homebrew stuff
+    if (isEditing) {
+      const formValue = form.watch("sorceryPoints");
+
+      if (formValue && typeof formValue !== "undefined") {
+        // Sync local state with Form state
+        setSorceryPoints(formValue);
+      } else {
+        // Fallback if Form value is somehow missing (unlikely for an edit scenario)
+        const apiValue = classSpecific?.sorcery_points || 0;
+        setSorceryPoints({ current: apiValue, max: apiValue });
+      }
     } else {
-      setValue("sorceryPoints", {
-        current: classSpecific?.sorcery_points || 0,
-        max: classSpecific?.sorcery_points || 0,
-      });
-      setSorceryPoints({
-        current: classSpecific?.sorcery_points || 0,
-        max: classSpecific?.sorcery_points || 0,
-      });
+      if (classSpecific?.sorcery_points == null) {
+        setValue("sorceryPoints", null);
+        setSorceryPoints({
+          current: 0,
+          max: 0,
+        });
+      } else {
+        setValue("sorceryPoints", {
+          current: classSpecific?.sorcery_points || 0,
+          max: classSpecific?.sorcery_points || 0,
+        });
+        setSorceryPoints({
+          current: classSpecific?.sorcery_points || 0,
+          max: classSpecific?.sorcery_points || 0,
+        });
+      }
     }
   }, [classSpecific, level, setValue]);
 

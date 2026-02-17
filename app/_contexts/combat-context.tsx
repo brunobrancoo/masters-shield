@@ -9,9 +9,11 @@ import {
 import { useGame } from "./game-context";
 import {
   InitiativeEntry,
+  InitiativeEntryWithTemp,
   Monster,
   NPC,
   PlayableCharacter,
+  SpellSlots,
 } from "@/lib/schemas";
 import { DiceRoller } from "@/lib/classes/dices";
 import { getAttMod } from "@/lib/utils";
@@ -22,14 +24,17 @@ import {
   clearCombat as clearCombatFirebase,
   onCombatChange,
 } from "@/lib/firebase-combat-storage";
+import { updatePlayableCharacter } from "@/lib/firebase-storage";
 
 export interface CombatContextType {
   round: number;
   rollInitiatives: () => void;
   onCombat: boolean;
   setOnCombat: (value: SetStateAction<boolean>) => void;
-  initiativeEntries: InitiativeEntry[];
-  setInitiativeEntries: (value: SetStateAction<InitiativeEntry[]>) => void;
+  initiativeEntries: InitiativeEntryWithTemp[];
+  setInitiativeEntries: (
+    value: SetStateAction<InitiativeEntryWithTemp[]>,
+  ) => void;
   removeEntry: (id: string) => void;
   showAddForm: boolean;
   setShowAddForm: (value: SetStateAction<boolean>) => void;
@@ -44,12 +49,22 @@ export interface CombatContextType {
   setCustomHp: (value: SetStateAction<number>) => void;
   customMaxHp: number;
   setCustomMaxHp: (value: SetStateAction<number>) => void;
+  customAc: number;
+  setCustomAc: (value: SetStateAction<number>) => void;
   resetAddForm: () => void;
   addCustomEntry: () => void;
   currentTurn: number;
   setCurrentTurn: (value: SetStateAction<number>) => void;
   clearAll: () => void;
   updateHp: (id: string, delta: number) => void;
+  updateTempHp: (id: string, tempHp: number) => void;
+  updateSpellSlot: (id: string, level: number, newValue: number) => void;
+  updateClassResource: (
+    id: string,
+    resourceName: string,
+    newValue: number,
+  ) => void;
+  rollIndividualInitiative: (id: string) => void;
   addExistingEntry: () => void;
   getSourceList: () => Monster[] | PlayableCharacter[] | NPC[];
   sourceType: "monster" | "playableCharacter" | "npc";
@@ -60,6 +75,8 @@ export interface CombatContextType {
   addAllNPCs: () => void;
   addAllMonsters: () => void;
   initiativeRolls: InitiativeRoll[];
+  fullScreenMode: boolean;
+  setFullScreenMode: (value: SetStateAction<boolean>) => void;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
@@ -74,19 +91,21 @@ export function CombatProvider({
   const [round, setRound] = useState(1);
   const [onCombat, setOnCombat] = useState(false);
   const [currentTurn, setCurrentTurn] = useState(0);
-  const [initiativeEntries, setInitiativeEntries] = useState<InitiativeEntry[]>(
-    [],
-  );
+  const [initiativeEntries, setInitiativeEntries] = useState<
+    InitiativeEntryWithTemp[]
+  >([]);
   const [customName, setCustomName] = useState("");
   const [customInitiative, setCustomInitiative] = useState(0);
   const [customHp, setCustomHp] = useState(0);
   const [customMaxHp, setCustomMaxHp] = useState(0);
+  const [customAc, setCustomAc] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState("");
   const [sourceType, setSourceType] = useState<
     "monster" | "playableCharacter" | "npc"
   >("monster");
   const [initiativeRolls, setInitiativeRolls] = useState<InitiativeRoll[]>([]);
+  const [fullScreenMode, setFullScreenMode] = useState(false);
 
   const { handleSavePlayer, handleSaveMonster, handleUpdateNPC, gameData } =
     useGame();
@@ -134,6 +153,7 @@ export function CombatProvider({
     setCustomInitiative(0);
     setCustomHp(0);
     setCustomMaxHp(0);
+    setCustomAc(0);
     setSelectedSourceId("");
   };
 
@@ -155,7 +175,7 @@ export function CombatProvider({
   const addExistingEntry = () => {
     if (!selectedSourceId) return;
 
-    let newEntry: InitiativeEntry | null = null;
+    let newEntry: InitiativeEntryWithTemp | null = null;
 
     if (sourceType === "monster") {
       const monster = monsters.find((m: any) => m.id === selectedSourceId);
@@ -179,10 +199,11 @@ export function CombatProvider({
           dexMod: getAttMod(player.attributes.dex),
           name: player.name,
           initiative: getAttMod(player.attributes.dex),
-          hp: player.maxHp,
+          hp: player.hp || player.maxHp,
           maxHp: player.maxHp,
           type: "playableCharacter",
           sourceId: player.id,
+          ac: player.ac,
         };
       }
     } else if (sourceType === "npc") {
@@ -209,7 +230,7 @@ export function CombatProvider({
   const addCustomEntry = () => {
     if (!customName || !customInitiative) return;
 
-    const newEntry: InitiativeEntry = {
+    const newEntry: InitiativeEntryWithTemp = {
       id: `custom-${Date.now()}`,
       name: customName,
       initiative: customInitiative,
@@ -217,6 +238,7 @@ export function CombatProvider({
       hp: customHp || 0,
       maxHp: customMaxHp || 0,
       type: "custom",
+      ac: customAc || undefined,
     };
 
     setInitiativeEntries((prev) => [...prev, newEntry]);
@@ -230,13 +252,102 @@ export function CombatProvider({
     }
   };
   const updateHp = (id: string, delta: number) => {
+    const entry = initiativeEntries.find((e) => e.id === id);
+    if (!entry) return;
+
+    if (entry.type === "playableCharacter" && campaignId) {
+      const player = players.find((p: any) => p.id === id);
+      if (player) {
+        const newHp = Math.max(
+          0,
+          Math.min(player.maxHp, (player.hp || player.maxHp) + delta),
+        );
+        updatePlayableCharacter(campaignId, id, { hp: newHp });
+      }
+    } else {
+      setInitiativeEntries((prev) =>
+        prev.map((e) =>
+          e.id === id
+            ? { ...e, hp: Math.max(0, Math.min(e.maxHp, e.hp + delta)) }
+            : e,
+        ),
+      );
+    }
+  };
+
+  const updateTempHp = (id: string, tempHp: number) => {
     setInitiativeEntries((prev) =>
       prev.map((e) =>
-        e.id === id
-          ? { ...e, hp: Math.max(0, Math.min(e.maxHp, e.hp + delta)) }
-          : e,
+        e.id === id ? { ...e, tempHp: tempHp > 0 ? tempHp : undefined } : e,
       ),
     );
+  };
+
+  const updateSpellSlot = (id: string, level: number, newValue: number) => {
+    if (!campaignId) return;
+    const player = players.find((p: any) => p.id === id);
+    if (!player || !player.spellSlots) return;
+
+    const key = level as keyof SpellSlots;
+    const currentSlots = player.spellSlots[key];
+    if (currentSlots) {
+      updatePlayableCharacter(campaignId, id, {
+        spellSlots: {
+          ...player.spellSlots,
+          [key]: {
+            ...currentSlots,
+            current: Math.max(0, Math.min(currentSlots.max, newValue)),
+          },
+        } as SpellSlots,
+      });
+    }
+  };
+
+  const updateClassResource = (
+    id: string,
+    resourceName: string,
+    newValue: number,
+  ) => {
+    if (!campaignId) return;
+    const player = players.find((p: any) => p.id === id);
+    if (!player) return;
+
+    const resourceKey = resourceName as keyof PlayableCharacter;
+    const resource = player[resourceKey];
+    if (
+      resource &&
+      typeof resource === "object" &&
+      "current" in resource &&
+      "max" in resource
+    ) {
+      updatePlayableCharacter(campaignId, id, {
+        [resourceKey]: {
+          ...resource,
+          current: Math.max(0, Math.min((resource as any).max, newValue)),
+        },
+      });
+    }
+  };
+
+  const rollIndividualInitiative = (id: string) => {
+    const entry = initiativeEntries.find((e) => e.id === id);
+    if (!entry) return;
+
+    const roll = new DiceRoller(20).roll(1).total;
+    const dexMod = entry.dexMod;
+    const newInitiative = roll + dexMod;
+
+    setInitiativeEntries((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, initiative: newInitiative } : e)),
+    );
+
+    setInitiativeRolls((prev) => {
+      const existing = prev.find((r) => r.id === id);
+      if (existing) {
+        return prev.map((r) => (r.id === id ? { ...r, roll } : r));
+      }
+      return [...prev, { id, roll, dex: dexMod }];
+    });
   };
 
   const clearAll = async () => {
@@ -299,28 +410,30 @@ export function CombatProvider({
   }
 
   function addAllPlayers() {
-    const entries: InitiativeEntry[] = gameData.playableCharacters.map(
+    const entries: InitiativeEntryWithTemp[] = gameData.playableCharacters.map(
       (player: PlayableCharacter, index: number) => {
         return {
           id: player.id || index.toString(),
           dexMod: getAttMod(player.attributes.dex),
           name: player.name,
           initiative: Math.floor((player.attributes.dex - 10) / 2),
-          hp: player.maxHp || 0,
+          hp: player.hp || player.maxHp || 0,
           maxHp: player.maxHp || 0,
           type: "playableCharacter",
+          ac: player.ac,
+          tempHp: 0,
         };
       },
     );
     setInitiativeEntries((prev) => [...prev, ...entries]);
   }
   function addAllNPCs() {
-    const entries: InitiativeEntry[] = gameData.npcs.map((npc: any) => {
+    const entries: InitiativeEntryWithTemp[] = gameData.npcs.map((npc: any) => {
       return {
         id: npc.id,
-        dexMod: getAttMod(npc.attributes.des),
+        dexMod: getAttMod(npc.attributes.dex),
         name: npc.name,
-        initiative: Math.floor((npc.attributes.des - 10) / 2),
+        initiative: Math.floor((npc.attributes.dex - 10) / 2),
         hp: npc.maxHp || 0,
         maxHp: npc.maxHp || 0,
         type: "npc",
@@ -330,17 +443,19 @@ export function CombatProvider({
   }
 
   function addAllMonsters() {
-    const entries: InitiativeEntry[] = gameData.monsters.map((monster: any) => {
-      return {
-        id: monster.id,
-        dexMod: getAttMod(monster.attributes.des),
-        name: monster.name,
-        initiative: Math.floor((monster.attributes.des - 10) / 2),
-        hp: monster.maxHp || 0,
-        maxHp: monster.maxHp || 0,
-        type: "monster",
-      };
-    });
+    const entries: InitiativeEntryWithTemp[] = gameData.monsters.map(
+      (monster: any) => {
+        return {
+          id: monster.id,
+          dexMod: getAttMod(monster.attributes.dex),
+          name: monster.name,
+          initiative: Math.floor((monster.attributes.dex - 10) / 2),
+          hp: monster.maxHp || 0,
+          maxHp: monster.maxHp || 0,
+          type: "monster",
+        };
+      },
+    );
     setInitiativeEntries((prev) => [...prev, ...entries]);
   }
 
@@ -353,6 +468,8 @@ export function CombatProvider({
     customHp,
     customInitiative,
     customMaxHp,
+    customAc,
+    setCustomAc,
     customName,
     setCustomHp,
     setCustomInitiative,
@@ -375,10 +492,16 @@ export function CombatProvider({
     currentTurn,
     setCurrentTurn,
     updateHp,
+    updateTempHp,
+    updateSpellSlot,
+    updateClassResource,
+    rollIndividualInitiative,
     addAllPlayers,
     addAllNPCs,
     addAllMonsters,
     initiativeRolls,
+    fullScreenMode,
+    setFullScreenMode,
   };
 
   return (

@@ -38,6 +38,7 @@ interface PlayerFormIdentitySectionProps {
   control: Control<any>;
   setValue: any;
   unregister: any;
+  isEditing: boolean;
 }
 
 type RaceItem = {
@@ -57,6 +58,7 @@ export default function PlayerFormIdentitySection({
   control,
   setValue,
   unregister,
+  isEditing,
 }: PlayerFormIdentitySectionProps) {
   const form = useFormContext();
   const { data: racesData, isLoading: loadingRace } = useRaces();
@@ -127,6 +129,7 @@ export default function PlayerFormIdentitySection({
     }) as Record<string, string>;
 
   useEffect(() => {
+    if (isEditing) return;
     if (raceData) {
       setValue("raceIndex", raceData.index || "");
       setValue("speed", raceData.speed || 30);
@@ -154,7 +157,7 @@ export default function PlayerFormIdentitySection({
 
   // EFFECT: Handle Class & Level Changes
   useEffect(() => {
-    if (!selectedClass || loadingClassQueryData) return;
+    if (!selectedClass || loadingClassQueryData || isEditing) return;
 
     // 1. Set Basic Class Data
     setValue("classIndex", selectedClass.index || "");

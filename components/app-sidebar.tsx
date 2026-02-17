@@ -18,12 +18,16 @@ import {
   Trash2,
   LogOut,
   Swords as SwitchCampaign,
+  X,
+  Maximize2,
 } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
+import { cn } from "@/lib/utils";
 import { useCombat } from "@/app/_contexts/combat-context";
 import { useAuth } from "@/lib/auth-context";
 import InitiativeEntryCard from "./initiative-entry-card";
 import AddEntryForm from "./add-entry-form";
+import FullScreenCombat from "./combat";
 
 export default function AppSidebar() {
   const router = useRouter();
@@ -44,16 +48,20 @@ export default function AppSidebar() {
     setCustomMaxHp,
     setCustomInitiative,
     setCustomHp,
+    setCustomAc,
     customName,
     customMaxHp,
     customInitiative,
     customHp,
+    customAc,
     resetAddForm,
     addCustomEntry,
     currentTurn,
     setCurrentTurn,
     setOnCombat,
     updateHp,
+    updateTempHp,
+    rollIndividualInitiative,
     getSourceList,
     sourceType,
     setSourceType,
@@ -63,12 +71,15 @@ export default function AppSidebar() {
     clearAll,
     addAllMonsters,
     addAllNPCs,
+    fullScreenMode,
+    setFullScreenMode,
   } = useCombat();
 
   const sortedEntries = [...initiativeEntries].sort(
     (a, b) => b.initiative - a.initiative,
   );
   const activeEntry = sortedEntries[currentTurn];
+  const isPaused = onCombat && currentTurn > 0;
 
   const updateInitiative = (id: string, value: string) => {
     const num = Number.parseInt(value) || 0;
@@ -99,18 +110,48 @@ export default function AppSidebar() {
     setRound(1);
   };
 
+  if (fullScreenMode === true) return <FullScreenCombat />;
   return (
-    <Sidebar side="right" className="z-50">
+    <Sidebar
+      side="right"
+      className={cn(
+        "z-50 transition-all duration-300",
+        fullScreenMode && "fixed inset-0 w-full h-full max-w-full bg-stone-500",
+      )}
+    >
       <SidebarHeader className="px-6 py-4 border-b border-border-default bg-bg-surface/50">
-        <h2 className="font-heading text-2xl flex items-center gap-3 text-balance text-text-primary">
-          <Swords className="w-6 h-6 text-class-accent" />
-          Tracker de Iniciativa
-        </h2>
-        <p className="font-body text-sm text-text-secondary">
-          {onCombat
-            ? `Rodada ${round} - Turno de ${activeEntry?.name || "..."}`
-            : "Gerencie a ordem de combate"}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-heading text-2xl flex items-center gap-3 text-balance text-text-primary">
+              <Swords className="w-6 h-6 text-class-accent" />
+              Combate
+            </h2>
+            <p className="font-body text-sm text-text-secondary">
+              {onCombat
+                ? `Rodada ${round} - Turno de ${activeEntry?.name || "..."}`
+                : "Gerencie a ordem de combate"}
+            </p>
+          </div>
+          {fullScreenMode ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setFullScreenMode(false)}
+              title="Sair do modo tela cheia"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setFullScreenMode(true)}
+              title="Modo tela cheia"
+            >
+              <Maximize2 className="w-5 h-5" />
+            </Button>
+          )}
+        </div>
       </SidebarHeader>
       <SidebarContent className="px-8 mt-8">
         <ScrollArea>
@@ -188,6 +229,8 @@ export default function AppSidebar() {
                           updateInitiative={updateInitiative}
                           removeEntry={removeEntry}
                           updateHp={updateHp}
+                          updateTempHp={updateTempHp}
+                          rollIndividualInitiative={rollIndividualInitiative}
                           onCombat={onCombat}
                         />
                       );
@@ -213,6 +256,8 @@ export default function AppSidebar() {
                   setCustomHp={setCustomHp}
                   customMaxHp={customMaxHp}
                   setCustomMaxHp={setCustomMaxHp}
+                  customAc={customAc}
+                  setCustomAc={setCustomAc}
                   addCustomEntry={addCustomEntry}
                 />
 

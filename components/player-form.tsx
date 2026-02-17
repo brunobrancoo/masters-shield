@@ -82,13 +82,10 @@ export default function PlayerForm({
   onCancelAction,
   hideActions = false,
 }: PlayerFormProps) {
-  const [itemSearchQuery, setItemSearchQuery] = useState("");
-  const [selectedEquipmentIndex, setSelectedEquipmentIndex] = useState<
-    number | null
-  >(null);
   const [previousClassIndex, setPreviousClassIndex] = useState<string | null>(
     null,
   );
+  const isEditing = !!playableCharacter;
 
   const form = useForm<Partial<PlayableCharacter>>({
     resolver: zodResolver(playableCharacterSchema),
@@ -160,12 +157,13 @@ export default function PlayerForm({
   const hitDie = classData?.class?.hit_die || 8;
 
   useEffect(() => {
+    if (isEditing) return;
     const dexModifier = calculateModifier(watchedAttributes?.dex || 10);
     form.setValue("ac", 10 + dexModifier);
   }, [watchedAttributes?.dex, form]);
 
   useEffect(() => {
-    if (playableCharacter) return;
+    if (isEditing) return;
 
     if (watchedClassIndex && watchedClassIndex !== previousClassIndex) {
       const startingEquipment = classData?.class?.starting_equipment;
@@ -231,6 +229,7 @@ export default function PlayerForm({
 
   // CLEANUP EFFECT: Clears old class fields when switching classes
   useEffect(() => {
+    if (isEditing) return;
     const newClassIndex = watchedClassIndex;
 
     // Only run if we have a valid old class and it's different from the new one
@@ -279,6 +278,7 @@ export default function PlayerForm({
             control={form.control}
             setValue={form.setValue}
             unregister={form.unregister}
+            isEditing={isEditing}
           />
           <PlayerFormAttributesSection
             control={form.control}
@@ -295,6 +295,7 @@ export default function PlayerForm({
           <PlayerFormCombatStatsSection
             control={form.control}
             attributes={watchedAttributes}
+            isEditing={isEditing}
           />
 
           <PlayerFormSkillsSection
@@ -319,6 +320,7 @@ export default function PlayerForm({
             level={form.watch("level") || 1}
             attributes={form.watch("attributes")!}
             proficiencyBonus={form.watch("profBonus") || 2}
+            isEditing={isEditing}
           />
 
           <ClassResourceFormSection
@@ -327,6 +329,7 @@ export default function PlayerForm({
             level={form.watch("level") || 1}
             control={form.control}
             setValue={form.setValue}
+            isEditing={isEditing}
           />
 
           {

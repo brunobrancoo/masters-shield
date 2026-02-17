@@ -20,7 +20,6 @@ import { MonsterForm } from "@/components/monster-form";
 import { MonsterSheet } from "@/components/monster-sheet";
 import { PlayerList } from "@/components/player-list";
 import PlayerForm from "@/components/player-form";
-import { PlayerSheet } from "@/components/player-sheet";
 import { NPCGenerator } from "@/components/npc-generator";
 import { NPCList } from "@/components/npc-list";
 import { NPCSheet } from "@/components/npc-sheet";
@@ -29,6 +28,9 @@ import { Dialog } from "@/components/ui/dialog";
 import { useGame } from "@/app/_contexts/game-context";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { CharacterSheetContent } from "@/app/campaign/[campaignId]/character/[playableCharacterId]/page";
+import { useCampaign } from "@/lib/campaign-context";
+import { useEffect } from "react";
 
 export function MasterView() {
   const playerDisclosure = useDisclosure();
@@ -80,6 +82,11 @@ export function MasterView() {
     onClose: onNPCClose,
     onToggle: onNPCToggle,
   } = npcDisclosure;
+  const { campaign } = useCampaign();
+  if (!campaign) return null;
+  useEffect(() => {
+    if (!selectedPlayableCharacter) setPlayableCharacterViewState("list");
+  }, [selectedPlayableCharacter]);
 
   return (
     <div className="min-h-screen bg-background parchment-texture">
@@ -157,18 +164,18 @@ export function MasterView() {
 
           <TabsContent value="players" className="space-y-6">
             <Card className="metal-border bg-card/50">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="font-sans text-2xl flex items-center gap-2">
-                      <UsersIcon className="w-6 h-6" />
-                      Grupo de Aventureiros
-                    </CardTitle>
-                    <CardDescription className="font-serif">
-                      Fichas dos personagens dos jogadores
-                    </CardDescription>
-                  </div>
-                  {playableCharacterView === "list" && (
+              {playableCharacterView === "list" && (
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="font-sans text-2xl flex items-center gap-2">
+                        <UsersIcon className="w-6 h-6" />
+                        Grupo de Aventureiros
+                      </CardTitle>
+                      <CardDescription className="font-serif">
+                        Fichas dos personagens dos jogadores
+                      </CardDescription>
+                    </div>
                     <Button
                       onClick={() => {
                         setSelectedPlayableCharacter(undefined);
@@ -178,9 +185,9 @@ export function MasterView() {
                     >
                       Novo Jogador
                     </Button>
-                  )}
-                </div>
-              </CardHeader>
+                  </div>
+                </CardHeader>
+              )}
               <CardContent>
                 {playableCharacterView === "list" && (
                   <PlayerList
@@ -194,16 +201,27 @@ export function MasterView() {
                     onSaveAction={handleSavePlayer}
                   />
                 )}
-                {playableCharacterView === "form" && (
-                  <PlayerForm
-                    playableCharacter={selectedPlayableCharacter}
-                    onSaveAction={handleSavePlayer}
-                    onCancelAction={() => {
-                      setPlayableCharacterViewState("list");
-                      setSelectedPlayableCharacter(undefined);
-                    }}
-                  />
-                )}
+                {playableCharacterView === "form" &&
+                  selectedPlayableCharacter?.id && (
+                    <PlayerForm
+                      key={selectedPlayableCharacter.id || "new"}
+                      playableCharacter={selectedPlayableCharacter}
+                      onSaveAction={handleSavePlayer}
+                      onCancelAction={() => {
+                        setPlayableCharacterViewState("list");
+                        setSelectedPlayableCharacter(undefined);
+                      }}
+                    />
+                  )}
+
+                {playableCharacterView === "sheet" &&
+                  selectedPlayableCharacter?.id && (
+                    <CharacterSheetContent
+                      campaignId={campaign.id}
+                      playableCharacterId={selectedPlayableCharacter.id}
+                      view="master"
+                    />
+                  )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -293,42 +311,6 @@ export function MasterView() {
           onMonsterClose={onMonsterClose}
           onMonsterToggle={onMonsterToggle}
         />
-      )}
-
-      {playableCharacterView === "sheet" && selectedPlayableCharacter && (
-        <Dialog
-          open={playerIsOpen}
-          onOpenChange={(isOpen) => {
-            setPlayableCharacterViewState("list");
-            setSelectedPlayableCharacter(undefined);
-            onPlayerOpen();
-          }}
-        >
-          {selectedPlayableCharacter && (
-            <PlayerSheet
-              playableCharacter={selectedPlayableCharacter}
-              onEdit={() => {
-                setPlayableCharacterViewState("form");
-              }}
-              onDelete={() => {
-                //TODO: I added this exclamation just for running build, expect later
-                handleDeletePlayableCharacter(selectedPlayableCharacter.id!);
-                setPlayableCharacterViewState("list");
-                setSelectedPlayableCharacter(undefined);
-              }}
-              playerIsOpen={playerIsOpen}
-              onPlayerOpen={onPlayerOpen}
-              onPlayerClose={onPlayerClose}
-              onPlayerToggle={() => {
-                setPlayableCharacterViewState("sheet");
-              }}
-              onClose={() => {
-                setPlayableCharacterViewState("list");
-                setSelectedPlayableCharacter(undefined);
-              }}
-            />
-          )}
-        </Dialog>
       )}
 
       {npcView === "sheet" && selectedNPC && (

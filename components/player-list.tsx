@@ -32,9 +32,9 @@ export function PlayerList({
 
   const filteredPlayers = players.filter((player) => {
     return (
-      player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.className.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.raceName.toLowerCase().includes(searchTerm.toLowerCase())
+      player.name?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+      player.className?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+      player.raceName?.toLowerCase().includes(searchTerm?.toLowerCase())
     );
   });
 
