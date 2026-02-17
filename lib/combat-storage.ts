@@ -1,4 +1,4 @@
-import { InitiativeEntry } from "@/lib/schemas";
+import { InitiativeEntry, InitiativeEntryWithTemp } from "@/lib/schemas";
 
 export interface InitiativeRoll {
   id: string;
@@ -10,7 +10,7 @@ export interface CombatData {
   round: number;
   onCombat: boolean;
   currentTurn: number;
-  initiativeEntries: InitiativeEntry[];
+  initiativeEntries: InitiativeEntryWithTemp[];
   initiativeRolls: InitiativeRoll[];
 }
 

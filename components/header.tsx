@@ -5,6 +5,7 @@ import { useGame } from "@/app/_contexts/game-context";
 import { useDisclosure } from "@/lib/use-disclosure";
 import DiceRollModal from "./dice-roll";
 import { SidebarTrigger } from "./ui/sidebar";
+import { Button } from "./ui/button";
 
 export default function Header() {
   const { gameData } = useGame();

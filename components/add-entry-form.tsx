@@ -31,6 +31,8 @@ interface AddEntryFormProps {
   setCustomHp: (v: number) => void;
   customMaxHp: number;
   setCustomMaxHp: (v: number) => void;
+  customAc: number;
+  setCustomAc: (v: number) => void;
   addCustomEntry: () => void;
 }
 
@@ -52,6 +54,8 @@ export default function AddEntryForm({
   setCustomHp,
   customMaxHp,
   setCustomMaxHp,
+  customAc,
+  setCustomAc,
   addCustomEntry,
 }: AddEntryFormProps) {
   const [addType, setAddType] = useState<"existing" | "custom">("existing");
@@ -102,7 +106,7 @@ export default function AddEntryForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="monster">Monstro</SelectItem>
-              <SelectItem value="player">Jogador</SelectItem>
+              <SelectItem value="playableCharacter">Jogador</SelectItem>
               <SelectItem value="npc">NPC</SelectItem>
             </SelectContent>
           </Select>
@@ -146,7 +150,7 @@ export default function AddEntryForm({
             value={customName}
             onChange={(e) => setCustomName(e.target.value)}
           />
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Input
               type="number"
               placeholder="Iniciativa"
@@ -155,6 +159,14 @@ export default function AddEntryForm({
                 setCustomInitiative(+e.target.value)
               }
             />
+            <Input
+              type="number"
+              placeholder="AC"
+              value={customAc}
+              onChange={(e) => setCustomAc(+e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
             <Input
               type="number"
               placeholder="HP"

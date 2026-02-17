@@ -48,16 +48,20 @@ export default function AppSidebar() {
     setCustomMaxHp,
     setCustomInitiative,
     setCustomHp,
+    setCustomAc,
     customName,
     customMaxHp,
     customInitiative,
     customHp,
+    customAc,
     resetAddForm,
     addCustomEntry,
     currentTurn,
     setCurrentTurn,
     setOnCombat,
     updateHp,
+    updateTempHp,
+    rollIndividualInitiative,
     getSourceList,
     sourceType,
     setSourceType,
@@ -75,6 +79,7 @@ export default function AppSidebar() {
     (a, b) => b.initiative - a.initiative,
   );
   const activeEntry = sortedEntries[currentTurn];
+  const isPaused = onCombat && currentTurn > 0;
 
   const updateInitiative = (id: string, value: string) => {
     const num = Number.parseInt(value) || 0;
@@ -224,6 +229,8 @@ export default function AppSidebar() {
                           updateInitiative={updateInitiative}
                           removeEntry={removeEntry}
                           updateHp={updateHp}
+                          updateTempHp={updateTempHp}
+                          rollIndividualInitiative={rollIndividualInitiative}
                           onCombat={onCombat}
                         />
                       );
@@ -249,6 +256,8 @@ export default function AppSidebar() {
                   setCustomHp={setCustomHp}
                   customMaxHp={customMaxHp}
                   setCustomMaxHp={setCustomMaxHp}
+                  customAc={customAc}
+                  setCustomAc={setCustomAc}
                   addCustomEntry={addCustomEntry}
                 />
 

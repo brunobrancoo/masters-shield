@@ -25,6 +25,8 @@ export const initiativeEntrySchema = z.object({
   maxHp: z.coerce.number(),
   type: z.enum(["monster", "playableCharacter", "npc", "custom"]),
   sourceId: z.string().optional(),
+  tempHp: z.coerce.number().optional(),
+  ac: z.coerce.number().optional(),
 });
 
 export const monsterSchema = z.object({
@@ -456,3 +458,7 @@ export type SpellSlots = z.infer<typeof spellSlotsSchema>;
 export type Attributes = z.infer<typeof attributesSchema>;
 export type Homebrew = z.infer<typeof homebrewSchema>;
 export type InitiativeEntry = z.infer<typeof initiativeEntrySchema>;
+
+export interface InitiativeEntryWithTemp extends InitiativeEntry {
+  tempHp?: number;
+}
