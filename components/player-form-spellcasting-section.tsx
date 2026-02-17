@@ -29,6 +29,7 @@ interface PlayerFormSpellcastingSectionProps {
   level: number;
   attributes: Attributes;
   proficiencyBonus: number;
+  isEditing: boolean;
 }
 
 export default function PlayerFormSpellcastingSection({
@@ -38,6 +39,7 @@ export default function PlayerFormSpellcastingSection({
   level,
   attributes,
   proficiencyBonus,
+  isEditing,
 }: PlayerFormSpellcastingSectionProps) {
   const getCasterClasses = () => [
     "bard",
@@ -65,7 +67,8 @@ export default function PlayerFormSpellcastingSection({
       !isCaster ||
       !spellcastingAbility ||
       !classData?.class?.class_levels[level - 1].spellcasting ||
-      loadingClass
+      loadingClass ||
+      isEditing
     )
       return;
 

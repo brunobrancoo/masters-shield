@@ -60,6 +60,8 @@ export interface CombatContextType {
   addAllNPCs: () => void;
   addAllMonsters: () => void;
   initiativeRolls: InitiativeRoll[];
+  fullScreenMode: boolean;
+  setFullScreenMode: (value: SetStateAction<boolean>) => void;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
@@ -87,6 +89,7 @@ export function CombatProvider({
     "monster" | "playableCharacter" | "npc"
   >("monster");
   const [initiativeRolls, setInitiativeRolls] = useState<InitiativeRoll[]>([]);
+  const [fullScreenMode, setFullScreenMode] = useState(false);
 
   const { handleSavePlayer, handleSaveMonster, handleUpdateNPC, gameData } =
     useGame();
@@ -379,6 +382,8 @@ export function CombatProvider({
     addAllNPCs,
     addAllMonsters,
     initiativeRolls,
+    fullScreenMode,
+    setFullScreenMode,
   };
 
   return (

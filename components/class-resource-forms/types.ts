@@ -8,6 +8,7 @@ export interface BaseResourceFormProps {
   setValue: any;
   classData?: any;
   level: number;
+  isEditing: boolean;
 }
 
 export interface LevelData {

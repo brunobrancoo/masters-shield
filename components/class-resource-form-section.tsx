@@ -38,6 +38,7 @@ interface ClassResourceFormSectionProps {
   setValue: any;
   classData: any;
   level: number;
+  isEditing: boolean;
 }
 
 export default function ClassResourceFormSection({
@@ -46,6 +47,7 @@ export default function ClassResourceFormSection({
   setValue,
   classData,
   level,
+  isEditing,
 }: ClassResourceFormSectionProps) {
   const FormComponent = CLASS_FORM_MAP[classIndex];
 
@@ -65,6 +67,7 @@ export default function ClassResourceFormSection({
         setValue={setValue}
         classData={classData}
         level={level}
+        isEditing={isEditing}
       />
     </div>
   );

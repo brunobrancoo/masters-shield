@@ -17,11 +17,13 @@ import {
 interface PlayerFormCombatStatsSectionProps {
   control: Control<any>;
   attributes?: any;
+  isEditing: boolean;
 }
 
 export default function PlayerFormCombatStatsSection({
   control,
   attributes,
+  isEditing,
 }: PlayerFormCombatStatsSectionProps) {
   const form = useFormContext();
   const dexModifier = attributes?.dex ? calculateModifier(attributes.dex) : 0;
@@ -33,6 +35,7 @@ export default function PlayerFormCombatStatsSection({
     name: "attributes",
   }) || { des: 10, sab: 10 };
   useEffect(() => {
+    if (isEditing) return;
     const dexModifier = calculateModifier(attributes.dex || 10);
     form.setValue("ac", 10 + dexModifier);
     const wisModifier = calculateModifier(attributes.wis || 10);

@@ -11,7 +11,7 @@ import type {
   Spell,
 } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -39,15 +39,23 @@ import { updatePlayableCharacterOrSet } from "@/lib/firebase-storage";
 import { PlayerProviders } from "@/app/campaign/[campaignId]/player-providers";
 import { sanitizeForFirebase } from "@/lib/character-utils";
 
-function CharacterSheetContent({
+export function CharacterSheetContent({
   campaignId,
   playableCharacterId,
+  view,
 }: {
   campaignId: string;
   playableCharacterId: string;
+  view: "master" | "player";
 }) {
   const router = useRouter();
-  const { gameData, setGameData, campaignId: contextCampaignId } = useGame();
+  const {
+    gameData,
+    setGameData,
+    campaignId: contextCampaignId,
+    setSelectedPlayableCharacter,
+    setPlayableCharacterViewState,
+  } = useGame();
   const [playableCharacter, setPlayableCharacter] = useState<
     PlayableCharacter | undefined
   >(undefined);
@@ -327,53 +335,65 @@ function CharacterSheetContent({
   return (
     <div className="min-h-screen bg-background parchment-texture pb-12">
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/campaign/${campaignId}`)}
-            className="font-sans"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Button>
-
-          {/* Expand/Collapse All Buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={expandAll}
-              className="font-sans"
-            >
-              <ChevronDown className="w-4 h-4 mr-2" />
-              Expandir Tudo
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={collapseAll}
-              className="font-sans"
-            >
-              <ChevronUp className="w-4 h-4 mr-2" />
-              Recolher Tudo
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-4 flex-1 justify-end">
-            <D20RollDialog
-              onRoll={rollD20}
-              advantage={d20Advantage}
-              setAdvantage={setD20Advantage}
-              rolls={diceRolls}
-              isRolling={isRolling}
-            />
-            <div className="text-right">
-              <h2 className="font-sans text-xl">{playableCharacter.name}</h2>
-              <p className="font-serif text-muted-foreground text-sm">
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center justify-start w-auto flex--11">
+            <div className="text-xl">
+              <h2 className="font-sans text-2xl font-bold">
+                {playableCharacter.name}
+              </h2>
+              <p className="font-serif text-muted-foreground text-xl">
                 {playableCharacter.raceName} {playableCharacter.className} -
                 Nível {playableCharacter.level}
               </p>
             </div>
+          </div>
+          <div className="mb-6 flex items-center flex-1">
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (view === "master") {
+                  setSelectedPlayableCharacter(undefined);
+                } else {
+                  router.push(`/campaign/${campaignId}`);
+                }
+              }}
+              className="font-sans"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+
+            {/* Expand/Collapse All Buttons */}
+            <div className="flex items-center gap-2 w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={expandAll}
+                className="font-sans ml-2"
+              >
+                <ChevronDown className="w-4 h-4 mr-2" />
+                Expandir Tudo
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={collapseAll}
+                className="font-sans"
+              >
+                <ChevronUp className="w-4 h-4 mr-2" />
+                Recolher Tudo
+              </Button>
+            </div>
+            {view === "master" && (
+              <Button
+                onClick={() => setPlayableCharacterViewState("form")}
+                className="ml-auto"
+                variant={"outline"}
+              >
+                <PencilIcon />
+                Editar Personagem
+              </Button>
+            )}
           </div>
         </div>
 
@@ -527,7 +547,7 @@ function CharacterSheetContent({
             </Accordion>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 bg-stone-50/10 rounded-lg p-8">
             {/* Accordion for right column sections */}
             <Accordion
               type="multiple"
@@ -599,6 +619,7 @@ export default function CharacterSheetPage({
       <CharacterSheetContent
         campaignId={resolvedParams.campaignId}
         playableCharacterId={resolvedParams.playableCharacterId}
+        view="player"
       />
     </PlayerProviders>
   );
