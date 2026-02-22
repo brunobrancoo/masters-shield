@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import { graphqlClient } from "@/lib/graphql/client";
 import {
   GetMonstersDocument,
@@ -8,6 +8,7 @@ import {
   GetEquipmentDocument,
   GetBackgroundsDocument,
   GetBackgroundDocument,
+  MagicItemsDocument,
   Class,
   Level,
   Race,
@@ -18,7 +19,10 @@ import {
   ClassesDocument,
   SpellsDocument,
   SpellDocument,
-  GetRacesQuery,
+  GetEquipmentQuery,
+  GetEquipmentQueryVariables,
+  MagicItemsQuery,
+  MagicItemsQueryVariables,
 } from "@/lib/generated/graphql";
 import { PointPool, Spell, SpellSlots } from "@/lib/schemas";
 import { filterMeaningfulItems } from "./utils";
@@ -139,8 +143,8 @@ export function useBackground(index: string) {
   });
 }
 
-export function useEquipment(name?: string) {
-  return useQuery({
+export function useEquipment(name: string) {
+  return useQuery<GetEquipmentQuery>({
     queryKey: ["equipment", name],
     queryFn: async () => {
       const response = await graphqlClient.request(GetEquipmentDocument, {
@@ -154,6 +158,69 @@ export function useEquipment(name?: string) {
       }
       return response;
     },
+  });
+}
+
+export function useEquipmentMultiple(names: string[]) {
+  return useQueries({
+    queries: names.map((name) => ({
+      queryKey: ["equipment", name],
+      queryFn: async () => {
+        const response = await graphqlClient.request(GetEquipmentDocument, {
+          name,
+        });
+        if (response.equipments) {
+          return {
+            ...response,
+            equipments: filterMeaningfulItems(response.equipments),
+          };
+        }
+        return response;
+      },
+    })),
+  });
+}
+
+export function useMagicItems(name: string) {
+  return useQuery<MagicItemsQuery>({
+    queryKey: ["magicItems", name],
+    queryFn: async () => {
+      const response = await graphqlClient.request(MagicItemsDocument, {
+        name,
+      });
+      return response;
+    },
+    enabled: !!name && name.length > 0,
+  });
+}
+
+export function useMagicItemsMultiple(names: string[]) {
+  return useQueries({
+    queries: names.map((name) => ({
+      queryKey: ["magicItems", name],
+      queryFn: async () => {
+        const response = await graphqlClient.request(MagicItemsDocument, {
+          name,
+        });
+        return response;
+      },
+      enabled: !!name && name.length > 0,
+    })),
+  });
+}
+
+export function useMagicItemsByName(names: string[]) {
+  return useQueries({
+    queries: names.map((name) => ({
+      queryKey: ["magicItemsByName", name],
+      queryFn: async () => {
+        const response = await graphqlClient.request(MagicItemsDocument, {
+          name,
+        });
+        return response;
+      },
+      enabled: !!name && name.length > 0,
+    })),
   });
 }
 

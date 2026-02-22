@@ -129,6 +129,14 @@ export const itemSchema = z.object({
   source: z.enum(["class", "background", "race", "custom"]).optional(),
 });
 
+export const inventoryitemSchema = z.object({
+  index: z.string().min(1, { message: "ID is required" }),
+  name: z.string().min(1, "Nome é obrigatório"),
+  type: z.enum(["normal", "magical", "homebrew"]),
+  notes: z.string().default(""),
+  equipped: z.boolean().default(false),
+});
+
 export const itemFormSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   price: z.number().min(0, "Preço deve ser positivo").default(0),
@@ -309,7 +317,7 @@ export const basePlayableCharacterSchema = z.object({
   selectedProficiencies: z.array(z.string()).default([]),
   chosenRaceFeatures: z.array(z.string()).default([]),
 
-  inventory: z.array(itemSchema).default([]),
+  inventory: z.array(inventoryitemSchema).default([]),
 
   skills: z.array(z.string()),
   speed: z.coerce.number(),
@@ -458,6 +466,7 @@ export type SpellSlots = z.infer<typeof spellSlotsSchema>;
 export type Attributes = z.infer<typeof attributesSchema>;
 export type Homebrew = z.infer<typeof homebrewSchema>;
 export type InitiativeEntry = z.infer<typeof initiativeEntrySchema>;
+export type InventoryItem = z.infer<typeof inventoryitemSchema>;
 
 export interface InitiativeEntryWithTemp extends InitiativeEntry {
   tempHp?: number;

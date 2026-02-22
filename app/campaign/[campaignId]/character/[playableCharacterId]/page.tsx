@@ -9,6 +9,7 @@ import type {
   Item,
   Buff,
   Spell,
+  InventoryItem,
 } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
@@ -213,7 +214,7 @@ export function CharacterSheetContent({
     updatePlayableCharacter({ [fieldName]: { current: newValue, max } });
   };
 
-  const addItem = async (item: Item) => {
+  const addItem = async (item: InventoryItem) => {
     if (!playableCharacter) return;
     await updatePlayableCharacter({
       inventory: [...(playableCharacter.inventory || []), item],
@@ -296,7 +297,7 @@ export function CharacterSheetContent({
     await updatePlayableCharacter({ inventory: newInventory });
   };
 
-  const updateItem = async (index: number, updatedItem: Item) => {
+  const updateItem = async (index: number, updatedItem: InventoryItem) => {
     if (!playableCharacter || !playableCharacter.inventory) return;
     const newInventory = [...playableCharacter.inventory];
     newInventory[index] = updatedItem;
