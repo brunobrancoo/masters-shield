@@ -7,6 +7,11 @@ import type {
   Proficiency,
   Race,
   Background,
+  Weapon,
+  Armor,
+  Tool,
+  MagicItem,
+  Gear,
   Equipment,
 } from "@/lib/generated/graphql";
 

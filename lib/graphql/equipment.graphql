@@ -1,52 +1,53 @@
-query GetEquipment($name: String) {
-  equipments(name: $name) {
-    ... on Weapon {
+query MagicItems($name: String) {
+  magicItems(name: $name) {
+    desc
+    equipment_category {
+      name
+      index
+    }
+    image
+    index
+    name
+    rarity {
+      name
+    }
+    variants {
+      desc
       index
       name
-      equipment_category {
-        index
-        name
-      }
-      cost {
-        quantity
-        unit
-      }
-      weight
-      weapon_category
-      weapon_range
-      category_range
-      damage {
-        damage_dice
-        damage_type {
-          name
-        }
-      }
-      two_handed_damage {
-        damage_dice
-        damage_type {
-          name
-        }
-      }
-      range {
-        normal
-        long
-      }
-      properties {
-        name
-      }
+      image
+      variant
     }
+    variant
+    updated_at
+  }
+}
+
+query GetEquipment($name: String) {
+  equipments(name: $name) {
     ... on Armor {
       index
       name
+      desc
       equipment_category {
-        index
         name
+        index
+      }
+      gear_category {
+        name
+        index
       }
       cost {
         quantity
         unit
       }
       weight
+      updated_at
+      properties {
+        name
+        index
+        desc
+      }
       armor_category
       armor_class {
         base
@@ -56,19 +57,220 @@ query GetEquipment($name: String) {
       str_minimum
       stealth_disadvantage
     }
-    ... on Gear {
+    ... on Weapon {
       index
       name
+      desc
       equipment_category {
-        index
         name
+        index
+      }
+      gear_category {
+        name
+        index
       }
       cost {
         quantity
         unit
       }
+
+      properties {
+        name
+        index
+      }
       weight
+      updated_at
+      weapon_category
+      weapon_range
+      category_range
+      damage {
+        damage_dice
+        damage_type {
+          name
+          index
+        }
+      }
+      two_handed_damage {
+        damage_dice
+        damage_type {
+          name
+          index
+        }
+      }
+      range {
+        long
+        normal
+      }
+      throw_range {
+        long
+        normal
+      }
+    }
+    ... on Tool {
+      index
+      name
       desc
+      equipment_category {
+        name
+        index
+      }
+      gear_category {
+        name
+        index
+      }
+      cost {
+        quantity
+        unit
+      }
+
+      properties {
+        name
+        index
+        desc
+      }
+      weight
+      updated_at
+      tool_category
+    }
+    ... on Gear {
+      index
+      name
+      desc
+      equipment_category {
+        name
+        index
+      }
+      gear_category {
+        name
+        index
+      }
+      cost {
+        quantity
+        unit
+      }
+
+      properties {
+        name
+        index
+        desc
+      }
+      weight
+      updated_at
+    }
+    ... on Pack {
+      index
+      name
+      desc
+      equipment_category {
+        name
+        index
+      }
+      gear_category {
+        name
+        index
+      }
+      cost {
+        quantity
+        unit
+      }
+
+      properties {
+        name
+        index
+        desc
+      }
+      weight
+      updated_at
+      contents {
+        quantity
+        item {
+          ... on Armor {
+            name
+            index
+          }
+          ... on Weapon {
+            name
+            index
+          }
+          ... on Tool {
+            name
+            index
+          }
+          ... on Gear {
+            name
+            index
+          }
+          ... on Pack {
+            name
+            index
+          }
+          ... on Ammunition {
+            name
+            index
+          }
+          ... on Vehicle {
+            name
+            index
+          }
+        }
+      }
+    }
+    ... on Ammunition {
+      index
+      name
+      desc
+      equipment_category {
+        name
+        index
+      }
+      gear_category {
+        name
+        index
+      }
+      cost {
+        quantity
+        unit
+      }
+
+      properties {
+        name
+        index
+        desc
+      }
+      weight
+      updated_at
+      quantity
+    }
+    ... on Vehicle {
+      index
+      name
+      desc
+      equipment_category {
+        name
+        index
+      }
+      gear_category {
+        name
+        index
+      }
+      cost {
+        quantity
+        unit
+      }
+
+      properties {
+        name
+        index
+        desc
+      }
+      weight
+      updated_at
+      vehicle_category
+      speed {
+        quantity
+        unit
+      }
+      capacity
     }
   }
 }

@@ -1,19 +1,30 @@
 "use client";
-import { ShieldIcon } from "lucide-react";
+import { ShieldIcon, ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { useGame } from "@/app/_contexts/game-context";
 import { useDisclosure } from "@/lib/use-disclosure";
 import DiceRollModal from "./dice-roll";
 import { SidebarTrigger } from "./ui/sidebar";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { gameData } = useGame();
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
+  const router = useRouter();
+
   return (
     <header className="border-b border-border-default bg-bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
       <div className="container mx-auto px-4 py-6">
-        <SidebarTrigger />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push("/campaign/select")}
+          className="border-arcane-500/20 text-arcane-400 hover:bg-arcane-500/10 hover:border-arcane-500/30 text-xs px-3 py-1 h-auto"
+        >
+          <ArrowLeft className="w-3 h-3 mr-1" />
+          Voltar
+        </Button>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <ShieldIcon className="w-10 h-10 text-class-accent glow-class" />
@@ -27,7 +38,8 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="w-8 h-8" />
             <DiceRollModal />
             <Card className="hidden md:block card-inset">
               <CardContent className="p-4">
