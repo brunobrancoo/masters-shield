@@ -24,8 +24,8 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
   const filteredNPCs = npcs.filter((npc) => {
     return (
       npc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      npc.class.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      npc.race.toLowerCase().includes(searchTerm.toLowerCase())
+      npc.className.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      npc.raceName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -61,7 +61,7 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
                       {npc.name}
                     </CardTitle>
                     <CardDescription className="font-serif mt-1">
-                      {npc.race} {npc.class}
+                      {npc.raceName} {npc.className}
                     </CardDescription>
                   </div>
                   <SparklesIcon className="w-6 h-6 text-primary" />
@@ -81,7 +81,7 @@ export function NPCList({ npcs, onSelectNPC }: NPCListProps) {
                   </div>
                   <div className="pt-2">
                     <p className="text-xs text-muted-foreground italic truncate">
-                      {npc.personality}
+                      {npc.notes}
                     </p>
                   </div>
                 </div>

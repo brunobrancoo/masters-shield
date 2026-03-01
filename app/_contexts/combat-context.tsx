@@ -208,7 +208,7 @@ export function CombatProvider({
       }
     } else if (sourceType === "npc") {
       const npc = npcs.find((n: any) => n.id === selectedSourceId);
-      if (npc) {
+      if (npc && npc.id) {
         newEntry = {
           id: npc.id,
           dexMod: getAttMod(npc.attributes.dex),
