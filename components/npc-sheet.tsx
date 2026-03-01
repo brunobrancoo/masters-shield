@@ -83,13 +83,13 @@ export function NPCSheet({
     const newHP = recalculateHP(
       formData.level,
       formData.attributes.con,
-      formData.class,
+      formData.className,
       formData.maxHp,
     );
     setFormData({ ...formData, maxHp: newHP, hp: newHP });
   };
 
-  const archetype = getArchetype(npc.class);
+  const archetype = getArchetype(formData.className);
   const hpPercentage = npc.maxHp ? (npc.hp / npc.maxHp) * 100 : 100;
   const hpColor = getHPColor(hpPercentage);
   const hpClass = getHPClass(hpPercentage);
@@ -109,7 +109,7 @@ export function NPCSheet({
                   {npc.name}
                 </CardTitle>
                 <CardDescription className="font-body text-base mt-2 text-text-secondary">
-                  {npc.race} {npc.class} -{" "}
+                  {npc.raceName} {npc.className} -{" "}
                   <span className="text-class-accent font-bold">
                     Nível {npc.level}
                   </span>
@@ -193,7 +193,7 @@ export function NPCSheet({
               <Card className="card-inset">
                 <CardContent className="p-4">
                   <p className="font-handwritten leading-relaxed text-pretty text-text-primary">
-                    {npc.personality}
+                    {npc.notes}
                   </p>
                 </CardContent>
               </Card>
@@ -284,9 +284,9 @@ export function NPCSheet({
                 <Label htmlFor="race">Raça</Label>
                 <Input
                   id="race"
-                  value={formData.race}
+                  value={formData.raceName}
                   onChange={(e) =>
-                    setFormData({ ...formData, race: e.target.value })
+                    setFormData({ ...formData, raceName: e.target.value })
                   }
                   className="font-body"
                   required
@@ -297,9 +297,9 @@ export function NPCSheet({
                 <Label htmlFor="class">Classe</Label>
                 <Input
                   id="class"
-                  value={formData.class}
+                  value={formData.className}
                   onChange={(e) =>
-                    setFormData({ ...formData, class: e.target.value })
+                    setFormData({ ...formData, className: e.target.value })
                   }
                   className="font-body"
                   required
@@ -412,9 +412,9 @@ export function NPCSheet({
               <Label htmlFor="personality">Personalidade</Label>
               <Textarea
                 id="personality"
-                value={formData.personality}
+                value={formData.notes}
                 onChange={(e) =>
-                  setFormData({ ...formData, personality: e.target.value })
+                  setFormData({ ...formData, notes: e.target.value })
                 }
                 rows={3}
                 className="font-handwritten"

@@ -21,6 +21,7 @@ import { MonsterSheet } from "@/components/monster-sheet";
 import { PlayerList } from "@/components/player-list";
 import PlayerForm from "@/components/player-form";
 import { NPCGenerator } from "@/components/npc-generator";
+import NPCForm from "@/components/npc-form";
 import { NPCList } from "@/components/npc-list";
 import { NPCSheet } from "@/components/npc-sheet";
 import { useDisclosure } from "@/lib/use-disclosure";
@@ -63,6 +64,11 @@ export function MasterView() {
     handleUpdateNPC,
     handleDeleteNPC,
   } = useGame();
+
+  const handleCreateManualNPC = () => {
+    setSelectedNPC(undefined);
+    setNPCViewState("form");
+  };
 
   const {
     isOpen: playerIsOpen,
@@ -267,7 +273,35 @@ export function MasterView() {
 
               <div className="lg:col-span-4">
                 {npcView === "generator" && (
-                  <NPCGenerator onGenerate={handleGenerateNPC} />
+                  <NPCGenerator
+                    onGenerate={handleGenerateNPC}
+                    onCreateManual={handleCreateManualNPC}
+                  />
+                )}
+                {npcView === "form" && (
+                  <Card className="metal-border bg-card/50">
+                    <CardHeader>
+                      <CardTitle className="font-sans text-2xl flex items-center gap-2">
+                        <SparklesIcon className="w-6 h-6" />
+                        {selectedNPC ? "Editar NPC" : "Criar NPC"}
+                      </CardTitle>
+                      <CardDescription className="font-serif">
+                        {selectedNPC
+                          ? "Edite as informações do NPC"
+                          : "Preencha as informações para criar um novo NPC"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <NPCForm
+                        playableCharacter={selectedNPC}
+                        onSaveAction={handleUpdateNPC}
+                        onCancelAction={() => {
+                          setNPCViewState("list");
+                          setSelectedNPC(undefined);
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
                 )}
                 {npcView === "list" && (
                   <Card className="metal-border bg-card/50">
@@ -313,11 +347,11 @@ export function MasterView() {
         />
       )}
 
-      {npcView === "sheet" && selectedNPC && (
+      {npcView === "sheet" && selectedNPC && selectedNPC.id && (
         <NPCSheet
           npc={selectedNPC}
           onSave={handleUpdateNPC}
-          onDelete={() => handleDeleteNPC(selectedNPC.id)}
+          onDelete={() => handleDeleteNPC(selectedNPC.id!)}
           onClose={() => {
             setNPCViewState("list");
             setSelectedNPC(undefined);

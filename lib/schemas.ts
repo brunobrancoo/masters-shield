@@ -41,21 +41,6 @@ export const monsterSchema = z.object({
   notes: z.string(),
 });
 
-export const npcSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1, "Nome é obrigatório"),
-  race: z.string().min(1, "Raça é obrigatória"),
-  class: z.string().min(1, "Classe é obrigatória"),
-  level: z.number().min(1).max(30),
-  hp: z.number().min(1),
-  maxHp: z.number().min(1),
-  attributes: attributesSchema,
-  skills: z.array(z.string()),
-  personality: z.string(),
-  notes: z.string(),
-  inventory: z.array(z.string()),
-});
-
 export const classEquipmentSelectionSchema = z.object({
   equipmentIndex: z.string(),
   quantity: z.number().min(1),
@@ -417,6 +402,8 @@ export const playableCharacterSchema = z.discriminatedUnion("classIndex", [
   clericCharacterSchema,
   wizardCharacterSchema,
 ]);
+
+export const npcSchema = playableCharacterSchema;
 
 // Helper schema for Homebrew Feats
 const homebrewFeatSchema = z.object({

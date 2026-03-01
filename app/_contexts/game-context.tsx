@@ -31,6 +31,7 @@ import {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 type ViewMode = "list" | "form" | "sheet";
+type NPCViewMode = "generator" | "form" | "list" | "sheet";
 
 interface GameContextType {
   campaignId: string | null;
@@ -43,8 +44,8 @@ interface GameContextType {
   setMonsterViewState: Dispatch<SetStateAction<ViewMode>>;
   playableCharacterView: ViewMode;
   setPlayableCharacterViewState: Dispatch<SetStateAction<ViewMode>>;
-  npcView: "generator" | "list" | "sheet";
-  setNPCViewState: Dispatch<SetStateAction<"generator" | "list" | "sheet">>;
+  npcView: NPCViewMode;
+  setNPCViewState: Dispatch<SetStateAction<NPCViewMode>>;
   selectedNPC: NPC | undefined;
   setSelectedNPC: Dispatch<SetStateAction<NPC | undefined>>;
   selectedMonster: Monster | undefined;
@@ -91,9 +92,9 @@ export function GameProvider({
     PlayableCharacter | undefined
   >();
 
-  const [npcView, setNPCViewState] = useState<"generator" | "list" | "sheet">(
-    "generator",
-  );
+  const [npcView, setNPCViewState] = useState<
+    "generator" | "form" | "list" | "sheet"
+  >("generator");
   const [selectedNPC, setSelectedNPC] = useState<NPC | undefined>();
 
   useEffect(() => {
@@ -204,12 +205,11 @@ export function GameProvider({
     if (!campaignId) return;
 
     try {
-      const newNPC = { ...npc, id: crypto.randomUUID() };
-      await createNPC(campaignId, newNPC);
+      setSelectedNPC(npc);
+      setNPCViewState("form");
     } catch (error) {
       console.error("Error generating NPC:", error);
     }
-    setNPCViewState("list");
   };
 
   const handleUpdateNPC = async (npc: NPC) => {
