@@ -31,13 +31,20 @@ export function useMonsters(name?: string) {
   return useQuery({
     queryKey: ["monsters", name],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetMonstersDocument, {
-        name,
+      const response = await graphqlClient.request({
+        document: GetMonstersDocument,
+        variables: {},
       });
-      if (response.monsters) {
+      let filteredMonsters = response.monsters;
+      if (name && filteredMonsters) {
+        filteredMonsters = filteredMonsters.filter((monster: any) =>
+          monster.name?.toLowerCase().includes(name.toLowerCase())
+        );
+      }
+      if (filteredMonsters) {
         return {
           ...response,
-          monsters: filterMeaningfulItems(response.monsters),
+          monsters: filterMeaningfulItems(filteredMonsters),
         };
       }
       return response;
@@ -49,7 +56,10 @@ export function useMonster(index: string) {
   return useQuery({
     queryKey: ["monster", index],
     queryFn: async () => {
-      return graphqlClient.request(GetMonsterDocument, { index });
+      return graphqlClient.request({
+        document: GetMonsterDocument,
+        variables: { index },
+      });
     },
     enabled: !!index,
   });
@@ -59,7 +69,10 @@ export function useSpells() {
   return useQuery({
     queryKey: ["spells"],
     queryFn: async () => {
-      const response = await graphqlClient.request(SpellsDocument);
+      const response = await graphqlClient.request({
+        document: SpellsDocument,
+        variables: {},
+      });
       if (response.spells) {
         return {
           ...response,
@@ -75,7 +88,10 @@ export function useSpell(index: string) {
   return useQuery({
     queryKey: ["spell", index],
     queryFn: async () => {
-      return graphqlClient.request(SpellDocument, { index });
+      return graphqlClient.request({
+        document: SpellDocument,
+        variables: { index },
+      });
     },
     enabled: !!index,
   });
@@ -85,7 +101,10 @@ export function useClasses() {
   return useQuery({
     queryKey: ["classes"],
     queryFn: async () => {
-      const response = await graphqlClient.request(ClassesDocument);
+      const response = await graphqlClient.request({
+        document: ClassesDocument,
+        variables: {},
+      });
       if (response.classes) {
         return {
           ...response,
@@ -101,7 +120,10 @@ export function useClass(index: string) {
   return useQuery({
     queryKey: ["class", index],
     queryFn: async () => {
-      return graphqlClient.request(ClassDocument, { index });
+      return graphqlClient.request({
+        document: ClassDocument,
+        variables: { index },
+      });
     },
     enabled: !!index,
   });

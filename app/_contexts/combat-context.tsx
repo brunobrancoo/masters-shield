@@ -24,7 +24,14 @@ import {
   clearCombat as clearCombatFirebase,
   onCombatChange,
 } from "@/lib/firebase-combat-storage";
-import { updatePlayableCharacter } from "@/lib/firebase-storage";
+import {
+  updateEntityHp,
+  updateEntitySpellSlot,
+  updateEntityClassResource,
+  updateEntityLegendaryActionPool,
+  updateEntityLegendaryResistancePool,
+  updateEntityAbilityUse,
+} from "@/lib/firebase-storage";
 
 export interface CombatContextType {
   round: number;
@@ -77,6 +84,9 @@ export interface CombatContextType {
   initiativeRolls: InitiativeRoll[];
   fullScreenMode: boolean;
   setFullScreenMode: (value: SetStateAction<boolean>) => void;
+  updateLegendaryActionPool: (id: string, delta: number) => void;
+  updateLegendaryResistancePool: (id: string, delta: number) => void;
+  useSpecialAbility: (id: string, abilityName: string) => void;
 }
 
 const CombatContext = createContext<CombatContextType | undefined>(undefined);
@@ -179,12 +189,14 @@ export function CombatProvider({
 
     if (sourceType === "monster") {
       const monster = monsters.find((m: any) => m.id === selectedSourceId);
-      if (monster) {
+      if (monster && monster.id) {
+        const dexValue =
+          monster.attributes?.dex ?? (monster as any).dexterity ?? 10;
         newEntry = {
           id: monster.id,
           name: monster.name,
-          dexMod: getAttMod(monster.attributes.dex),
-          initiative: getAttMod(monster.attributes.dex),
+          dexMod: getAttMod(dexValue),
+          initiative: getAttMod(dexValue),
           hp: monster.maxHp,
           maxHp: monster.maxHp,
           type: "monster",
@@ -255,14 +267,19 @@ export function CombatProvider({
     const entry = initiativeEntries.find((e) => e.id === id);
     if (!entry) return;
 
-    if (entry.type === "playableCharacter" && campaignId) {
-      const player = players.find((p: any) => p.id === id);
-      if (player) {
-        const newHp = Math.max(
-          0,
-          Math.min(player.maxHp, (player.hp || player.maxHp) + delta),
-        );
-        updatePlayableCharacter(campaignId, id, { hp: newHp });
+    if (campaignId && entry.type !== "custom") {
+      let entity: any = null;
+      if (entry.type === "playableCharacter") {
+        entity = players.find((p: any) => p.id === id);
+      } else if (entry.type === "monster") {
+        entity = monsters.find((m: any) => m.id === id);
+      } else if (entry.type === "npc") {
+        entity = npcs.find((n: any) => n.id === id);
+      }
+
+      if (entity) {
+        const newHp = Math.max(0, Math.min(entity.maxHp, entity.hp + delta));
+        updateEntityHp(campaignId, id, entry.type, newHp);
       }
     } else {
       setInitiativeEntries((prev) =>
@@ -278,29 +295,40 @@ export function CombatProvider({
   const updateTempHp = (id: string, tempHp: number) => {
     setInitiativeEntries((prev) =>
       prev.map((e) =>
-        e.id === id ? { ...e, tempHp: tempHp > 0 ? tempHp : undefined } : e,
+        e.id === id ? { ...e, tempHp: tempHp > 0 ? tempHp : 0 } : e,
       ),
     );
   };
 
   const updateSpellSlot = (id: string, level: number, newValue: number) => {
     if (!campaignId) return;
-    const player = players.find((p: any) => p.id === id);
-    if (!player || !player.spellSlots) return;
 
-    const key = level as keyof SpellSlots;
-    const currentSlots = player.spellSlots[key];
-    if (currentSlots) {
-      updatePlayableCharacter(campaignId, id, {
-        spellSlots: {
-          ...player.spellSlots,
-          [key]: {
-            ...currentSlots,
-            current: Math.max(0, Math.min(currentSlots.max, newValue)),
-          },
-        } as SpellSlots,
-      });
+    let entity: any = null;
+    let entityType: "playableCharacter" | "monster" | "npc" | null = null;
+
+    entity = players.find((p: any) => p.id === id);
+    if (entity) entityType = "playableCharacter";
+
+    if (!entity) {
+      entity = monsters.find((m: any) => m.id === id);
+      if (entity) entityType = "monster";
     }
+
+    if (!entity) {
+      entity = npcs.find((n: any) => n.id === id);
+      if (entity) entityType = "npc";
+    }
+
+    if (!entity || !entity.spellSlots || !entityType) return;
+
+    updateEntitySpellSlot(
+      campaignId,
+      id,
+      entityType,
+      level,
+      newValue,
+      entity.spellSlots,
+    );
   };
 
   const updateClassResource = (
@@ -309,23 +337,35 @@ export function CombatProvider({
     newValue: number,
   ) => {
     if (!campaignId) return;
-    const player = players.find((p: any) => p.id === id);
-    if (!player) return;
 
-    const resourceKey = resourceName as keyof PlayableCharacter;
-    const resource = player[resourceKey];
+    let entity: any = null;
+    let entityType: "playableCharacter" | "monster" | "npc" | null = null;
+
+    entity = players.find((p: any) => p.id === id);
+    if (entity) entityType = "playableCharacter";
+
+    if (!entity) {
+      entity = npcs.find((n: any) => n.id === id);
+      if (entity) entityType = "npc";
+    }
+
+    if (!entity || !entityType) return;
+
+    const resource = (entity as any)[resourceName];
     if (
       resource &&
       typeof resource === "object" &&
       "current" in resource &&
       "max" in resource
     ) {
-      updatePlayableCharacter(campaignId, id, {
-        [resourceKey]: {
-          ...resource,
-          current: Math.max(0, Math.min((resource as any).max, newValue)),
-        },
-      });
+      updateEntityClassResource(
+        campaignId,
+        id,
+        entityType,
+        resourceName,
+        newValue,
+        resource,
+      );
     }
   };
 
@@ -416,7 +456,7 @@ export function CombatProvider({
           id: player.id || index.toString(),
           dexMod: getAttMod(player.attributes.dex),
           name: player.name,
-          initiative: Math.floor((player.attributes.dex - 10) / 2),
+          initiative: getAttMod(player.attributes.dex),
           hp: player.hp || player.maxHp || 0,
           maxHp: player.maxHp || 0,
           type: "playableCharacter",
@@ -433,7 +473,7 @@ export function CombatProvider({
         id: npc.id,
         dexMod: getAttMod(npc.attributes.dex),
         name: npc.name,
-        initiative: Math.floor((npc.attributes.dex - 10) / 2),
+        initiative: getAttMod(npc.attributes.dex),
         hp: npc.maxHp || 0,
         maxHp: npc.maxHp || 0,
         type: "npc",
@@ -445,11 +485,13 @@ export function CombatProvider({
   function addAllMonsters() {
     const entries: InitiativeEntryWithTemp[] = gameData.monsters.map(
       (monster: any) => {
+        const dexValue =
+          monster.attributes?.dex ?? (monster as any).dexterity ?? 10;
         return {
           id: monster.id,
-          dexMod: getAttMod(monster.attributes.dex),
+          dexMod: getAttMod(dexValue),
           name: monster.name,
-          initiative: Math.floor((monster.attributes.dex - 10) / 2),
+          initiative: getAttMod(dexValue),
           hp: monster.maxHp || 0,
           maxHp: monster.maxHp || 0,
           type: "monster",
@@ -458,6 +500,94 @@ export function CombatProvider({
     );
     setInitiativeEntries((prev) => [...prev, ...entries]);
   }
+
+  const updateLegendaryActionPool = (id: string, delta: number) => {
+    const monster = monsters.find((m: any) => m.id === id);
+    if (!monster || !monster.legendary_actions_pool || !campaignId) return;
+
+    const newCurrent = Math.max(
+      0,
+      monster.legendary_actions_pool.current + delta,
+    );
+    const newMax = monster.legendary_actions_pool.max;
+
+    updateEntityLegendaryActionPool(campaignId, id, newCurrent, newMax);
+
+    setInitiativeEntries((prev) =>
+      prev.map((e) => {
+        if (e.id === id) {
+          return {
+            ...e,
+            legendaryActionPool: { current: newCurrent, max: newMax },
+          };
+        }
+        return e;
+      }),
+    );
+  };
+
+  const updateLegendaryResistancePool = (id: string, delta: number) => {
+    const monster = monsters.find((m: any) => m.id === id);
+    if (!monster || !monster.legendary_resistances || !campaignId) return;
+
+    const newCurrent = Math.max(
+      0,
+      monster.legendary_resistances.current + delta,
+    );
+    const newMax = monster.legendary_resistances.max;
+
+    updateEntityLegendaryResistancePool(campaignId, id, newCurrent, newMax);
+
+    setInitiativeEntries((prev) =>
+      prev.map((e) => {
+        if (e.id === id) {
+          return {
+            ...e,
+            legendaryResistancePool: { current: newCurrent, max: newMax },
+          };
+        }
+        return e;
+      }),
+    );
+  };
+
+  const useSpecialAbility = (id: string, abilityName: string) => {
+    const monster = monsters.find((m: any) => m.id === id);
+    if (!monster || !monster.abilityUses || !campaignId) return;
+
+    const abilityIndex = monster.abilityUses.findIndex(
+      (a: any) => a.name === abilityName,
+    );
+    if (abilityIndex === -1) return;
+
+    const ability = monster.abilityUses[abilityIndex];
+    const newCurrent = Math.max(0, ability.current - 1);
+
+    updateEntityAbilityUse(
+      campaignId,
+      id,
+      abilityName,
+      newCurrent,
+      monster.abilityUses,
+    );
+
+    setInitiativeEntries((prev) =>
+      prev.map((e) => {
+        if (e.id === id) {
+          const updatedAbilityUses = [...(e.abilityUses || [])];
+          updatedAbilityUses[abilityIndex] = {
+            ...ability,
+            current: newCurrent,
+          };
+          return {
+            ...e,
+            abilityUses: updatedAbilityUses,
+          };
+        }
+        return e;
+      }),
+    );
+  };
 
   const value: CombatContextType = {
     addExistingEntry,
@@ -502,6 +632,9 @@ export function CombatProvider({
     initiativeRolls,
     fullScreenMode,
     setFullScreenMode,
+    updateLegendaryActionPool,
+    updateLegendaryResistancePool,
+    useSpecialAbility,
   };
 
   return (

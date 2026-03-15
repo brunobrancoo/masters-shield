@@ -1,5 +1,168 @@
 import { z } from "zod";
 
+// --- Stateful: Ability Uses ---
+// Covers both X/day and Recharge X-Y abilities
+
+const abilityUseStateSchema = z.object({
+  name: z.string(), // matches special_ability name
+  current: z.number().min(0),
+  max: z.number().min(0),
+});
+
+// --- Stateful: Conditions & Status ---
+
+const dnd5eConditionSchema = z.enum([
+  "blinded",
+  "charmed",
+  "deafened",
+  "frightened",
+  "grappled",
+  "incapacitated",
+  "invisible",
+  "paralyzed",
+  "petrified",
+  "poisoned",
+  "prone",
+  "restrained",
+  "stunned",
+  "unconscious",
+]);
+
+// --- Modifier ---
+
+const modifierSchema = z.object({
+  label: z.string().min(1),
+  value: z.number(),
+  source: z
+    .object({
+      who: z.string().optional(),
+      what: z.string().optional(),
+    })
+    .optional(),
+});
+
+// --- Shared primitives ---
+
+const damageTypeSchema = z.object({
+  index: z.string(),
+  name: z.string(),
+});
+
+const damageSchema = z.object({
+  damage_dice: z.string(),
+  damage_type: damageTypeSchema,
+});
+
+const dcSchema = z.object({
+  dc_value: z.number(),
+  success_type: z.string(),
+  dc_type: z.object({ name: z.string() }).optional(),
+});
+
+const spellRefSchema = z.object({
+  name: z.string(),
+  level: z.number(),
+});
+
+// --- Armor Class ---
+
+const acBaseSchema = z.object({
+  type: z.string(),
+  value: z.number(),
+  desc: z.string().optional(),
+});
+
+const armorClassSchema = z.discriminatedUnion("type", [
+  acBaseSchema.extend({ type: z.literal("dex") }),
+  acBaseSchema.extend({ type: z.literal("natural") }),
+  acBaseSchema.extend({
+    type: z.literal("armor"),
+    armor: z.array(
+      z.object({
+        index: z.string(),
+        name: z.string(),
+        properties: z.array(z.object({ name: z.string() })),
+      }),
+    ),
+  }),
+  acBaseSchema.extend({
+    type: z.literal("spell"),
+    spell: spellRefSchema,
+  }),
+  acBaseSchema.extend({
+    type: z.literal("condition"),
+    condition: z.object({ name: z.string() }),
+  }),
+]);
+
+// --- Speed & Senses ---
+
+const speedSchema = z.object({
+  walk: z.string().optional(),
+  burrow: z.string().optional(),
+  climb: z.string().optional(),
+  fly: z.string().optional(),
+  hover: z.boolean().optional(),
+  swim: z.string().optional(),
+});
+
+const sensesSchema = z.object({
+  blindsight: z.string().optional(),
+  darkvision: z.string().optional(),
+  passive_perception: z.number(),
+  tremorsense: z.string().optional(),
+  truesight: z.string().optional(),
+});
+
+// --- Actions ---
+
+const actionSchema = z.object({
+  name: z.string(),
+  desc: z.string(),
+  attack_bonus: z.number().optional(),
+  multiattack_type: z.string().optional(),
+  damage: z.array(damageSchema).optional(),
+  action_options: z.object({ type: z.string(), desc: z.string() }).optional(),
+  options: z.object({ desc: z.string() }).optional(),
+});
+
+const legendaryActionSchema = z.object({
+  name: z.string(),
+  desc: z.string(),
+  attack_bonus: z.number().optional(),
+  damage: z.array(damageSchema).optional(),
+  dc: dcSchema.optional(),
+});
+
+const reactionSchema = z.object({
+  name: z.string(),
+  desc: z.string(),
+  dc: dcSchema.optional(),
+});
+
+// --- Special Abilities ---
+
+const usageSchema = z.object({
+  type: z.string(),
+  times: z.number().optional(),
+  rest_types: z.array(z.string()).optional(),
+});
+
+const spellcastingSchema = z.object({
+  slots: z.array(z.object({ count: z.number(), slot_level: z.number() })),
+  spells: z.array(z.object({ spell: spellRefSchema })),
+});
+
+const specialAbilitySchema = z.object({
+  name: z.string(),
+  desc: z.string(),
+  attack_bonus: z.number().optional(),
+  damage: z.array(damageSchema).optional(),
+  dc: dcSchema.optional(),
+  spellcasting: spellcastingSchema.optional(),
+  usage: usageSchema.optional(),
+});
+
 export const attributesSchema = z.object({
   str: z.number().min(1).max(30),
   dex: z.number().min(1).max(30),
@@ -27,18 +190,6 @@ export const initiativeEntrySchema = z.object({
   sourceId: z.string().optional(),
   tempHp: z.coerce.number().optional(),
   ac: z.coerce.number().optional(),
-});
-
-export const monsterSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1, "Nome é obrigatório"),
-  type: z.string().min(1, "Tipo é obrigatório"),
-  level: z.number().min(1).max(30),
-  hp: z.number().min(1),
-  maxHp: z.number().min(1),
-  attributes: attributesSchema,
-  skills: z.array(z.string()),
-  notes: z.string(),
 });
 
 export const classEquipmentSelectionSchema = z.object({
@@ -441,6 +592,99 @@ export const homebrewSchema = z.object({
   updatedAt: z.any().optional(),
 });
 
+const monsterStatusSchema = z.enum(["alive", "unconscious", "dead"]);
+
+const concentrationSchema = z.object({
+  active: z.boolean(),
+  spell: spellRefSchema.optional(),
+});
+
+// --- Monster Schema ---
+
+export const monsterSchema = z.object({
+  // Identity
+  id: z.string().optional(),
+  index: z.string().min(1),
+  name: z.string().min(1),
+  type: z.string().min(1),
+  subtype: z.string().optional(),
+  alignment: z.string().optional(),
+  size: z.string().min(1),
+  image: z.string().optional(),
+  languages: z.string().optional(),
+  forms: z.array(z.object({ name: z.string() })).optional(),
+
+  // Challenge
+  challenge_rating: z.number(),
+  xp: z.number(),
+
+  // Attributes
+  attributes: attributesSchema,
+
+  // HP (stateful)
+  hp: z.number().min(0),
+  maxHp: z.number().min(1),
+  tempHp: z.number().min(0).default(0),
+  hit_dice: z.string(),
+  hit_points_roll: z.string(),
+
+  // Armor Class
+  armor_class: z.array(armorClassSchema),
+
+  // Movement & perception
+  speed: speedSchema,
+  senses: sensesSchema,
+
+  // Proficiencies
+  proficiencies: z
+    .array(
+      z.object({
+        proficiency: z.object({ name: z.string() }),
+        value: z.number(),
+      }),
+    )
+    .default([]),
+
+  // Immunities / Resistances / Vulnerabilities
+  damage_immunities: z.array(z.string()).default([]),
+  damage_resistances: z.array(z.string()).default([]),
+  damage_vulnerabilities: z.array(z.string()).default([]),
+  condition_immunities: z
+    .array(z.object({ index: z.string(), name: z.string() }))
+    .default([]),
+
+  // Actions
+  actions: z.array(actionSchema).default([]),
+  reactions: z.array(reactionSchema).default([]),
+  special_abilities: z.array(specialAbilitySchema).default([]),
+
+  // Legendary (stateful pool)
+  legendary_actions: z.array(legendaryActionSchema).default([]),
+  legendary_actions_pool: z
+    .object({ current: z.number().min(0), max: z.number().min(0) })
+    .optional(),
+  legendary_resistances: z
+    .object({ current: z.number().min(0), max: z.number().min(0) })
+    .optional(),
+
+  // Spell slots (stateful)
+  spellSlots: spellSlotsSchema.optional(),
+
+  // Ability uses (stateful)
+  abilityUses: z.array(abilityUseStateSchema).default([]),
+
+  // Combat state
+  status: monsterStatusSchema.default("alive"),
+  conditions: z.array(dnd5eConditionSchema).default([]),
+  concentration: concentrationSchema.optional(),
+
+  // Modifiers (buffs, debuffs, temp effects)
+  modifiers: z.array(modifierSchema).default([]),
+
+  // Meta
+  isHomebrew: z.boolean().default(false),
+});
+
 export type Monster = z.infer<typeof monsterSchema>;
 export type NPC = z.infer<typeof npcSchema>;
 export type Item = z.infer<typeof itemSchema>; // Matches interfaces.ts
@@ -457,4 +701,7 @@ export type InventoryItem = z.infer<typeof inventoryitemSchema>;
 
 export interface InitiativeEntryWithTemp extends InitiativeEntry {
   tempHp?: number;
+  legendaryActionPool?: { current: number; max: number };
+  legendaryResistancePool?: { current: number; max: number };
+  abilityUses?: Array<{ name: string; current: number; max: number }>;
 }

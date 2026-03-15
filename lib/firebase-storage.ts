@@ -324,3 +324,141 @@ export function onHomebrewsChange(
   });
   return unsubscribe;
 }
+
+export type EntityType = "playableCharacter" | "monster" | "npc";
+
+export async function updateEntityHp(
+  campaignId: string,
+  entityId: string,
+  entityType: EntityType,
+  newHp: number,
+): Promise<void> {
+  switch (entityType) {
+    case "playableCharacter":
+      await updatePlayableCharacter(campaignId, entityId, { hp: newHp });
+      break;
+    case "monster":
+      await updateMonster(campaignId, entityId, { hp: newHp });
+      break;
+    case "npc":
+      await updateNPC(campaignId, entityId, { hp: newHp });
+      break;
+  }
+}
+
+export async function updateEntitySpellSlot(
+  campaignId: string,
+  entityId: string,
+  entityType: EntityType,
+  level: number,
+  newValue: number,
+  spellSlots: any,
+): Promise<void> {
+  const key = level as keyof any;
+  const currentSlots = spellSlots?.[key];
+  if (!currentSlots) return;
+
+  const updatedSpellSlots = {
+    ...spellSlots,
+    [key]: {
+      ...currentSlots,
+      current: Math.max(0, Math.min(currentSlots.max, newValue)),
+    },
+  };
+
+  switch (entityType) {
+    case "playableCharacter":
+      await updatePlayableCharacter(campaignId, entityId, {
+        spellSlots: updatedSpellSlots,
+      });
+      break;
+    case "monster":
+      await updateMonster(campaignId, entityId, {
+        spellSlots: updatedSpellSlots,
+      });
+      break;
+    case "npc":
+      await updateNPC(campaignId, entityId, {
+        spellSlots: updatedSpellSlots,
+      });
+      break;
+  }
+}
+
+export async function updateEntityClassResource(
+  campaignId: string,
+  entityId: string,
+  entityType: EntityType,
+  resourceName: string,
+  newValue: number,
+  currentValue: any,
+): Promise<void> {
+  if (!currentValue || typeof currentValue !== "object") return;
+
+  const updatedResource = {
+    ...currentValue,
+    current: Math.max(0, Math.min((currentValue as any).max, newValue)),
+  };
+
+  const updateData = {
+    [resourceName]: updatedResource,
+  } as any;
+
+  switch (entityType) {
+    case "playableCharacter":
+      await updatePlayableCharacter(campaignId, entityId, updateData);
+      break;
+    case "npc":
+      await updateNPC(campaignId, entityId, updateData);
+      break;
+    case "monster":
+      await updateMonster(campaignId, entityId, updateData);
+      break;
+  }
+}
+
+export async function updateEntityLegendaryActionPool(
+  campaignId: string,
+  entityId: string,
+  newCurrent: number,
+  max: number,
+): Promise<void> {
+  await updateMonster(campaignId, entityId, {
+    legendary_actions_pool: {
+      current: Math.max(0, newCurrent),
+      max,
+    },
+  });
+}
+
+export async function updateEntityLegendaryResistancePool(
+  campaignId: string,
+  entityId: string,
+  newCurrent: number,
+  max: number,
+): Promise<void> {
+  await updateMonster(campaignId, entityId, {
+    legendary_resistances: {
+      current: Math.max(0, newCurrent),
+      max,
+    },
+  });
+}
+
+export async function updateEntityAbilityUse(
+  campaignId: string,
+  entityId: string,
+  abilityName: string,
+  newCurrent: number,
+  abilityUses: Array<{ name: string; current: number; max: number }>,
+): Promise<void> {
+  const updatedAbilityUses = abilityUses.map((ability) =>
+    ability.name === abilityName
+      ? { ...ability, current: Math.max(0, newCurrent) }
+      : ability,
+  );
+
+  await updateMonster(campaignId, entityId, {
+    abilityUses: updatedAbilityUses,
+  });
+}
