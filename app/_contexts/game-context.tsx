@@ -50,8 +50,9 @@ interface GameContextType {
   setSelectedNPC: Dispatch<SetStateAction<NPC | undefined>>;
   selectedMonster: Monster | undefined;
   setSelectedMonster: Dispatch<SetStateAction<Monster | undefined>>;
-  handleSaveMonster: (monster: Monster) => void;
-  handleUpdateMonster: (monster: Monster) => void;
+  handleSaveMonster: (monster: Omit<Monster, "id">) => void;
+  handleCreateMonster: (monster: Omit<Monster, "id">) => void;
+  handleUpdateMonster: (monster: Omit<Monster, "id">) => void;
   handleDeleteMonster: (id: string) => void;
   handleSavePlayer: (player: PlayableCharacter) => void;
   handleGenerateNPC: (npc: NPC) => void;
@@ -123,27 +124,48 @@ export function GameProvider({
     };
   }, [campaignId]);
 
-  const handleSaveMonster = async (monster: Monster) => {
+  const handleSaveMonster = async (monsterWithoutId: Omit<Monster, "id">) => {
     if (!campaignId) return;
 
     try {
-      if (monster.id) {
-        await updateMonster(campaignId, monster.id, monster);
+      const existingMonster = gameData.monsters.find((m) =>
+        m.index === monsterWithoutId.index,
+      );
+
+      if (existingMonster && existingMonster.id) {
+        await updateMonster(campaignId, existingMonster.id, monsterWithoutId);
       } else {
-        const newMonster = { ...monster, id: crypto.randomUUID() };
-        await createMonster(campaignId, newMonster);
+        await createMonster(campaignId, monsterWithoutId);
       }
     } catch (error) {
       console.error("Error saving monster:", error);
+      alert("Erro ao salvar monstro: " + (error as Error).message);
+      return;
     }
+
     setMonsterViewState("list");
     setSelectedMonster(undefined);
   };
 
-  const handleUpdateMonster = async (data: Monster) => {
-    if (!selectedMonster || !campaignId) return;
+  const handleCreateMonster = async (monsterWithoutId: Omit<Monster, "id">) => {
+    if (!campaignId) return;
 
-    const updatedMonster: Monster = {
+    try {
+      await createMonster(campaignId, monsterWithoutId);
+    } catch (error) {
+      console.error("Error creating monster:", error);
+      alert("Erro ao criar monstro: " + (error as Error).message);
+      return;
+    }
+
+    setMonsterViewState("list");
+    setSelectedMonster(undefined);
+  };
+
+  const handleUpdateMonster = async (data: Omit<Monster, "id">) => {
+    if (!selectedMonster || !selectedMonster.id || !campaignId) return;
+
+    const updatedMonster: Omit<Monster, "id"> = {
       ...selectedMonster,
       ...data,
     };
@@ -161,11 +183,17 @@ export function GameProvider({
   const handleDeleteMonster = async (id: string) => {
     if (!campaignId) return;
 
+    const confirmed = confirm("Tem certeza que deseja excluir este monstro?");
+    if (!confirmed) return;
+
     try {
       await deleteMonster(campaignId, id);
     } catch (error) {
       console.error("Error deleting monster:", error);
+      alert("Erro ao excluir monstro. Tente novamente.");
+      return;
     }
+
     setMonsterViewState("list");
     setSelectedMonster(undefined);
   };
@@ -259,6 +287,7 @@ export function GameProvider({
     handleUpdateMonster,
     handleGenerateNPC,
     handleSaveMonster,
+    handleCreateMonster,
     handleSavePlayer,
     handleUpdateNPC,
     handleDeleteNPC,

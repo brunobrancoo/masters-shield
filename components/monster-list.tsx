@@ -18,12 +18,14 @@ import { MonsterApiImportDialog } from "./monster-api-import";
 interface MonsterListProps {
   monsters: Monster[];
   onSelectMonster: (monster: Monster) => void;
+  onImportMonster: (monster: Monster, mode: "save" | "edit") => void;
   onDeleteMonster: (id: string) => void;
 }
 
 export function MonsterList({
   monsters,
   onSelectMonster,
+  onImportMonster,
   onDeleteMonster,
 }: MonsterListProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,62 +95,113 @@ export function MonsterList({
           filteredMonsters.map((monster) => (
             <Card
               key={monster.id}
-              className="parchment-texture metal-border hover:glow-gold transition-all cursor-pointer"
+              className="parchment-texture metal-border hover:glow-gold transition-all cursor-pointer pt-0"
               onClick={() => onSelectMonster(monster)}
             >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="font-sans text-lg text-balance">
-                      {monster.name}
-                    </CardTitle>
-                    <CardDescription className="font-serif">
-                      <Badge variant="secondary" className="mt-1">
-                        {monster.type}
-                      </Badge>
-                    </CardDescription>
-                  </div>
-                  <DragonIcon className="w-6 h-6 text-primary" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm font-serif">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Nível:</span>
-                    <span className="font-bold text-primary">
-                      {monster.level}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">PV:</span>
-                    <span className="font-bold text-destructive">
-                      {monster.hp}/{monster.maxHp}
-                    </span>
-                  </div>
-                  {monster.skills.length > 0 && (
-                    <div className="pt-2">
-                      <div className="flex items-center gap-1 text-muted-foreground mb-1">
-                        <SwordIcon className="w-3 h-3" />
-                        <span className="text-xs">Habilidades:</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {monster.skills.slice(0, 2).map((skill, idx) => (
-                          <Badge
-                            key={idx}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                        {monster.skills.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{monster.skills.length - 2}
-                          </Badge>
-                        )}
-                      </div>
+              <CardContent className="p-0">
+                <div className="space-y-3">
+                  {monster.image && (
+                    <div className="relative w-full bg-muted rounded-t-sm overflow-hidden">
+                      <img
+                        src={`https://www.dnd5eapi.co${monster.image}`}
+                        alt={monster.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                      <div className="absolute inset-e bg-gradient-to-t from-background/80 to-transparent" />
                     </div>
                   )}
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="font-sans text-lg text-balance mb-1">
+                          {monster.name}
+                        </CardTitle>
+                        <CardDescription className="font-serif">
+                          <Badge variant="secondary" className="text-xs">
+                            {monster.type}
+                          </Badge>
+                          {monster.size && (
+                            <Badge variant="outline" className="text-xs ml-1">
+                              {monster.size}
+                            </Badge>
+                          )}
+                        </CardDescription>
+                      </div>
+                      <DragonIcon className="w-6 h-6 text-primary flex-shrink-0" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm font-serif">
+                      <div className="flex items-center justify-between bg-muted/30 rounded px-2 py-1">
+                        <span className="text-muted-foreground text-xs">
+                          ND:
+                        </span>
+                        <span className="font-bold text-primary">
+                          {monster.challenge_rating}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between bg-muted/30 rounded px-2 py-1">
+                        <span className="text-muted-foreground text-xs">
+                          PV:
+                        </span>
+                        <span className="font-bold text-destructive">
+                          {monster.hp}/{monster.maxHp}
+                        </span>
+                      </div>
+                      {monster.armor_class &&
+                        monster.armor_class.length > 0 && (
+                          <div className="flex items-center justify-between bg-muted/30 rounded px-2 py-1">
+                            <span className="text-muted-foreground text-xs">
+                              CA:
+                            </span>
+                            <span className="font-bold text-amber-600 dark:text-amber-400">
+                              {monster.armor_class[0]?.value ??
+                                monster.armor_class[0]?.value ??
+                                10}
+                            </span>
+                          </div>
+                        )}
+                      {monster.xp && monster.xp > 0 && (
+                        <div className="flex items-center justify-between bg-muted/30 rounded px-2 py-1">
+                          <span className="text-muted-foreground text-xs">
+                            XP:
+                          </span>
+                          <span className="font-bold text-purple-600 dark:text-purple-400">
+                            {monster.xp}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    {monster.special_abilities.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-1 text-muted-foreground mb-2">
+                          <SwordIcon className="w-3 h-3" />
+                          <span className="text-xs font-semibold">
+                            Habilidades Especiais:
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {monster.special_abilities
+                            .slice(0, 3)
+                            .map((ability, idx) => (
+                              <Badge
+                                key={idx}
+                                variant="outline"
+                                className="text-xs"
+                              >
+                                {ability.name}
+                              </Badge>
+                            ))}
+                          {monster.special_abilities.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{monster.special_abilities.length - 3}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -159,7 +212,7 @@ export function MonsterList({
       <MonsterApiImportDialog
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
-        onImport={onSelectMonster}
+        onImport={onImportMonster}
       />
     </div>
   );

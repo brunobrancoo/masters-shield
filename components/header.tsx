@@ -14,7 +14,7 @@ export default function Header() {
   const router = useRouter();
 
   return (
-    <header className="border-b border-border-default bg-bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+    <header className="border-b border-border-default bg-bg-surface/50 backdrop-blur-sm top-0 z-40">
       <div className="container mx-auto px-4 py-6">
         <Button
           variant="ghost"
@@ -39,7 +39,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
-            <SidebarTrigger className="w-8 h-8" />
+            <SidebarTrigger />
             <DiceRollModal />
             <Card className="hidden md:block card-inset">
               <CardContent className="p-4">

@@ -56,6 +56,7 @@ export function MasterView() {
     setSelectedMonster,
     setSelectedPlayableCharacter,
     handleSaveMonster,
+    handleCreateMonster,
     handleUpdateMonster,
     handleDeleteMonster,
     handleSavePlayer,
@@ -150,6 +151,10 @@ export function MasterView() {
                     onSelectMonster={(m) => {
                       setSelectedMonster(m);
                       setMonsterViewState("sheet");
+                    }}
+                    onImportMonster={(monster) => {
+                      const { id, ...monsterWithoutId } = monster;
+                      handleCreateMonster(monsterWithoutId);
                     }}
                     onDeleteMonster={(id) => {}}
                   />
@@ -329,23 +334,45 @@ export function MasterView() {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
+       </main>
 
-      {monsterView === "sheet" && selectedMonster && (
+       {monsterView === "sheet" && selectedMonster && (
         <MonsterSheet
           monster={selectedMonster}
           onSave={handleUpdateMonster}
-          onDelete={() => handleDeleteMonster(selectedMonster.id)}
+          onDelete={() => {
+            if (selectedMonster.id) {
+              handleDeleteMonster(selectedMonster.id);
+            } else {
+              console.error("Cannot delete monster without ID");
+            }
+          }}
           onClose={() => {
             setMonsterViewState("list");
             setSelectedMonster(undefined);
           }}
-          monsterIsOpen={monsterIsOpen}
-          onMonsterOpen={onMonsterOpen}
-          onMonsterClose={onMonsterClose}
-          onMonsterToggle={onMonsterToggle}
+          onEdit={() => {
+            setMonsterViewState("form");
+          }}
         />
       )}
+
+       {npcView === "sheet" && selectedNPC && selectedNPC.id && (
+        <NPCSheet
+          npc={selectedNPC}
+          onSave={handleUpdateNPC}
+          onDelete={() => handleDeleteNPC(selectedNPC.id!)}
+          onClose={() => {
+            setNPCViewState("list");
+            setSelectedNPC(undefined);
+          }}
+          npcIsOpen={npcIsOpen}
+          onNPCOpen={onNPCOpen}
+          onNPCClose={onNPCClose}
+          onNPCToggle={onNPCToggle}
+        />
+      )}
+
 
       {npcView === "sheet" && selectedNPC && selectedNPC.id && (
         <NPCSheet

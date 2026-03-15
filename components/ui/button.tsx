@@ -9,21 +9,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-class-accent text-white hover:bg-class-accent/90",
+        default: "bg-stone-700 text-stone-50 hover:bg-stone-800 shadow-md",
         destructive:
-          "bg-damage text-white hover:bg-damage/90 focus-visible:ring-damage/20",
+          "bg-red-800 text-white hover:bg-red-900 focus-visible:ring-red-700/20",
         outline:
-          "border border-border-default bg-bg-surface shadow-xs hover:bg-bg-elevated hover:text-text-primary",
+          "border border-stone-600 bg-stone-900 text-stone-100 shadow-sm hover:bg-stone-800",
         secondary:
-          "bg-bg-elevated text-text-primary hover:bg-bg-elevated/80",
+          "bg-stone-600 text-stone-100 hover:bg-stone-700",
         ghost:
-          "hover:bg-bg-surface hover:text-text-primary",
-        link: "text-class-accent underline-offset-4 hover:underline",
-        divine: "bg-divine-400 text-white hover:bg-divine-400/90",
-        arcane: "bg-arcane-400 text-white hover:bg-arcane-400/90",
-        martial: "bg-martial-400 text-white hover:bg-martial-400/90",
-        nature: "bg-nature-400 text-white hover:bg-nature-400/90",
-        dex: "bg-dex-400 text-white hover:bg-dex-400/90",
+          "hover:bg-stone-800 hover:text-stone-100",
+        link: "text-amber-400 underline-offset-4 hover:underline",
+        divine: "bg-amber-600 text-white hover:bg-amber-700",
+        arcane: "bg-purple-700 text-white hover:bg-purple-800",
+        martial: "bg-red-700 text-white hover:bg-red-800",
+        nature: "bg-green-700 text-white hover:bg-green-800",
+        dex: "bg-slate-600 text-white hover:bg-slate-700",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

@@ -40,7 +40,6 @@ const CASTER_CLASSES = [
 export default function FullScreenCombat() {
   const {
     initiativeEntries,
-    setInitiativeEntries,
     round,
     onCombat,
     setRound,
@@ -54,6 +53,9 @@ export default function FullScreenCombat() {
     updateSpellSlot,
     updateClassResource,
     rollIndividualInitiative,
+    updateLegendaryActionPool,
+    updateLegendaryResistancePool,
+    useSpecialAbility,
   } = useCombat();
   const { gameData } = useGame();
 
@@ -64,9 +66,6 @@ export default function FullScreenCombat() {
 
   const updateInitiative = (id: string, value: string) => {
     const num = Number.parseInt(value) || 0;
-    setInitiativeEntries((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, initiative: num } : e)),
-    );
   };
 
   const nextTurn = () => {
@@ -156,10 +155,18 @@ export default function FullScreenCombat() {
             {sortedEntries.map((entry, index) => {
               const isCurrentTurn = onCombat && index === currentTurn;
               const isPlayer = entry.type === "playableCharacter";
-              const instance =
-                gameData.playableCharacters.find(
-                  (p: any) => p.id === entry.id,
-                ) || null;
+              const isMonster = entry.type === "monster";
+              const isNPC = entry.type === "npc";
+
+              const instance: any =
+                (isPlayer &&
+                  gameData.playableCharacters.find(
+                    (p: any) => p.id === entry.id,
+                  )) ||
+                (isMonster &&
+                  gameData.monsters.find((m: any) => m.id === entry.id)) ||
+                (isNPC && gameData.npcs.find((n: any) => n.id === entry.id)) ||
+                null;
 
               return (
                 <Card
@@ -175,8 +182,8 @@ export default function FullScreenCombat() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-heading font-bold text-lg text-text-primary">
-                            {entry.name} - {instance?.className}:{" "}
-                            {entry.initiative}
+                            {entry.name}
+                            {isPlayer && instance && ` (${instance.className})`}
                           </h3>
                           {isPlayer && instance && (
                             <button
@@ -202,65 +209,63 @@ export default function FullScreenCombat() {
                     </div>
 
                     <div className="space-y-2">
-                      {entry.tempHp !== undefined && (
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-body text-class-accent">
-                            HP Temporário
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateTempHp(
-                                  entry.id,
-                                  Math.max(0, entry.tempHp! - 5),
-                                )
-                              }
-                              className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
-                            >
-                              -5
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateTempHp(entry.id, entry.tempHp! - 1)
-                              }
-                              className="h-8 w-8 p-0 hover:bg-healing/20 hover:text-healing"
-                            >
-                              -
-                            </Button>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-body text-class-accent">
+                          HP Temporário
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              updateTempHp(
+                                entry.id,
+                                Math.max(0, entry.tempHp! - 5),
+                              )
+                            }
+                            className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
+                          >
+                            -5
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              updateTempHp(entry.id, entry.tempHp! - 1)
+                            }
+                            className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
+                          >
+                            -
+                          </Button>
 
-                            <span className="font-bold font-body text-class-accent min-w-[2rem] text-center">
-                              {entry.tempHp}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateTempHp(
-                                  entry.id,
-                                  Math.max(0, entry.tempHp! + 1),
-                                )
-                              }
-                              className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
-                            >
-                              +
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateTempHp(entry.id, entry.tempHp! + 5)
-                              }
-                              className="h-8 w-8 p-0 hover:bg-healing/20 hover:text-healing"
-                            >
-                              +5
-                            </Button>
-                          </div>
+                          <span className="font-bold font-body text-class-accent min-w-[2rem] text-center">
+                            {entry.tempHp}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              updateTempHp(
+                                entry.id,
+                                Math.max(0, entry.tempHp! + 1),
+                              )
+                            }
+                            className="h-8 w-8 p-0 hover:bg-damage/20 hover:text-damage"
+                          >
+                            +
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              updateTempHp(entry.id, entry.tempHp! + 5)
+                            }
+                            className="h-8 w-8 p-0 hover:bg-healing/20 hover:text-healing"
+                          >
+                            +5
+                          </Button>
                         </div>
-                      )}
+                      </div>
 
                       {instance !== null && (
                         <>
@@ -310,12 +315,139 @@ export default function FullScreenCombat() {
                         </>
                       )}
 
-                      {isPlayer &&
+                      {isMonster && instance && (
+                        <>
+                          {instance.legendary_actions_pool && (
+                            <div className="pt-2 border-t border-border">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="font-body text-class-accent">
+                                  Ações Lendárias
+                                </span>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      updateLegendaryActionPool(entry.id, -1)
+                                    }
+                                    className="h-6 w-6 p-0 hover:bg-damage/20 hover:text-damage"
+                                  >
+                                    -
+                                  </Button>
+                                  <span className="font-bold font-body text-text-primary text-xs min-w-[2rem] text-center">
+                                    {instance.legendary_actions_pool.current}/
+                                    {instance.legendary_actions_pool.max}
+                                  </span>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      updateLegendaryActionPool(entry.id, 1)
+                                    }
+                                    className="h-6 w-6 p-0 hover:bg-healing/20 hover:text-healing"
+                                  >
+                                    +
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {isMonster &&
+                            instance &&
+                            instance.legendary_resistances && (
+                              <div className="pt-2 border-t border-border">
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="font-body text-class-accent">
+                                    Resistências Lendárias
+                                  </span>
+                                  <div className="flex items-center gap-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        updateLegendaryResistancePool(
+                                          entry.id,
+                                          -1,
+                                        )
+                                      }
+                                      className="h-6 w-6 p-0 hover:bg-damage/20 hover:text-damage"
+                                    >
+                                      -
+                                    </Button>
+                                    <span className="font-bold font-body text-text-primary text-xs min-w-[2rem] text-center">
+                                      {instance.legendary_resistances.current}/
+                                      {instance.legendary_resistances.max}
+                                    </span>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        updateLegendaryResistancePool(
+                                          entry.id,
+                                          1,
+                                        )
+                                      }
+                                      className="h-6 w-6 p-0 hover:bg-healing/20 hover:text-healing"
+                                    >
+                                      +
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                          {isMonster &&
+                            instance &&
+                            instance.abilityUses &&
+                            instance.abilityUses.length > 0 && (
+                              <div className="pt-2 border-t border-border">
+                                <div className="flex items-center gap-1 mb-2">
+                                  <SparklesIcon className="w-3 h-3 text-class-accent" />
+                                  <span className="text-xs font-bold text-text-secondary">
+                                    Habilidades Especiais (X/dia)
+                                  </span>
+                                </div>
+                                <div className="space-y-2">
+                                  {instance.abilityUses.map(
+                                    (ability: any, idx: number) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-center justify-between text-sm"
+                                      >
+                                        <span className="font-body text-text-secondary truncate">
+                                          {ability.name}
+                                        </span>
+                                        <div className="flex items-center gap-1">
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                              useSpecialAbility(
+                                                entry.id,
+                                                ability.name,
+                                              )
+                                            }
+                                            className="h-6 w-6 p-0 hover:bg-damage/20 hover:text-damage"
+                                          >
+                                            -
+                                          </Button>
+                                          <span className="font-bold font-body text-text-primary text-xs min-w-[2rem] text-center">
+                                            {ability.current}/{ability.max}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ),
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                        </>
+                      )}
+
+                      {(isPlayer || isNPC || isMonster) &&
                         instance &&
-                        instance.spellSlots &&
-                        CASTER_CLASSES.includes(
-                          instance.classIndex?.toLowerCase(),
-                        ) && (
+                        instance.spellSlots && (
                           <div className="pt-2 border-t border-border">
                             <div className="flex items-center gap-1 mb-2">
                               <SparklesIcon className="w-3 h-3 text-class-accent" />
@@ -358,7 +490,7 @@ export default function FullScreenCombat() {
                           </div>
                         )}
 
-                      {isPlayer && instance && (
+                      {(isPlayer || isNPC) && instance && (
                         <div className="pt-2 border-t border-border">
                           {[
                             "sorceryPoints",

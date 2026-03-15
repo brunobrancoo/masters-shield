@@ -1452,7 +1452,7 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                 </div>
               </div>
               {formData.concentration?.active && (
-                  <div className="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="concentration_spell">
                     Magia de Concentração
                   </Label>
@@ -1469,7 +1469,66 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                     className="bg-card"
                     />
                  </div>
-               )}
+               </div>
+
+              <div className="mt-6 pt-6 border-t border-border-default">
+                <div className="flex items-center gap-2 mb-3">
+                  <Wand2 className="w-4 h-4 text-arcane-400" />
+                  <h4 className="font-semibold text-text-secondary">
+                    Slots de Magia
+                  </h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => {
+                    const slotData = formData.spellSlots?.[lvl as keyof typeof formData.spellSlots] || { current: 0, max: 0 };
+
+                    return (
+                      <div key={lvl}>
+                        <div className="flex items-center gap-1 mb-2">
+                          <span className="text-xs font-medium text-text-tertiary">
+                            Nível {lvl}
+                          </span>
+                        </div>
+                        <div className="space-y-2">
+                          <div>
+                            <Label htmlFor={`spell-slot-max-${lvl}`} className="text-xs text-text-tertiary">
+                              Máximo
+                            </Label>
+                            <Input
+                              id={`spell-slot-max-${lvl}`}
+                              type="number"
+                              min="0"
+                              className="bg-bg-inset border-border-default focus:border-arcane-400 text-center h-9 text-sm"
+                              value={slotData.max}
+                              onChange={(e) => {
+                                const newSpellSlots = formData.spellSlots || {
+                                  1: { current: 0, max: 0 },
+                                  2: { current: 0, max: 0 },
+                                  3: { current: 0, max: 0 },
+                                  4: { current: 0, max: 0 },
+                                  5: { current: 0, max: 0 },
+                                  6: { current: 0, max: 0 },
+                                  7: { current: 0, max: 0 },
+                                  8: { current: 0, max: 0 },
+                                  9: { current: 0, max: 0 },
+                                };
+                                updateField("spellSlots", {
+                                  ...newSpellSlots,
+                                  [lvl]: {
+                                    current: slotData.current,
+                                    max: parseInt(e.target.value) || 0,
+                                  },
+                                });
+                              }}
+                              placeholder="0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
              </CardContent>
            </Card>
 
@@ -1559,64 +1618,6 @@ export function MonsterForm({ monster, onSave, onCancel }: MonsterFormProps) {
                     </div>
                   </div>
                 </div>
-              <div className="mt-6 pt-6 border-t border-border-default">
-                <div className="flex items-center gap-2 mb-3">
-                  <Wand2 className="w-4 h-4 text-arcane-400" />
-                  <h4 className="font-semibold text-text-secondary">
-                    Slots de Magia
-                  </h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lvl) => {
-                    const slotData = formData.spellSlots?.[lvl as keyof typeof formData.spellSlots] || { current: 0, max: 0 };
-
-                    return (
-                      <div key={lvl}>
-                        <div className="flex items-center gap-1 mb-2">
-                          <span className="text-xs font-medium text-text-tertiary">
-                            Nível {lvl}
-                          </span>
-                        </div>
-                        <div className="space-y-2">
-                          <div>
-                            <Label htmlFor={`spell-slot-max-${lvl}`} className="text-xs text-text-tertiary">
-                              Máximo
-                            </Label>
-                            <Input
-                              id={`spell-slot-max-${lvl}`}
-                              type="number"
-                              min="0"
-                              className="bg-bg-inset border-border-default focus:border-arcane-400 text-center h-9 text-sm"
-                              value={slotData.max}
-                              onChange={(e) => {
-                                const newSpellSlots = formData.spellSlots || {
-                                  1: { current: 0, max: 0 },
-                                  2: { current: 0, max: 0 },
-                                  3: { current: 0, max: 0 },
-                                  4: { current: 0, max: 0 },
-                                  5: { current: 0, max: 0 },
-                                  6: { current: 0, max: 0 },
-                                  7: { current: 0, max: 0 },
-                                  8: { current: 0, max: 0 },
-                                  9: { current: 0, max: 0 },
-                                };
-                                updateField("spellSlots", {
-                                  ...newSpellSlots,
-                                  [lvl]: {
-                                    current: slotData.current,
-                                    max: parseInt(e.target.value) || 0,
-                                  },
-                                });
-                              }}
-                              placeholder="0"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
               </div>
             </CardContent>
           </Card>

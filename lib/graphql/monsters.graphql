@@ -1,30 +1,180 @@
 query GetMonsters($name: String) {
   monsters(name: $name) {
-    index
     name
-    type
+    index
+    actions {
+      action_options {
+        type
+        desc
+      }
+
+      attack_bonus
+      desc
+      multiattack_type
+      name
+      options {
+        desc
+      }
+      damage {
+        ... on Damage {
+          damage_dice
+          damage_type {
+            index
+            name
+          }
+        }
+      }
+    }
+    alignment
     challenge_rating
+    charisma
+    condition_immunities {
+      index
+      name
+      desc
+      updated_at
+    }
+    constitution
+    damage_immunities
+    damage_resistances
+    damage_vulnerabilities
+    dexterity
+    forms {
+      name
+    }
+    hit_dice
     hit_points
+    hit_points_roll
+    image
+    index
+    intelligence
+    languages
+    legendary_actions {
+      name
+      desc
+      attack_bonus
+      damage {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      dc {
+        dc_value
+        success_type
+      }
+    }
+    name
+    proficiencies {
+      proficiency {
+        name
+      }
+      value
+    }
+    reactions {
+      name
+      desc
+      dc {
+        dc_value
+        success_type
+      }
+    }
+    senses {
+      blindsight
+      darkvision
+      passive_perception
+      tremorsense
+      truesight
+    }
+    size
+    special_abilities {
+      name
+      desc
+      attack_bonus
+      damage {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      dc {
+        dc_value
+        success_type
+        dc_type {
+          name
+        }
+      }
+      spellcasting {
+        slots {
+          count
+          slot_level
+        }
+        spells {
+          spell {
+            name
+            level
+          }
+        }
+      }
+      usage {
+        rest_types
+        times
+        type
+      }
+    }
+    speed {
+      burrow
+      climb
+      fly
+      hover
+      swim
+      walk
+    }
+    strength
+    subtype
+    type
+    wisdom
+    xp
+    updated_at
     armor_class {
-      ... on ArmorClassArmor {
-        value
-        type
-      }
-      ... on ArmorClassCondition {
-        value
-        type
-      }
       ... on ArmorClassDex {
-        value
         type
+        value
+        desc
       }
       ... on ArmorClassNatural {
-        value
         type
+        value
+        desc
+      }
+      ... on ArmorClassArmor {
+        type
+        value
+        desc
+        armor {
+          index
+          name
+          properties {
+            name
+          }
+        }
       }
       ... on ArmorClassSpell {
-        value
         type
+        value
+        spell {
+          name
+          level
+        }
+        desc
+      }
+      ... on ArmorClassCondition {
+        type
+        value
+        condition {
+          name
+        }
+        desc
       }
     }
   }
@@ -32,80 +182,181 @@ query GetMonsters($name: String) {
 
 query GetMonster($index: String!) {
   monster(index: $index) {
-    index
     name
-    size
-    type
-    alignment
-    armor_class {
-      ... on ArmorClassArmor {
-        value
+    index
+    actions {
+      action_options {
         type
+        desc
       }
-      ... on ArmorClassCondition {
-        value
-        type
-      }
-      ... on ArmorClassDex {
-        value
-        type
-      }
-      ... on ArmorClassNatural {
-        value
-        type
-      }
-      ... on ArmorClassSpell {
-        value
-        type
-      }
-    }
-    hit_points
-    hit_dice
-    speed {
-      walk
-      fly
-      swim
-    }
-    strength
-    dexterity
-    constitution
-    intelligence
-    wisdom
-    charisma
-    proficiencies {
-      value
-      proficiency {
-        name
-      }
-    }
-    damage_vulnerabilities
-    damage_resistances
-    damage_immunities
-    condition_immunities {
+
+      attack_bonus
+      desc
+      multiattack_type
       name
+      options {
+        desc
+      }
+      damage {
+        ... on Damage {
+          damage_dice
+          damage_type {
+            index
+            name
+          }
+        }
+      }
     }
-    senses {
-      passive_perception
-      darkvision
-    }
-    languages
+    alignment
     challenge_rating
-    xp
-    special_abilities {
+    charisma
+    condition_immunities {
+      index
       name
       desc
+      updated_at
     }
-    actions {
+    constitution
+    damage_immunities
+    damage_resistances
+    damage_vulnerabilities
+    dexterity
+    forms {
+      name
+    }
+    hit_dice
+    hit_points
+    hit_points_roll
+    image
+    index
+    intelligence
+    languages
+    legendary_actions {
       name
       desc
       attack_bonus
       damage {
-        ... on Damage {
-          damage_type {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      dc {
+        dc_value
+        success_type
+      }
+    }
+    name
+    proficiencies {
+      proficiency {
+        name
+      }
+      value
+    }
+    reactions {
+      name
+      desc
+      dc {
+        dc_value
+        success_type
+      }
+    }
+    senses {
+      blindsight
+      darkvision
+      passive_perception
+      tremorsense
+      truesight
+    }
+    size
+    special_abilities {
+      name
+      desc
+      attack_bonus
+      damage {
+        damage_dice
+        damage_type {
+          name
+        }
+      }
+      dc {
+        dc_value
+        success_type
+        dc_type {
+          name
+        }
+      }
+      spellcasting {
+        slots {
+          count
+          slot_level
+        }
+        spells {
+          spell {
+            name
+            level
+          }
+        }
+      }
+      usage {
+        rest_types
+        times
+        type
+      }
+    }
+    speed {
+      burrow
+      climb
+      fly
+      hover
+      swim
+      walk
+    }
+    strength
+    subtype
+    type
+    wisdom
+    xp
+    updated_at
+    armor_class {
+      ... on ArmorClassDex {
+        type
+        value
+        desc
+      }
+      ... on ArmorClassNatural {
+        type
+        value
+        desc
+      }
+      ... on ArmorClassArmor {
+        type
+        value
+        desc
+        armor {
+          index
+          name
+          properties {
             name
           }
-          damage_dice
         }
+      }
+      ... on ArmorClassSpell {
+        type
+        value
+        spell {
+          name
+          level
+        }
+        desc
+      }
+      ... on ArmorClassCondition {
+        type
+        value
+        condition {
+          name
+        }
+        desc
       }
     }
   }

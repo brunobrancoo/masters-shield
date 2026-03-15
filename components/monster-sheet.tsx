@@ -1,38 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import type React from "react";
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  DragonIcon,
-  SwordIcon,
-  ShieldIcon,
-  ScrollIcon,
-} from "@/components/icons";
-import { calculateModifier } from "@/lib/utils-dnd";
+import { ArrowLeft, ShieldIcon, Trash2, Plus, Minus } from "lucide-react";
 import { Monster } from "@/lib/schemas";
+import type { SpellSlots } from "@/lib/schemas";
 
 interface MonsterSheetProps {
   monster: Monster;
-  onSave: (monster: Monster) => void;
+  onSave: (monster: Omit<Monster, "id">) => void;
   onDelete: () => void;
   onClose: () => void;
-  monsterIsOpen: boolean;
-  onMonsterOpen: () => void;
-  onMonsterClose: () => void;
-  onMonsterToggle: () => void;
+  onEdit: () => void;
 }
 
 export function MonsterSheet({
@@ -40,369 +24,592 @@ export function MonsterSheet({
   onSave,
   onDelete,
   onClose,
-  monsterIsOpen,
-  onMonsterOpen,
-  onMonsterClose,
-  onMonsterToggle,
+  onEdit,
 }: MonsterSheetProps) {
-  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Monster>(monster);
-  const [skillInput, setSkillInput] = useState("");
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-    setIsEditing(false);
+  const updateField = <K extends keyof Monster>(
+    field: K,
+    value: Monster[K],
+  ) => {
+    setFormData((prev: Monster) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddSkill = () => {
-    if (skillInput.trim()) {
-      setFormData({
-        ...formData,
-        skills: [...formData.skills, skillInput.trim()],
-      });
-      setSkillInput("");
+  const handleHPChange = (delta: number) => {
+    const newHP = Math.max(0, Math.min(formData.maxHp, formData.hp + delta));
+    updateField("hp", newHP);
+  };
+
+  const handleTempHPChange = (delta: number) => {
+    const newTempHP = Math.max(0, formData.tempHp + delta);
+    updateField("tempHp", newTempHP);
+  };
+
+  const handleSpellSlotChange = (level: keyof SpellSlots, delta: number) => {
+    if (!formData.spellSlots) return;
+    const current = formData.spellSlots[level]?.current ?? 0;
+    const max = formData.spellSlots[level]?.max ?? 0;
+    const newValue =
+      current === delta ? 0 : Math.max(0, Math.min(current + delta, max));
+    updateField("spellSlots", {
+      ...formData.spellSlots,
+      [level]: { current: newValue, max },
+    });
+  };
+
+  const handleLegendaryActionUse = (delta: number) => {
+    if (!formData.legendary_actions_pool) return;
+    const current = formData.legendary_actions_pool.current ?? 0;
+    const max = formData.legendary_actions_pool.max ?? 0;
+    const newValue =
+      current === delta ? 0 : Math.max(0, Math.min(current + delta, max));
+    updateField("legendary_actions_pool", { current: newValue, max });
+  };
+
+  const handleLegendaryResistanceUse = (delta: number) => {
+    if (!formData.legendary_resistances) return;
+    const current = formData.legendary_resistances.current ?? 0;
+    const max = formData.legendary_resistances.max ?? 0;
+    const newValue =
+      current === delta ? 0 : Math.max(0, Math.min(current + delta, max));
+    updateField("legendary_resistances", { current: newValue, max });
+  };
+
+  const addModifier = () => {
+    updateField("modifiers", [
+      ...formData.modifiers,
+      { label: "", value: 0, source: { who: "", what: "" } },
+    ]);
+  };
+
+  const removeModifier = (index: number) => {
+    updateField(
+      "modifiers",
+      formData.modifiers.filter((_, i) => i !== index),
+    );
+  };
+
+  const updateModifier = (
+    index: number,
+    updates: Partial<Monster["modifiers"][0]>,
+  ) => {
+    updateField(
+      "modifiers",
+      formData.modifiers.map((mod, i) =>
+        i === index ? { ...mod, ...updates } : mod,
+      ),
+    );
+  };
+
+  const handleStatusChange = (status: "alive" | "unconscious" | "dead") => {
+    updateField("status", status);
+  };
+
+  const addCondition = (condition: string) => {
+    if (!formData.conditions.includes(condition as any)) {
+      updateField("conditions", [...formData.conditions, condition as any]);
     }
   };
 
-  const handleRemoveSkill = (index: number) => {
-    setFormData({
-      ...formData,
-      skills: formData.skills.filter((_, i) => i !== index),
-    });
+  const removeCondition = (condition: string) => {
+    updateField(
+      "conditions",
+      formData.conditions.filter((c) => c !== condition),
+    );
   };
 
-  const updateAttribute = (
-    attr: keyof Monster["attributes"],
-    value: number,
-  ) => {
-    setFormData({
-      ...formData,
-      attributes: { ...formData.attributes, [attr]: value },
-    });
+  const handleSave = () => {
+    const { id, ...monsterWithoutId } = formData;
+    onSave(monsterWithoutId);
   };
 
-  const hpPercentage = monster.maxHp ? (monster.hp / monster.maxHp) * 100 : 100;
-
-  if (!isEditing) {
-    return (
-      <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-3xl max-h-[90vh] overflow-y-auto texture-stone">
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <CardTitle className="font-heading text-3xl text-balance flex items-center gap-3 text-text-primary">
-                  <DragonIcon className="w-8 h-8 text-monster-400" />
-                  {monster.name}
-                </CardTitle>
-                <CardDescription className="font-body text-base mt-2 text-text-secondary">
-                  <Badge variant="secondary" className="text-sm">
-                    {monster.type}
-                  </Badge>
-                  <span className="ml-3 text-text-secondary">
-                    Nível {monster.level}
-                  </span>
-                </CardDescription>
-              </div>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <span className="sr-only">Fechar</span>×
+  return (
+    <div className="min-h-screen bg-background parchment-texture pb-12">
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center justify-start w-auto">
+            <div className="flex items-center gap-4">
+              <Button variant="outline" onClick={onClose}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar
               </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="card-inset">
-                <CardContent className="pt-6 pb-3">
-                  <div className="text-center">
-                    <ShieldIcon className="w-8 h-8 mx-auto mb-2" />
-                    <p className="section-label mb-2">Pontos de Vida</p>
-                    <p className="text-3xl font-bold">
-                      {monster.hp}
-                      {monster.maxHp && monster.maxHp !== monster.hp && (
-                        <span className="text-lg text-tertiary ml-2">
-                          / {monster.maxHp}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="card-inset">
-                <CardContent className="pt-6 pb-3">
-                  <div className="text-center">
-                    <SwordIcon className="w-8 h-8 mx-auto mb-2" />
-                    <p className="section-label mb-2">Nível de Desafio</p>
-                    <p className="text-3xl font-bold">{monster.level}</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="card-inset">
-                <CardContent className="pt-6">
-                  <div className="text-center">
-                    <SwordIcon className="w-8 h-8 mx-auto mb-2 text-class-accent" />
-                    <p className="section-label mb-2">Nível de Desafio</p>
-                    <p className="text-3xl font-bold font-body text-class-accent">
-                      {monster.level}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-xl mb-4 flex items-center gap-2 text-text-primary">
-                <ScrollIcon className="w-5 h-5 text-monster-400" />
-                Atributos
-              </h3>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {Object.entries(monster.attributes).map(([key, value]) => (
-                  <Card key={key} className="card-inset">
-                    <CardContent className="pt-4 pb-3 text-center">
-                      <p className="section-label mb-1">{key}</p>
-                      <p className="text-2xl font-bold font-body text-text-primary">
-                        {value}
-                      </p>
-                      <p className="text-sm text-class-accent font-mono font-medium">
-                        {calculateModifier(value)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="text-xl">
+                <h2 className="font-sans text-2xl font-bold">
+                  {formData.name}
+                </h2>
+                <p className="font-serif text-muted-foreground text-lg">
+                  {formData.type} - ND {formData.challenge_rating}
+                </p>
               </div>
             </div>
-
-            {monster.skills.length > 0 && (
-              <div>
-                <h3 className="font-heading text-xl mb-3 flex items-center gap-2 text-text-primary">
-                  <SwordIcon className="w-5 h-5 text-monster-400" />
-                  Habilidades Especiais
-                </h3>
-                <div className="space-y-2">
-                  {monster.skills.map((skill, index) => (
-                    <Card key={index} className="card-inset">
-                      <CardContent className="p-4">
-                        <p className="font-body leading-relaxed text-text-primary">
-                          {skill}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {monster.notes && (
-              <div>
-                <h3 className="font-heading text-xl mb-3 text-text-primary">
-                  Notas do Mestre
-                </h3>
-                <Card className="card-inset">
-                  <CardContent className="p-4">
-                    <p className="font-body leading-relaxed text-pretty text-text-primary">
-                      {monster.notes}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            <div className="flex gap-3 justify-end pt-4 border-t border-border-default">
-              <Button variant="outline" onClick={() => setIsEditing(true)}>
+            <div className="flex gap-2 ml-auto">
+              <Button
+                variant="default"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit();
+                }}
+              >
                 Editar
               </Button>
-              <Button variant="destructive" onClick={onDelete}>
+              <Button
+                variant="destructive"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete();
+                }}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
                 Excluir
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl max-h-[90vh] overflow-y-auto texture-stone">
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <CardTitle className="font-heading text-2xl text-text-primary">
-              Editar Monstro
-            </CardTitle>
-            <Button variant="ghost" size="icon" onClick={onMonsterClose}>
-              <span className="sr-only">Fechar</span>×
-            </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSave} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Nome</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="font-body"
-                  required
-                />
-              </div>
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="type">Tipo</Label>
-                <Input
-                  id="type"
-                  value={formData.type}
-                  onChange={(e) =>
-                    setFormData({ ...formData, type: e.target.value })
-                  }
-                  className="font-body"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="level">Nível</Label>
-                <Input
-                  id="level"
-                  type="number"
-                  min="1"
-                  value={formData.level}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      level: Number.parseInt(e.target.value) || 1,
-                    })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="hp">Pontos de Vida</Label>
-                <Input
-                  id="hp"
-                  type="number"
-                  min="1"
-                  value={formData.hp}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      hp: Number.parseInt(e.target.value) || 1,
-                    })
-                  }
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-lg mb-3 text-text-primary">
-                Atributos
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {(["str", "dex", "con", "int", "wis", "cha"] as const).map(
-                  (attr) => (
-                    <div key={attr} className="space-y-2">
-                      <Label htmlFor={attr} className="section-label">
-                        {attr}
-                      </Label>
-                      <Input
-                        id={attr}
-                        type="number"
-                        min="1"
-                        max="30"
-                        value={formData.attributes[attr]}
-                        onChange={(e) =>
-                          updateAttribute(
-                            attr,
-                            Number.parseInt(e.target.value) || 10,
-                          )
-                        }
-                        required
-                      />
-                      <p className="text-sm text-class-accent font-mono text-center font-medium">
-                        Mod: {calculateModifier(formData.attributes[attr])}
-                      </p>
-                    </div>
-                  ),
-                )}
-              </div>
-            </div>
-
-            <div>
-              <Label>Habilidades Especiais</Label>
-              <div className="space-y-2 mt-2">
-                {formData.skills.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      value={skill}
-                      readOnly
-                      className="font-body flex-1"
-                    />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <Card className="metal-border bg-card">
+              <CardHeader>
+                <CardTitle className="font-heading text-lg">
+                  Pontos de Vida
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
                     <Button
-                      type="button"
-                      variant="destructive"
+                      variant="outline"
                       size="sm"
-                      onClick={() => handleRemoveSkill(index)}
+                      onClick={() => handleHPChange(-5)}
                     >
-                      Remover
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <div className="text-center min-w-[100px]">
+                      <p className="text-4xl font-bold">{formData.hp}</p>
+                      {formData.tempHp > 0 && (
+                        <p className="text-lg text-primary font-bold">
+                          +{formData.tempHp}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleHPChange(5)}
+                    >
+                      <Plus className="w-4 h-4" />
                     </Button>
                   </div>
-                ))}
+                </div>
+                <div className="text-center text-sm text-muted-foreground">
+                  {formData.hp} / {formData.maxHp}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="metal-border bg-card">
+              <CardHeader>
+                <CardTitle className="font-heading text-lg">Status</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="Nova habilidade..."
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddSkill();
-                      }
-                    }}
-                    className="font-body flex-1"
-                  />
-                  <Button type="button" onClick={handleAddSkill}>
+                  <Button
+                    variant={
+                      formData.status === "alive" ? "default" : "outline"
+                    }
+                    onClick={() => handleStatusChange("alive")}
+                  >
+                    Vivo
+                  </Button>
+                  <Button
+                    variant={
+                      formData.status === "unconscious" ? "default" : "outline"
+                    }
+                    onClick={() => handleStatusChange("unconscious")}
+                  >
+                    Inconsciente
+                  </Button>
+                  <Button
+                    variant={
+                      formData.status === "dead" ? "destructive" : "outline"
+                    }
+                    onClick={() => handleStatusChange("dead")}
+                  >
+                    Morto
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {formData.spellSlots && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">
+                    Slots de Magia
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {Object.entries(formData.spellSlots).map(([level, slots]) => (
+                    <div
+                      key={level}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="font-mono">Nível {level}</span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleSpellSlotChange(parseInt(level) as keyof SpellSlots, -1)
+                          }
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        <span className="min-w-[60px] text-center">
+                          {slots.current} / {slots.max}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleSpellSlotChange(parseInt(level) as keyof SpellSlots, 1)
+                          }
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {formData.legendary_actions_pool && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">
+                    Ações Lendárias
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-lg">
+                      {formData.legendary_actions_pool.current} /{" "}
+                      {formData.legendary_actions_pool.max}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleLegendaryActionUse(-1)}
+                    >
+                      <Minus className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleLegendaryActionUse(1)}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {formData.legendary_resistances && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">
+                    Resistências Lendárias
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-lg">
+                      {formData.legendary_resistances.current} /{" "}
+                      {formData.legendary_resistances.max}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleLegendaryResistanceUse(-1)}
+                    >
+                      <Minus className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleLegendaryResistanceUse(1)}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card className="metal-border bg-card">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="font-heading text-lg">
+                    Modificadores
+                  </CardTitle>
+                  <Button variant="secondary" size="sm" onClick={addModifier}>
+                    <Plus className="w-3 h-3 mr-1" />
                     Adicionar
                   </Button>
                 </div>
-              </div>
-            </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {formData.modifiers.map((modifier, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        value={modifier.label}
+                        onChange={(e) =>
+                          updateModifier(index, { label: e.target.value })
+                        }
+                        placeholder="Nome do modificador"
+                        className="font-body"
+                      />
+                      <Input
+                        type="number"
+                        value={modifier.value}
+                        onChange={(e) =>
+                          updateModifier(index, {
+                            value: Number.parseInt(e.target.value) || 0,
+                          })
+                        }
+                        placeholder="Valor"
+                        className="font-body w-24"
+                      />
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeModifier(index)}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+                {formData.modifiers.length === 0 && (
+                  <p className="text-center text-muted-foreground">
+                    Nenhum modificador
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notas do Mestre</Label>
-              <Textarea
-                id="notes"
-                value={formData.notes || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, notes: e.target.value })
-                }
-                rows={4}
-                className="font-body"
-              />
-            </div>
+          <div className="space-y-4 bg-card/50 rounded-lg ">
+            <Card className="metal-border bg-card">
+              <CardHeader>
+                <CardTitle className="font-heading text-lg">
+                  Informações Básicas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => updateField("name", e.target.value)}
+                  />
+                </div>
 
-            <div className="flex gap-3 justify-end pt-4 border-t border-border-default">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" variant="divine">
-                Salvar Alterações
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+                <div className="space-y-2">
+                  <Label htmlFor="type">Tipo</Label>
+                  <Input
+                    id="type"
+                    value={formData.type}
+                    onChange={(e) => updateField("type", e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="challenge_rating">ND</Label>
+                    <Input
+                      id="challenge_rating"
+                      type="number"
+                      min="0"
+                      step="0.125"
+                      value={formData.challenge_rating}
+                      onChange={(e) =>
+                        updateField(
+                          "challenge_rating",
+                          Number.parseFloat(e.target.value) || 0,
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="alignment">Alinhamento</Label>
+                    <Input
+                      id="alignment"
+                      value={formData.alignment || ""}
+                      onChange={(e) => updateField("alignment", e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="size">Tamanho</Label>
+                  <select
+                    id="size"
+                    value={formData.size}
+                    onChange={(e) => updateField("size", e.target.value)}
+                    className="w-full bg-card border rounded-md px-3 py-2"
+                  >
+                    <option value="Tiny">Minúsculo</option>
+                    <option value="Small">Pequeno</option>
+                    <option value="Medium">Médio</option>
+                    <option value="Large">Grande</option>
+                    <option value="Huge">Enorme</option>
+                    <option value="Gargantuan">Gigantesco</option>
+                  </select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="metal-border bg-card">
+              <CardHeader>
+                <CardTitle className="font-heading text-lg">
+                  Atributos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                  {[
+                    { key: "strength", label: "FOR", value: formData.strength },
+                    {
+                      key: "dexterity",
+                      label: "DES",
+                      value: formData.dexterity,
+                    },
+                    {
+                      key: "constitution",
+                      label: "CON",
+                      value: formData.constitution,
+                    },
+                    {
+                      key: "intelligence",
+                      label: "INT",
+                      value: formData.intelligence,
+                    },
+                    { key: "wisdom", label: "SAB", value: formData.wisdom },
+                    { key: "charisma", label: "CAR", value: formData.charisma },
+                  ].map(({ key, label, value }) => (
+                    <div key={key} className="text-center space-y-1">
+                      <Label htmlFor={key} className="text-sm font-mono">
+                        {label}
+                      </Label>
+                      <Input
+                        id={key}
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={value}
+                        onChange={(e) =>
+                          updateField(
+                            key as keyof Monster,
+                            Number.parseInt(e.target.value) || 10,
+                          )
+                        }
+                        className="font-body text-center"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {formData.special_abilities.length > 0 && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">
+                    Habilidades Especiais
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {formData.special_abilities.map((ability, index) => (
+                    <div
+                      key={index}
+                      className="p-3 border border-border rounded-md"
+                    >
+                      <p className="font-semibold">{ability.name}</p>
+                      <p className="font-body text-sm text-muted-foreground mt-1">
+                        {ability.desc}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {formData.actions.length > 0 && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">Ações</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {formData.actions.map((action, index) => (
+                    <div
+                      key={index}
+                      className="p-3 border border-border rounded-md"
+                    >
+                      <p className="font-semibold">{action.name}</p>
+                      <p className="font-body text-sm text-muted-foreground mt-1">
+                        {action.desc}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {formData.legendary_actions.length > 0 && (
+              <Card className="metal-border bg-card">
+                <CardHeader>
+                  <CardTitle className="font-heading text-lg">
+                    Ações Lendárias
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {formData.legendary_actions.map((action, index) => (
+                    <div
+                      key={index}
+                      className="p-3 border border-border rounded-md"
+                    >
+                      <p className="font-semibold">{action.name}</p>
+                      <p className="font-body text-sm text-muted-foreground mt-1">
+                        {action.desc}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </main>
+
+      <div className="bottom-0 left-0 right-0 p-4 bg-card border-t border-border">
+        <div className="container mx-auto flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSave} className="glow-silver">
+            Salvar Alterações
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

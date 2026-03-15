@@ -31,13 +31,17 @@ export function useMonsters(name?: string) {
   return useQuery({
     queryKey: ["monsters", name],
     queryFn: async () => {
-      const response = await graphqlClient.request(GetMonstersDocument, {
-        name,
-      });
-      if (response.monsters) {
+      const response = await graphqlClient.request(GetMonstersDocument);
+      let filteredMonsters = response.monsters;
+      if (name && filteredMonsters) {
+        filteredMonsters = filteredMonsters.filter((monster: any) =>
+          monster.name?.toLowerCase().includes(name.toLowerCase())
+        );
+      }
+      if (filteredMonsters) {
         return {
           ...response,
-          monsters: filterMeaningfulItems(response.monsters),
+          monsters: filterMeaningfulItems(filteredMonsters),
         };
       }
       return response;

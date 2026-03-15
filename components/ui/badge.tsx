@@ -10,13 +10,13 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-class-accent text-white [a&]:hover:bg-class-accent/90",
+          "border-transparent bg-stone-600 text-stone-50 [a&]:hover:bg-stone-700",
         secondary:
-          "border-transparent bg-bg-elevated text-text-primary [a&]:hover:bg-bg-elevated/90",
+          "border-transparent bg-stone-700 text-stone-200 [a&]:hover:bg-stone-800",
         destructive:
-          "border-transparent bg-damage text-white [a&]:hover:bg-damage/90 focus-visible:ring-damage/20",
+          "border-transparent bg-red-800 text-white [a&]:hover:bg-red-900",
         outline:
-          "text-text-primary [a&]:hover:bg-bg-surface [a&]:hover:text-text-secondary",
+          "border border-stone-600 text-stone-300 bg-transparent [a&]:hover:bg-stone-800",
         // Rarity variants
         "rarity-common":
           "badge-rarity-common",
