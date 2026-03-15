@@ -159,10 +159,9 @@ export function MonsterApiImportDialog({
                                 <span className="font-medium text-muted-foreground">
                                   AC:
                                 </span>
-                                <span className="font-semibold text-foreground">
-                                  {monster?.armor_class?.[0]?.value ??
-                                    monster?.armor_class?.value}
-                                </span>
+                               <span className="font-semibold text-foreground">
+                                   {monster?.armor_class?.[0]?.value}
+                                 </span>
                               </span>
                               {monster?.xp && (
                                 <span className="flex items-center gap-1">

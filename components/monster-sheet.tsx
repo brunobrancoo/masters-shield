@@ -487,24 +487,24 @@ export function MonsterSheet({
               <CardContent>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                   {[
-                    { key: "strength", label: "FOR", value: formData.strength },
+                    { key: "str", label: "FOR", value: formData.attributes?.str },
                     {
-                      key: "dexterity",
+                      key: "dex",
                       label: "DES",
-                      value: formData.dexterity,
+                      value: formData.attributes?.dex,
                     },
                     {
-                      key: "constitution",
+                      key: "con",
                       label: "CON",
-                      value: formData.constitution,
+                      value: formData.attributes?.con,
                     },
                     {
-                      key: "intelligence",
+                      key: "int",
                       label: "INT",
-                      value: formData.intelligence,
+                      value: formData.attributes?.int,
                     },
-                    { key: "wisdom", label: "SAB", value: formData.wisdom },
-                    { key: "charisma", label: "CAR", value: formData.charisma },
+                    { key: "wis", label: "SAB", value: formData.attributes?.wis },
+                    { key: "cha", label: "CAR", value: formData.attributes?.cha },
                   ].map(({ key, label, value }) => (
                     <div key={key} className="text-center space-y-1">
                       <Label htmlFor={key} className="text-sm font-mono">
@@ -517,10 +517,10 @@ export function MonsterSheet({
                         max="30"
                         value={value}
                         onChange={(e) =>
-                          updateField(
-                            key as keyof Monster,
-                            Number.parseInt(e.target.value) || 10,
-                          )
+                          updateField("attributes", {
+                            ...formData.attributes,
+                            [key]: Number.parseInt(e.target.value) || 10,
+                          })
                         }
                         className="font-body text-center"
                       />

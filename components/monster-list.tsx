@@ -156,9 +156,7 @@ export function MonsterList({
                               CA:
                             </span>
                             <span className="font-bold text-amber-600 dark:text-amber-400">
-                              {monster.armor_class[0]?.value ??
-                                monster.armor_class[0]?.value ??
-                                10}
+                              {monster.armor_class[0]?.value ?? 10}
                             </span>
                           </div>
                         )}
@@ -212,7 +210,7 @@ export function MonsterList({
       <MonsterApiImportDialog
         open={importDialogOpen}
         onOpenChange={setImportDialogOpen}
-        onImport={onImportMonster}
+        onImport={(monster) => onImportMonster(monster, "save")}
       />
     </div>
   );
