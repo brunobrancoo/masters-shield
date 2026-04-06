@@ -310,6 +310,11 @@ export function CharacterSheetContent({
     setEditNotes(false);
   };
 
+  const handleGoldChange = async (newGold: number) => {
+    if (!playableCharacter) return;
+    await updatePlayableCharacter({ gold: newGold });
+  };
+
   const rollD20 = () => {
     setIsRolling(true);
     setTimeout(() => {
@@ -542,6 +547,8 @@ export function CharacterSheetContent({
                     onToggleEquip={toggleEquip}
                     onUpdateItem={updateItem}
                     campaignId={contextCampaignId || ""}
+                    gold={playableCharacter.gold || 0}
+                    onGoldChange={handleGoldChange}
                   />
                 </AccordionContent>
               </AccordionItem>
