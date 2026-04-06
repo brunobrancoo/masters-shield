@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SwordIcon } from "@/components/icons";
-import { Trash2, Pencil, Check, X } from "lucide-react";
+import { Trash2, Pencil, Check, X, Plus, Minus } from "lucide-react";
 import { D10 } from "@/components/icons";
 import AddItemDialog from "@/components/add-item-dialog";
 import { useEquipmentMultiple, useMagicItemsByName } from "@/lib/api/hooks";
@@ -19,6 +19,8 @@ interface PlayerInventorySectionProps {
   onToggleEquip: (index: number) => void;
   onUpdateItem: (index: number, updatedItem: InventoryItem) => void;
   campaignId: string;
+  gold: number;
+  onGoldChange: (gold: number) => void;
 }
 
 export default function PlayerInventorySection({
@@ -30,10 +32,14 @@ export default function PlayerInventorySection({
   onToggleEquip,
   onUpdateItem,
   campaignId,
+  gold,
+  onGoldChange,
 }: PlayerInventorySectionProps) {
   const inventory = playableCharacter.inventory || [];
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editNotes, setEditNotes] = useState("");
+  const [editingGold, setEditingGold] = useState(false);
+  const [goldInputValue, setGoldInputValue] = useState(gold.toString());
 
   const equipmentNames = useMemo(() => {
     const names = inventory
@@ -211,6 +217,29 @@ export default function PlayerInventorySection({
     setEditNotes("");
   };
 
+  const handleGoldChange = (delta: number) => {
+    const newGold = Math.max(0, gold + delta);
+    onGoldChange(newGold);
+  };
+
+  const handleGoldManualEdit = () => {
+    setEditingGold(true);
+    setGoldInputValue(gold.toString());
+  };
+
+  const handleSaveGold = () => {
+    const parsedGold = parseInt(goldInputValue);
+    if (!isNaN(parsedGold) && parsedGold >= 0) {
+      onGoldChange(parsedGold);
+    }
+    setEditingGold(false);
+  };
+
+  const handleCancelGoldEdit = () => {
+    setEditingGold(false);
+    setGoldInputValue(gold.toString());
+  };
+
   return (
     <Card className="metal-border">
       <CardHeader>
@@ -219,7 +248,70 @@ export default function PlayerInventorySection({
             <SwordIcon className="w-6 h-6" />
             Inventário
           </CardTitle>
-          <AddItemDialog onAdd={onAddItem} campaignId={campaignId} />
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 bg-bg-inset border border-border-subtle rounded px-2 py-1">
+              <span className="text-sm text-text-tertiary">Gold:</span>
+              {editingGold ? (
+                <>
+                  <input
+                    type="number"
+                    min="0"
+                    value={goldInputValue}
+                    onChange={(e) => setGoldInputValue(e.target.value)}
+                    className="w-16 bg-transparent border-b border-border-default focus:border-primary outline-none text-sm text-text-primary px-1"
+                    autoFocus
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSaveGold}
+                    className="h-6 w-6 p-0 text-healing hover:text-healing/80"
+                  >
+                    <Check className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelGoldEdit}
+                    className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <span className="font-medium text-sm text-text-primary w-16">
+                    {gold}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleGoldChange(-5)}
+                    className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                  >
+                    <span className="text-xs font-bold">-</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleGoldChange(5)}
+                    className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                  >
+                    <span className="text-xs font-bold">+</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleGoldManualEdit}
+                    className="h-6 w-6 p-0 text-text-secondary hover:text-text-primary"
+                  >
+                    <Pencil className="w-3 h-3" />
+                  </Button>
+                </>
+              )}
+            </div>
+            <AddItemDialog onAdd={onAddItem} campaignId={campaignId} />
+          </div>
         </div>
       </CardHeader>
       <CardContent>

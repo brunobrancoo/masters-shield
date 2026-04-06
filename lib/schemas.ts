@@ -454,6 +454,7 @@ export const basePlayableCharacterSchema = z.object({
   chosenRaceFeatures: z.array(z.string()).default([]),
 
   inventory: z.array(inventoryitemSchema).default([]),
+  gold: z.coerce.number().min(0).default(0),
 
   skills: z.array(z.string()),
   speed: z.coerce.number(),
