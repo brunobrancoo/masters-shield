@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useCombat } from "@/app/_contexts/combat-context";
 import { useGame } from "@/app/_contexts/game-context";
+import { RollHistoryPanel } from "@/components/roll-history-panel";
 
 const spellLevelColors = {
   1: "bg-green-800 border-green-800 hover:bg-green-800/20 text-green-foreground",
@@ -57,7 +58,7 @@ export default function FullScreenCombat() {
     updateLegendaryResistancePool,
     useSpecialAbility,
   } = useCombat();
-  const { gameData } = useGame();
+  const { campaignId, gameData } = useGame();
 
   const sortedEntries = [...initiativeEntries].sort(
     (a, b) => b.initiative - a.initiative,
@@ -574,6 +575,7 @@ export default function FullScreenCombat() {
           </div>
         )}
       </div>
+      {campaignId && <RollHistoryPanel campaignId={campaignId} position="left" className="z-[60]" />}
     </div>
   );
 }

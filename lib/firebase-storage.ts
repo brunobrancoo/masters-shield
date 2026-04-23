@@ -12,6 +12,7 @@ import {
   onSnapshot,
   serverTimestamp,
   queryEqual,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase-config";
 import type { Monster, PlayableCharacter, NPC, Homebrew } from "@/lib/schemas";
@@ -460,5 +461,72 @@ export async function updateEntityAbilityUse(
 
   await updateMonster(campaignId, entityId, {
     abilityUses: updatedAbilityUses,
+  });
+}
+
+export interface Roll {
+  userId: string;
+  userName: string;
+  dice: string;
+  result: number;
+  breakdown: number[];
+  total: number;
+  createdAt: any;
+  expiresAt: Timestamp;
+}
+
+export interface CampaignRoll extends Roll {
+  id: string;
+}
+
+export async function saveRoll(
+  campaignId: string,
+  roll: Omit<Roll, "createdAt" | "expiresAt">,
+): Promise<void> {
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 24);
+
+  await addDoc(collection(db, "campaigns", campaignId, "rolls"), {
+    ...roll,
+    createdAt: serverTimestamp(),
+    expiresAt: Timestamp.fromDate(expiresAt),
+  });
+}
+
+function getRollTimestampValue(createdAt: any): number {
+  if (!createdAt) return 0;
+  if (typeof createdAt.toMillis === "function") {
+    return createdAt.toMillis();
+  }
+  if (typeof createdAt.seconds === "number") {
+    return (
+      createdAt.seconds * 1000 +
+      Math.floor((createdAt.nanoseconds ?? 0) / 1_000_000)
+    );
+  }
+  if (createdAt instanceof Date) {
+    return createdAt.getTime();
+  }
+  return 0;
+}
+
+export function onRollsChange(
+  campaignId: string,
+  callback: (rolls: CampaignRoll[]) => void,
+) {
+  const rollsRef = collection(db, "campaigns", campaignId, "rolls");
+
+  return onSnapshot(rollsRef, (snapshot) => {
+    const rolls = snapshot.docs
+      .map(
+        (docSnapshot) =>
+          ({ id: docSnapshot.id, ...docSnapshot.data() }) as CampaignRoll,
+      )
+      .sort(
+        (a, b) =>
+          getRollTimestampValue(b.createdAt) - getRollTimestampValue(a.createdAt),
+      );
+
+    callback(rolls);
   });
 }

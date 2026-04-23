@@ -30,6 +30,7 @@ import { useGame } from "@/app/_contexts/game-context";
 import { useSidebar } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { CharacterSheetContent } from "@/app/campaign/[campaignId]/character/[playableCharacterId]/page";
+import { RollHistoryPanel } from "@/components/roll-history-panel";
 import { useCampaign } from "@/lib/campaign-context";
 import { useEffect } from "react";
 
@@ -335,6 +336,7 @@ export function MasterView() {
           </TabsContent>
         </Tabs>
        </main>
+       <RollHistoryPanel campaignId={campaign.id} position="left" />
 
        {monsterView === "sheet" && selectedMonster && (
         <MonsterSheet

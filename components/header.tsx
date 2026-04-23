@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { gameData } = useGame();
+  const { gameData, campaignId } = useGame();
   const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
   const router = useRouter();
 
@@ -40,7 +40,7 @@ export default function Header() {
 
           <div className="flex items-center gap-4">
             <SidebarTrigger />
-            <DiceRollModal />
+            <DiceRollModal campaignId={campaignId || undefined} />
             <Card className="hidden md:block card-inset">
               <CardContent className="p-4">
                 <div className="flex gap-6 text-center">

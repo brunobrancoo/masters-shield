@@ -36,6 +36,7 @@ import PlayerInventorySection from "@/components/player-inventory-section";
 import PlayerBuffsSection from "@/components/player-buffs-section";
 import PlayerDebuffsSection from "@/components/player-debuffs-section";
 import PlayerNotesSection from "@/components/player-notes-section";
+import { RollHistoryPanel } from "@/components/roll-history-panel";
 import { updatePlayableCharacterOrSet } from "@/lib/firebase-storage";
 import { PlayerProviders } from "@/app/campaign/[campaignId]/player-providers";
 import { sanitizeForFirebase } from "@/lib/character-utils";
@@ -611,6 +612,7 @@ export function CharacterSheetContent({
           </div>
         </div>
       </main>
+      <RollHistoryPanel campaignId={campaignId} position="right" />
     </div>
   );
 }
