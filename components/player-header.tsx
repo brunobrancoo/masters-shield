@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import DiceRollModal from "./dice-roll";
 
 export function PlayerHeader() {
-  const { gameData } = useGame();
+  const { gameData, campaignId } = useGame();
   const router = useRouter();
 
   return (
@@ -37,7 +37,7 @@ export function PlayerHeader() {
           </div>
 
           <div className="flex items-center gap-4">
-            <DiceRollModal />
+            <DiceRollModal campaignId={campaignId || undefined} />
             <Card className="hidden md:block card-inset">
               <CardContent className="p-4">
                 <div className="flex gap-6 text-center">

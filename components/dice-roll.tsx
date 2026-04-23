@@ -13,7 +13,8 @@ import { D10, D12, D20, D4, D6, D8, DiceIcon } from "./icons";
 import { Minus, Plus } from "lucide-react";
 import type { DiceType, RollResult } from "@/lib/interfaces/dice-roll";
 import { DiceRoller } from "@/lib/classes/dices";
-import { isResolvedLazyResult } from "next/dist/server/lib/lazy-result";
+import { useAuth } from "@/lib/auth-context";
+import { saveRoll } from "@/lib/firebase-storage";
 
 interface DiceCount {
   d4: number;
@@ -48,7 +49,12 @@ const diceIcons: Record<
   d100: D10,
 };
 
-export default function DiceRollModal() {
+interface DiceRollModalProps {
+  campaignId?: string;
+}
+
+export default function DiceRollModal({ campaignId }: DiceRollModalProps) {
+  const { user } = useAuth();
   const [diceCount, setDiceCount] = useState<DiceCount>({
     d4: 0,
     d6: 0,
@@ -82,6 +88,25 @@ export default function DiceRollModal() {
           newResults.push(rollResult);
         }
       });
+
+      const grandTotal = newResults.reduce((sum, result) => sum + result.total, 0);
+      const diceStrings = newResults
+        .map((result) => `${result.rolls.length}${result.type}`)
+        .join(" + ");
+      const allRolls = newResults.flatMap((result) => result.rolls);
+
+      if (campaignId && user && newResults.length > 0) {
+        saveRoll(campaignId, {
+          userId: user.uid,
+          userName: user.displayName || "Unknown",
+          dice: diceStrings,
+          result: grandTotal,
+          breakdown: allRolls,
+          total: grandTotal,
+        }).catch((error) => {
+          console.error("Error saving roll:", error);
+        });
+      }
 
       setResults(newResults);
       setIsRolling(false);
